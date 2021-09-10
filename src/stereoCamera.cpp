@@ -54,10 +54,6 @@ int main(){
 					imgpoints_right.push_back(corner_pts);
 				}
 			}
-
-			cv::imshow("Image", frame);
-		
-			cv::waitKey(0);
 		}
 	}
 
