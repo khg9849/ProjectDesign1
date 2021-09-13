@@ -4,13 +4,18 @@ project(
 	)
 
 ADD_EXECUTABLE(
-	oneCamera
-	oneCamera.cpp
+	stereoCamera_N
+	stereoCamera_N.cpp
 	)
 
 ADD_EXECUTABLE(
-	stereoCamera
-	stereoCamera.cpp
+	stereoCamera_90
+	stereoCamera_90.cpp
+	)
+
+ADD_EXECUTABLE(
+	stereoCamera_ver2
+	stereoCamera_ver2.cpp
 	)
 
 find_package(
@@ -29,11 +34,16 @@ include_directories(
 	)
 
 target_link_libraries(
-	oneCamera
+	stereoCamera_N
 	${OPENCV_LIBRARIES}
 	)
 
 target_link_libraries(
-	stereoCamera
+	stereoCamera_90
+	${OPENCV_LIBRARIES}
+	)
+
+target_link_libraries(
+	stereoCamera_ver2
 	${OPENCV_LIBRARIES}
 	)

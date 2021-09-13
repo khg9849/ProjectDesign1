@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/ubuntu/ProjectDesign1/src
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,60 +111,88 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named stereoCamera
+# Target rules for targets named stereoCamera_ver2
 
 # Build rule for target.
-stereoCamera: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 stereoCamera
-.PHONY : stereoCamera
+stereoCamera_ver2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 stereoCamera_ver2
+.PHONY : stereoCamera_ver2
 
 # fast build rule for target.
-stereoCamera/fast:
-	$(MAKE) -f CMakeFiles/stereoCamera.dir/build.make CMakeFiles/stereoCamera.dir/build
-.PHONY : stereoCamera/fast
+stereoCamera_ver2/fast:
+	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/build
+.PHONY : stereoCamera_ver2/fast
 
 #=============================================================================
-# Target rules for targets named oneCamera
+# Target rules for targets named stereoCamera_90
 
 # Build rule for target.
-oneCamera: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 oneCamera
-.PHONY : oneCamera
+stereoCamera_90: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 stereoCamera_90
+.PHONY : stereoCamera_90
 
 # fast build rule for target.
-oneCamera/fast:
-	$(MAKE) -f CMakeFiles/oneCamera.dir/build.make CMakeFiles/oneCamera.dir/build
-.PHONY : oneCamera/fast
+stereoCamera_90/fast:
+	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/build
+.PHONY : stereoCamera_90/fast
+
+#=============================================================================
+# Target rules for targets named stereoCamera_N
+
+# Build rule for target.
+stereoCamera_N: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 stereoCamera_N
+.PHONY : stereoCamera_N
+
+# fast build rule for target.
+stereoCamera_N/fast:
+	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/build
+.PHONY : stereoCamera_N/fast
 
 # target to build an object file
-oneCamera.o:
-	$(MAKE) -f CMakeFiles/oneCamera.dir/build.make CMakeFiles/oneCamera.dir/oneCamera.o
-.PHONY : oneCamera.o
+stereoCamera_90.o:
+	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/stereoCamera_90.o
+.PHONY : stereoCamera_90.o
 
 # target to preprocess a source file
-oneCamera.i:
-	$(MAKE) -f CMakeFiles/oneCamera.dir/build.make CMakeFiles/oneCamera.dir/oneCamera.i
-.PHONY : oneCamera.i
+stereoCamera_90.i:
+	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/stereoCamera_90.i
+.PHONY : stereoCamera_90.i
 
 # target to generate assembly for a file
-oneCamera.s:
-	$(MAKE) -f CMakeFiles/oneCamera.dir/build.make CMakeFiles/oneCamera.dir/oneCamera.s
-.PHONY : oneCamera.s
+stereoCamera_90.s:
+	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/stereoCamera_90.s
+.PHONY : stereoCamera_90.s
 
 # target to build an object file
-stereoCamera.o:
-	$(MAKE) -f CMakeFiles/stereoCamera.dir/build.make CMakeFiles/stereoCamera.dir/stereoCamera.o
-.PHONY : stereoCamera.o
+stereoCamera_N.o:
+	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/stereoCamera_N.o
+.PHONY : stereoCamera_N.o
 
 # target to preprocess a source file
-stereoCamera.i:
-	$(MAKE) -f CMakeFiles/stereoCamera.dir/build.make CMakeFiles/stereoCamera.dir/stereoCamera.i
-.PHONY : stereoCamera.i
+stereoCamera_N.i:
+	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/stereoCamera_N.i
+.PHONY : stereoCamera_N.i
 
 # target to generate assembly for a file
-stereoCamera.s:
-	$(MAKE) -f CMakeFiles/stereoCamera.dir/build.make CMakeFiles/stereoCamera.dir/stereoCamera.s
-.PHONY : stereoCamera.s
+stereoCamera_N.s:
+	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/stereoCamera_N.s
+.PHONY : stereoCamera_N.s
+
+# target to build an object file
+stereoCamera_ver2.o:
+	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/stereoCamera_ver2.o
+.PHONY : stereoCamera_ver2.o
+
+# target to preprocess a source file
+stereoCamera_ver2.i:
+	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/stereoCamera_ver2.i
+.PHONY : stereoCamera_ver2.i
+
+# target to generate assembly for a file
+stereoCamera_ver2.s:
+	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/stereoCamera_ver2.s
+.PHONY : stereoCamera_ver2.s
 
 # Help Target
 help:
@@ -172,16 +200,20 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
-	@echo "... stereoCamera"
 	@echo "... rebuild_cache"
-	@echo "... oneCamera"
-	@echo "... oneCamera.o"
-	@echo "... oneCamera.i"
-	@echo "... oneCamera.s"
-	@echo "... stereoCamera.o"
-	@echo "... stereoCamera.i"
-	@echo "... stereoCamera.s"
+	@echo "... edit_cache"
+	@echo "... stereoCamera_ver2"
+	@echo "... stereoCamera_90"
+	@echo "... stereoCamera_N"
+	@echo "... stereoCamera_90.o"
+	@echo "... stereoCamera_90.i"
+	@echo "... stereoCamera_90.s"
+	@echo "... stereoCamera_N.o"
+	@echo "... stereoCamera_N.i"
+	@echo "... stereoCamera_N.s"
+	@echo "... stereoCamera_ver2.o"
+	@echo "... stereoCamera_ver2.i"
+	@echo "... stereoCamera_ver2.s"
 .PHONY : help
 
 
