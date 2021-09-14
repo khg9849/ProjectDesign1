@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jessie/develop/project2
+CMAKE_SOURCE_DIR = /home/jessie/develop/works/ProjectDesign1/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jessie/develop/project2/build
+CMAKE_BINARY_DIR = /home/jessie/develop/works/ProjectDesign1/src/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jessie/develop/project2/build/CMakeFiles /home/jessie/develop/project2/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jessie/develop/works/ProjectDesign1/src/build/CMakeFiles /home/jessie/develop/works/ProjectDesign1/src/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jessie/develop/project2/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jessie/develop/works/ProjectDesign1/src/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -177,6 +177,33 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/myProject.dir/build.make CMakeFiles/myProject.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+match1.o: match1.cpp.o
+
+.PHONY : match1.o
+
+# target to build an object file
+match1.cpp.o:
+	$(MAKE) -f CMakeFiles/myProject.dir/build.make CMakeFiles/myProject.dir/match1.cpp.o
+.PHONY : match1.cpp.o
+
+match1.i: match1.cpp.i
+
+.PHONY : match1.i
+
+# target to preprocess a source file
+match1.cpp.i:
+	$(MAKE) -f CMakeFiles/myProject.dir/build.make CMakeFiles/myProject.dir/match1.cpp.i
+.PHONY : match1.cpp.i
+
+match1.s: match1.cpp.s
+
+.PHONY : match1.s
+
+# target to generate assembly for a file
+match1.cpp.s:
+	$(MAKE) -f CMakeFiles/myProject.dir/build.make CMakeFiles/myProject.dir/match1.cpp.s
+.PHONY : match1.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -192,6 +219,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... match1.o"
+	@echo "... match1.i"
+	@echo "... match1.s"
 .PHONY : help
 
 

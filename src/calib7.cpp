@@ -213,5 +213,5 @@ void cb::undistort2(String inputFile)
     cout<<base_filename<<'\n';
     outputFile.append(base_filename);
     imwrite(outputFile,dst);
-    cout<<outputFile<<"is saved"<<'\n';
+    cout<<outputFile<<" is saved"<<'\n';
 }
