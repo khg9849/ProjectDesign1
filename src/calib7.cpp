@@ -204,4 +204,14 @@ void cb::undistort2(String inputFile)
     imshow("lrImg[1]", lrImg[1]);
     imshow("imageUndistorted1", imageUndistorted[1]);
     waitKey();
+
+    Mat dst;
+    hconcat(imageUndistorted[0], imageUndistorted[1],dst);
+
+    String outputFile="undistorted_";
+    String base_filename = inputFile.substr(inputFile.find_last_of("/\\") + 1);
+    cout<<base_filename<<'\n';
+    outputFile.append(base_filename);
+    imwrite(outputFile,dst);
+    cout<<outputFile<<"is saved"<<'\n';
 }
