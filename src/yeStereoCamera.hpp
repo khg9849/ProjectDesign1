@@ -4,6 +4,11 @@
 namespace SYE {
 
 class YeStereoCamera {
+private:
+protected:
+public:
+	YeStereoCamera();
+	//virtual ~YeStereoCamera();
 };
 
 }
