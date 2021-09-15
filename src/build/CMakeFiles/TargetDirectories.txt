@@ -1,0 +1,3 @@
+/home/jessie/develop/works/ProjectDesign1/src/build/CMakeFiles/rebuild_cache.dir
+/home/jessie/develop/works/ProjectDesign1/src/build/CMakeFiles/edit_cache.dir
+/home/jessie/develop/works/ProjectDesign1/src/build/CMakeFiles/myProject.dir
