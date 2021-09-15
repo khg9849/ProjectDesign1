@@ -4,6 +4,11 @@ project(
 	)
 
 ADD_EXECUTABLE(
+	featureDetection
+	featureDetection.cpp
+	)
+
+ADD_EXECUTABLE(
 	stereoCamera_N
 	stereoCamera_N.cpp
 	)
@@ -31,6 +36,11 @@ pkg_check_modules(
 
 include_directories(
 	${OPENCV_INCLUDE_DIRS}
+	)
+
+target_link_libraries(
+	featureDetection
+	${OPENCV_LIBRARIES}
 	)
 
 target_link_libraries(

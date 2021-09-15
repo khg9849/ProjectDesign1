@@ -48,24 +48,13 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ubuntu/ProjectDesign1/src
+CMAKE_SOURCE_DIR = /home/ubuntu/opencv
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ubuntu/ProjectDesign1/src
+CMAKE_BINARY_DIR = /home/ubuntu/opencv
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -78,11 +67,22 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/src/CMakeFiles /home/ubuntu/ProjectDesign1/src/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/opencv/CMakeFiles /home/ubuntu/opencv/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/src/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/opencv/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -149,6 +149,34 @@ stereoCamera_N/fast:
 	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/build
 .PHONY : stereoCamera_N/fast
 
+#=============================================================================
+# Target rules for targets named featureDetection
+
+# Build rule for target.
+featureDetection: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 featureDetection
+.PHONY : featureDetection
+
+# fast build rule for target.
+featureDetection/fast:
+	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/build
+.PHONY : featureDetection/fast
+
+# target to build an object file
+featureDetection.o:
+	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/featureDetection.o
+.PHONY : featureDetection.o
+
+# target to preprocess a source file
+featureDetection.i:
+	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/featureDetection.i
+.PHONY : featureDetection.i
+
+# target to generate assembly for a file
+featureDetection.s:
+	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/featureDetection.s
+.PHONY : featureDetection.s
+
 # target to build an object file
 stereoCamera_90.o:
 	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/stereoCamera_90.o
@@ -200,11 +228,15 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... stereoCamera_ver2"
 	@echo "... stereoCamera_90"
 	@echo "... stereoCamera_N"
+	@echo "... rebuild_cache"
+	@echo "... featureDetection"
+	@echo "... featureDetection.o"
+	@echo "... featureDetection.i"
+	@echo "... featureDetection.s"
 	@echo "... stereoCamera_90.o"
 	@echo "... stereoCamera_90.i"
 	@echo "... stereoCamera_90.s"
