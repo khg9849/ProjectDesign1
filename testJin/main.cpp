@@ -9,7 +9,6 @@
 using namespace cv;
 using namespace std;
 
-// g++ main.cpp calibration.h calib7.cpp matching.h match1.cpp -o test $(pkg-config opencv4 --libs --cflags) -std=c++11
 int main()
 {
 	string path = "./resources/CameraDataSet/sCalibration-90/*.jpg";

@@ -1,6 +1,6 @@
 #include "matching.h"
 
-int stereoMatch(String path){
+int stereoMatch(string path){
 
     Mat img=cv::imread(path);
     Mat gray;
@@ -44,8 +44,8 @@ int stereoMatch(String path){
     imshow("stereo matching result", dst);
     waitKey();
 
-    String outputFile="matched_";
-    String base_filename = path.substr(path.find_last_of("/\\") + 1);
+    string outputFile="matched_";
+    string base_filename = path.substr(path.find_last_of("/\\") + 1);
     cout<<base_filename<<'\n';
     outputFile.append(base_filename);
     imwrite(outputFile,dst);

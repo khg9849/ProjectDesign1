@@ -13,12 +13,12 @@ class cb{
     vector<cv::String> images;
 
     /* Creating vector to store vector of 3D points for each checkerboard image */
-    vector<vector<cv::Point3f>> objpoints_right; // 각 이미지에 대해 3D 좌표를 저장하는 벡터 선언
-    vector<vector<cv::Point3f>> objpoints_left;  // 각 이미지에 대해 3D 좌표를 저장하는 벡터 선언
+    vector< vector<cv::Point3f> > objpoints_right; // 각 이미지에 대해 3D 좌표를 저장하는 벡터 선언
+    vector< vector<cv::Point3f> > objpoints_left;  // 각 이미지에 대해 3D 좌표를 저장하는 벡터 선언
 
     /* Creating vector to store vectors of 2D points for each checkerboard image */
-    vector<vector<cv::Point2f>> imgpoints_right; // 각 이미지에 대해 2D 좌표를 저장하는 벡터 선언
-    vector<vector<cv::Point2f>> imgpoints_left;  // 각 이미지에 대해 2D 좌표를 저장하는 벡터 선언
+    vector< vector<cv::Point2f> > imgpoints_right; // 각 이미지에 대해 2D 좌표를 저장하는 벡터 선언
+    vector< vector<cv::Point2f> > imgpoints_left;  // 각 이미지에 대해 2D 좌표를 저장하는 벡터 선언
 
 /* Defining the world coordinates for 3D points */
     vector<cv::Point3f> objp; // 월드 좌표계 선언
@@ -36,11 +36,11 @@ class cb{
     public:
     cb();
 
-    void calib(String dir,String outputFile);
-    void setting(String dir);
-    void writeCalibResult(String outputFile);
-    void readCalibResult(String inputFile);
+    void calib(string dir,string outputFile);
+    void setting(string dir);
+    void writeCalibResult(string outputFile);
+    void readCalibResult(string inputFile);
     void printCalibResult();
 
-    void undistort2(String inputFile);
+    void undistort2(string inputFile);
 };

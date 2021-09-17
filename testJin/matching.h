@@ -5,4 +5,4 @@
 using namespace std;
 using namespace cv;
 
-int stereoMatch(String path);
+int stereoMatch(string path);

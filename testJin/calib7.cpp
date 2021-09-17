@@ -2,7 +2,7 @@
 
 cb::cb(){};
 
-void cb::calib(String dir, String outputFile)
+void cb::calib(string dir, string outputFile)
 {
     setting(dir);
     cv::Mat frame, gray;
@@ -76,7 +76,7 @@ void cb::calib(String dir, String outputFile)
     writeCalibResult(outputFile);
 }
 
-void cb::setting(String dir)
+void cb::setting(string dir)
 {
     //setObjp
     for (int i = 0; i < CHECKERBOARD[1]; i++) // CHECKERBOARD[0] = 6
@@ -149,7 +149,7 @@ void cb::printCalibResult()
          << Q << "\n\n\n";
 }
 
-void cb::writeCalibResult(String outputFile)
+void cb::writeCalibResult(string outputFile)
 {
     FileStorage fs(outputFile, cv::FileStorage::WRITE);
     if (!fs.isOpened())
@@ -168,7 +168,7 @@ void cb::writeCalibResult(String outputFile)
     fs.release();
 }
 
-void cb::readCalibResult(String inputFile)
+void cb::readCalibResult(string inputFile)
 {
 
     FileStorage fs(inputFile, cv::FileStorage::READ);
@@ -188,7 +188,7 @@ void cb::readCalibResult(String inputFile)
     fs.release();
 }
 
-void cb::undistort2(String inputFile)
+void cb::undistort2(string inputFile)
 {
     cv::Mat frame = cv::imread(inputFile);
     cv::Mat lrImg[2];
@@ -208,8 +208,8 @@ void cb::undistort2(String inputFile)
     Mat dst;
     hconcat(imageUndistorted[0], imageUndistorted[1],dst);
 
-    String outputFile="undistorted_";
-    String base_filename = inputFile.substr(inputFile.find_last_of("/\\") + 1);
+    string outputFile="undistorted_";
+    string base_filename = inputFile.substr(inputFile.find_last_of("/\\") + 1);
     cout<<base_filename<<'\n';
     outputFile.append(base_filename);
     imwrite(outputFile,dst);
