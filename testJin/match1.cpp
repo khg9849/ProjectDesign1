@@ -1,8 +1,8 @@
 #include "matching.h"
 
-int stereoMatch(string path){
+int stereoMatch(string inputFile, string outputFile){
 
-    Mat img=cv::imread(path);
+    Mat img=cv::imread(inputFile);
     Mat gray;
     Mat lrImg[2];
 
@@ -15,7 +15,7 @@ int stereoMatch(string path){
 		return -1;
 	}
 	
-	Ptr<Feature2D> feature = ORB::create(); //Ptr: smart pointer class, works like pointer of ORB 
+	Ptr<Feature2D> feature = ORB::create(200); //Ptr: smart pointer class, works like pointer of ORB 
 	vector<KeyPoint> lKeypoints, rKeypoints; //keypoints
 	Mat lDesc, rDesc; //descriptors
 
@@ -43,11 +43,12 @@ int stereoMatch(string path){
 
     imshow("stereo matching result", dst);
     waitKey();
-
+/*
     string outputFile="matched_";
     string base_filename = path.substr(path.find_last_of("/\\") + 1);
     cout<<base_filename<<'\n';
     outputFile.append(base_filename);
+    */
     imwrite(outputFile,dst);
     cout<<outputFile<<" is saved"<<'\n';
 

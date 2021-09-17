@@ -5,36 +5,36 @@
   <cols>3</cols>
   <dt>d</dt>
   <data>
-    4.3228452714214524e+02 0. 3.4472119746119353e+02 0.
-    4.3139611144643749e+02 2.4797858694544104e+02 0. 0. 1.</data></cameraMatrix_left>
+    4.3228452794946435e+02 0. 3.4472119836874111e+02 0.
+    4.3139611235455544e+02 2.4797858825189556e+02 0. 0. 1.</data></cameraMatrix_left>
 <distCoeffs_left type_id="opencv-matrix">
   <rows>1</rows>
   <cols>5</cols>
   <dt>d</dt>
   <data>
-    -4.1880108624621337e-01 2.2732625243119153e-01
-    2.4441629952868652e-03 -2.1090538358634144e-05
-    -7.2204084146954117e-02</data></distCoeffs_left>
+    -4.1880108083857776e-01 2.2732623630306006e-01
+    2.4441631458740924e-03 -2.1090818801563101e-05
+    -7.2204072632616162e-02</data></distCoeffs_left>
 <cameraMatrix_right type_id="opencv-matrix">
   <rows>3</rows>
   <cols>3</cols>
   <dt>d</dt>
   <data>
-    4.3114155579892446e+02 0. 9.9228344120177917e+02 0.
-    4.3065660281569251e+02 2.4749953716168352e+02 0. 0. 1.</data></cameraMatrix_right>
+    4.3114153931057473e+02 0. 9.9228346768176652e+02 0.
+    4.3065658725807992e+02 2.4749956609315231e+02 0. 0. 1.</data></cameraMatrix_right>
 <distCoeffs_right type_id="opencv-matrix">
   <rows>1</rows>
   <cols>5</cols>
   <dt>d</dt>
   <data>
-    -4.0256136398659720e-01 1.8479938748178473e-01
-    1.8768937133508102e-03 1.0429389978805167e-03
-    -4.3738616972561005e-02</data></distCoeffs_right>
+    -4.0256140622545417e-01 1.8479943483037012e-01
+    1.8768832961239001e-03 1.0429214028954423e-03
+    -4.3738647271312790e-02</data></distCoeffs_right>
 <Translation_Vector type_id="opencv-matrix">
   <rows>3</rows>
   <cols>1</cols>
   <dt>d</dt>
   <data>
-    -5.8140618422235328e+01 -6.5816866537732299e-01
-    2.4965924261743247e-01</data></Translation_Vector>
+    -5.8140618911673151e+01 -6.5816931668858047e-01
+    2.4964664938440351e-01</data></Translation_Vector>
 </opencv_storage>

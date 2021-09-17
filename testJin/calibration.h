@@ -42,5 +42,5 @@ class cb{
     void readCalibResult(string inputFile);
     void printCalibResult();
 
-    void undistort2(string inputFile);
+    void undistort2(string inputFile, string outputFile);
 };

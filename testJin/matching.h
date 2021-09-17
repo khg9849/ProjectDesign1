@@ -5,4 +5,4 @@
 using namespace std;
 using namespace cv;
 
-int stereoMatch(string path);
+int stereoMatch(string inputFile, string outputFile);

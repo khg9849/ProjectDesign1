@@ -188,7 +188,7 @@ void cb::readCalibResult(string inputFile)
     fs.release();
 }
 
-void cb::undistort2(string inputFile)
+void cb::undistort2(string inputFile, string outputFile)
 {
     cv::Mat frame = cv::imread(inputFile);
     cv::Mat lrImg[2];
@@ -207,11 +207,12 @@ void cb::undistort2(string inputFile)
 
     Mat dst;
     hconcat(imageUndistorted[0], imageUndistorted[1],dst);
-
+/*
     string outputFile="undistorted_";
     string base_filename = inputFile.substr(inputFile.find_last_of("/\\") + 1);
     cout<<base_filename<<'\n';
     outputFile.append(base_filename);
+    */
     imwrite(outputFile,dst);
     cout<<outputFile<<" is saved"<<'\n';
 }
