@@ -1,0 +1,4 @@
+/home/kimgildong/cameraCaliProj/CMakeFiles/rebuild_cache.dir
+/home/kimgildong/cameraCaliProj/CMakeFiles/edit_cache.dir
+/home/kimgildong/cameraCaliProj/CMakeFiles/caliPic.dir
+/home/kimgildong/cameraCaliProj/CMakeFiles/caliParam.dir
