@@ -22,7 +22,7 @@ int main()
 	 String path2="result_undistorted.jpg";
 
     // myCB.undistort2(path, path2);
-	stereoMatch(path2, "result_matched.jpg");
+	stereoMatch(path2, "result_ScoreType_FAST.jpg");
 
 	
 

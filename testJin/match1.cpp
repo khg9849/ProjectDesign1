@@ -17,7 +17,13 @@ int stereoMatch(string inputFile, string outputFile){
 	}
 	
 
-	Ptr<Feature2D> feature = ORB::create(); //Ptr: smart pointer class, works like pointer of ORB 
+	Ptr<Feature2D> feature = ORB::create(
+        500,1.2f,
+        8,
+        31,0,
+        2,
+        ORB::FAST_SCORE
+    ); //Ptr: smart pointer class, works like pointer of ORB 
 
     vector<KeyPoint> lKeypoints, rKeypoints; //keypoints
 	Mat lDesc, rDesc; //descriptors
@@ -50,14 +56,14 @@ int stereoMatch(string inputFile, string outputFile){
 	vector<DMatch> good_matches(matches.begin(), matches.begin() + 100); //matching 잘 된 100개만 추출
 	
 	Mat dst;
-    drawMatches(lrImg[0], lKeypoints, lrImg[1], rKeypoints,
-                good_matches, dst, 
-                Scalar::all(-1), Scalar(-1), vector<char>(), 
-                DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+    // drawMatches(lrImg[0], lKeypoints, lrImg[1], rKeypoints,
+    //             good_matches, dst, 
+    //             Scalar::all(-1), Scalar(-1), vector<char>(), 
+    //             DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 	// Scalar::all(-1) 각 키포인트마다 임의의 색상으로 원을 그림
     // NOT_DRAW_SINGLE_POINTS 매칭되지 않은 점은 그리지 않음
 
-    //drawKeypoints(lrImg[0],lKeypoints,dst,Scalar::all(-1),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+    drawKeypoints(lrImg[0],lKeypoints,dst,Scalar::all(-1),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
     imshow("stereo matching result", dst);
     waitKey();
