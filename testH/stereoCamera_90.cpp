@@ -9,7 +9,7 @@ int CHECKERBOARD[2]{6,9};
 int main(){
 	vector<cv::String> images;
 
-	string path = "./sCalibration-90";
+	string path = "../sCalibration-90";
 
 	cv::glob(path, images);
 
