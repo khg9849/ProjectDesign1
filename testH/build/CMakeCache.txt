@@ -123,7 +123,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=cameraCalibration
+CMAKE_PROJECT_NAME:STATIC=hProject
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -201,6 +201,15 @@ cameraCalibration_BINARY_DIR:STATIC=/home/ubuntu/ProjectDesign1/testH/build
 
 //Value Computed by CMake
 cameraCalibration_SOURCE_DIR:STATIC=/home/ubuntu/ProjectDesign1/testH
+
+//Value Computed by CMake
+hProject_BINARY_DIR:STATIC=/home/ubuntu/ProjectDesign1/testH/build
+
+//Value Computed by CMake
+hProject_SOURCE_DIR:STATIC=/home/ubuntu/ProjectDesign1/testH
+
+//Dependencies for the target
+my_lib_LIB_DEPENDS:STATIC=general;opencv_gapi;general;opencv_stitching;general;opencv_alphamat;general;opencv_aruco;general;opencv_barcode;general;opencv_bgsegm;general;opencv_bioinspired;general;opencv_ccalib;general;opencv_dnn_objdetect;general;opencv_dnn_superres;general;opencv_dpm;general;opencv_face;general;opencv_freetype;general;opencv_fuzzy;general;opencv_hfs;general;opencv_img_hash;general;opencv_intensity_transform;general;opencv_line_descriptor;general;opencv_mcc;general;opencv_quality;general;opencv_rapid;general;opencv_reg;general;opencv_rgbd;general;opencv_saliency;general;opencv_stereo;general;opencv_structured_light;general;opencv_phase_unwrapping;general;opencv_superres;general;opencv_optflow;general;opencv_surface_matching;general;opencv_tracking;general;opencv_highgui;general;opencv_datasets;general;opencv_text;general;opencv_plot;general;opencv_videostab;general;opencv_videoio;general;opencv_wechat_qrcode;general;opencv_xfeatures2d;general;opencv_shape;general;opencv_ml;general;opencv_ximgproc;general;opencv_video;general;opencv_dnn;general;opencv_xobjdetect;general;opencv_objdetect;general;opencv_calib3d;general;opencv_imgcodecs;general;opencv_features2d;general;opencv_flann;general;opencv_xphoto;general;opencv_photo;general;opencv_imgproc;general;opencv_core;
 
 //Path to a library.
 pkgcfg_lib_OPENCV_opencv_alphamat:FILEPATH=/usr/local/lib/libopencv_alphamat.so

@@ -1,59 +1,24 @@
+cmake_minimum_required(VERSION 3.10)
+
 project(
-	cameraCalibration
-	CXX
+	hProject
+	LANGUAGES CXX
 	)
 
 ADD_EXECUTABLE(
-	featureDetection
-	featureDetection.cpp
+	hStereo
+	main.cpp
+	calibration.cpp
 	)
 
-ADD_EXECUTABLE(
-	stereoCamera_N
-	stereoCamera_N.cpp
-	)
-
-ADD_EXECUTABLE(
-	stereoCamera_90
-	stereoCamera_90.cpp
-	)
-
-ADD_EXECUTABLE(
-	stereoCamera_ver2
-	stereoCamera_ver2.cpp
-	)
-
-find_package(
-	PkgConfig
-	REQUIRED
-	)
-
-pkg_check_modules(
-	OPENCV
-	opencv4
-	REQUIRED
-	)
-
-include_directories(
+target_include_directories(
+	hStereo
+PUBLIC
+	${CMAKE_SOURCE_DIR}/includes
 	${OPENCV_INCLUDE_DIRS}
 	)
 
 target_link_libraries(
-	featureDetection
-	${OPENCV_LIBRARIES}
-	)
-
-target_link_libraries(
-	stereoCamera_N
-	${OPENCV_LIBRARIES}
-	)
-
-target_link_libraries(
-	stereoCamera_90
-	${OPENCV_LIBRARIES}
-	)
-
-target_link_libraries(
-	stereoCamera_ver2
+	hStereo
 	${OPENCV_LIBRARIES}
 	)
