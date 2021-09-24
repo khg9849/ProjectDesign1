@@ -12,7 +12,7 @@ protected:
 	virtual bool doCalibration(const char *pPath) = 0;
 	virtual bool doCalibration(std::vector<std::string> &imgList) = 0;
 public:
-//	YeStereoCamera();
+	YeStereoCamera();
 	//virtual ~YeStereoCamera();
 };
 

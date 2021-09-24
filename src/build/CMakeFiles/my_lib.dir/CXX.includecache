@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ubuntu/ProjectDesign1/testH/stereoCamera.cpp
+yeStereoCamera.hpp
+/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.hpp
+opencv2/opencv.hpp
+-
+opencv2/calib3d/calib3d_c.h
+-
+iostream
+-
+vector
+-
+
