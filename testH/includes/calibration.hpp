@@ -32,6 +32,6 @@ class hwangCalibration: public SYE::YeStereoCamera{
 	cv::Rect validRoi[2];
 
 public:
-	virtual bool doCalibration(const char *pPath);
-	virtual bool doCalibration(vector<string> &imgList);
+	bool doCalibration(const char *pPath);
+	bool doCalibration(vector<string> &imgList);
 };
