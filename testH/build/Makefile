@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/ubuntu/ProjectDesign1/testH/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
-
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +66,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,116 +111,71 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named stereoCamera_ver2
+# Target rules for targets named hStereo
 
 # Build rule for target.
-stereoCamera_ver2: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 stereoCamera_ver2
-.PHONY : stereoCamera_ver2
+hStereo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 hStereo
+.PHONY : hStereo
 
 # fast build rule for target.
-stereoCamera_ver2/fast:
-	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/build
-.PHONY : stereoCamera_ver2/fast
+hStereo/fast:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/build
+.PHONY : hStereo/fast
 
-#=============================================================================
-# Target rules for targets named stereoCamera_90
+calibration.o: calibration.cpp.o
 
-# Build rule for target.
-stereoCamera_90: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 stereoCamera_90
-.PHONY : stereoCamera_90
-
-# fast build rule for target.
-stereoCamera_90/fast:
-	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/build
-.PHONY : stereoCamera_90/fast
-
-#=============================================================================
-# Target rules for targets named stereoCamera_N
-
-# Build rule for target.
-stereoCamera_N: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 stereoCamera_N
-.PHONY : stereoCamera_N
-
-# fast build rule for target.
-stereoCamera_N/fast:
-	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/build
-.PHONY : stereoCamera_N/fast
-
-#=============================================================================
-# Target rules for targets named featureDetection
-
-# Build rule for target.
-featureDetection: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 featureDetection
-.PHONY : featureDetection
-
-# fast build rule for target.
-featureDetection/fast:
-	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/build
-.PHONY : featureDetection/fast
+.PHONY : calibration.o
 
 # target to build an object file
-featureDetection.o:
-	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/featureDetection.o
-.PHONY : featureDetection.o
+calibration.cpp.o:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/calibration.cpp.o
+.PHONY : calibration.cpp.o
+
+calibration.i: calibration.cpp.i
+
+.PHONY : calibration.i
 
 # target to preprocess a source file
-featureDetection.i:
-	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/featureDetection.i
-.PHONY : featureDetection.i
+calibration.cpp.i:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/calibration.cpp.i
+.PHONY : calibration.cpp.i
+
+calibration.s: calibration.cpp.s
+
+.PHONY : calibration.s
 
 # target to generate assembly for a file
-featureDetection.s:
-	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/featureDetection.s
-.PHONY : featureDetection.s
+calibration.cpp.s:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/calibration.cpp.s
+.PHONY : calibration.cpp.s
+
+main.o: main.cpp.o
+
+.PHONY : main.o
 
 # target to build an object file
-stereoCamera_90.o:
-	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/stereoCamera_90.o
-.PHONY : stereoCamera_90.o
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+
+.PHONY : main.i
 
 # target to preprocess a source file
-stereoCamera_90.i:
-	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/stereoCamera_90.i
-.PHONY : stereoCamera_90.i
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+
+.PHONY : main.s
 
 # target to generate assembly for a file
-stereoCamera_90.s:
-	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/stereoCamera_90.s
-.PHONY : stereoCamera_90.s
-
-# target to build an object file
-stereoCamera_N.o:
-	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/stereoCamera_N.o
-.PHONY : stereoCamera_N.o
-
-# target to preprocess a source file
-stereoCamera_N.i:
-	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/stereoCamera_N.i
-.PHONY : stereoCamera_N.i
-
-# target to generate assembly for a file
-stereoCamera_N.s:
-	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/stereoCamera_N.s
-.PHONY : stereoCamera_N.s
-
-# target to build an object file
-stereoCamera_ver2.o:
-	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/stereoCamera_ver2.o
-.PHONY : stereoCamera_ver2.o
-
-# target to preprocess a source file
-stereoCamera_ver2.i:
-	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/stereoCamera_ver2.i
-.PHONY : stereoCamera_ver2.i
-
-# target to generate assembly for a file
-stereoCamera_ver2.s:
-	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/stereoCamera_ver2.s
-.PHONY : stereoCamera_ver2.s
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 # Help Target
 help:
@@ -228,24 +183,15 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... edit_cache"
-	@echo "... stereoCamera_ver2"
-	@echo "... stereoCamera_90"
-	@echo "... stereoCamera_N"
 	@echo "... rebuild_cache"
-	@echo "... featureDetection"
-	@echo "... featureDetection.o"
-	@echo "... featureDetection.i"
-	@echo "... featureDetection.s"
-	@echo "... stereoCamera_90.o"
-	@echo "... stereoCamera_90.i"
-	@echo "... stereoCamera_90.s"
-	@echo "... stereoCamera_N.o"
-	@echo "... stereoCamera_N.i"
-	@echo "... stereoCamera_N.s"
-	@echo "... stereoCamera_ver2.o"
-	@echo "... stereoCamera_ver2.i"
-	@echo "... stereoCamera_ver2.s"
+	@echo "... edit_cache"
+	@echo "... hStereo"
+	@echo "... calibration.o"
+	@echo "... calibration.i"
+	@echo "... calibration.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 

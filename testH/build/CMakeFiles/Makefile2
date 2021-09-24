@@ -53,10 +53,7 @@ CMAKE_BINARY_DIR = /home/ubuntu/ProjectDesign1/testH/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/stereoCamera_ver2.dir/all
-all: CMakeFiles/stereoCamera_90.dir/all
-all: CMakeFiles/stereoCamera_N.dir/all
-all: CMakeFiles/featureDetection.dir/all
+all: CMakeFiles/hStereo.dir/all
 
 .PHONY : all
 
@@ -66,120 +63,36 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/stereoCamera_ver2.dir/clean
-clean: CMakeFiles/stereoCamera_90.dir/clean
-clean: CMakeFiles/stereoCamera_N.dir/clean
-clean: CMakeFiles/featureDetection.dir/clean
+clean: CMakeFiles/hStereo.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/stereoCamera_ver2.dir
+# Target rules for target CMakeFiles/hStereo.dir
 
 # All Build rule for target.
-CMakeFiles/stereoCamera_ver2.dir/all:
-	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/depend
-	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=7,8 "Built target stereoCamera_ver2"
-.PHONY : CMakeFiles/stereoCamera_ver2.dir/all
+CMakeFiles/hStereo.dir/all:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/depend
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=1,2,3 "Built target hStereo"
+.PHONY : CMakeFiles/hStereo.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/stereoCamera_ver2.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/stereoCamera_ver2.dir/all
+CMakeFiles/hStereo.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 3
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/hStereo.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 0
-.PHONY : CMakeFiles/stereoCamera_ver2.dir/rule
+.PHONY : CMakeFiles/hStereo.dir/rule
 
 # Convenience name for target.
-stereoCamera_ver2: CMakeFiles/stereoCamera_ver2.dir/rule
+hStereo: CMakeFiles/hStereo.dir/rule
 
-.PHONY : stereoCamera_ver2
-
-# clean rule for target.
-CMakeFiles/stereoCamera_ver2.dir/clean:
-	$(MAKE) -f CMakeFiles/stereoCamera_ver2.dir/build.make CMakeFiles/stereoCamera_ver2.dir/clean
-.PHONY : CMakeFiles/stereoCamera_ver2.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/stereoCamera_90.dir
-
-# All Build rule for target.
-CMakeFiles/stereoCamera_90.dir/all:
-	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/depend
-	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=3,4 "Built target stereoCamera_90"
-.PHONY : CMakeFiles/stereoCamera_90.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/stereoCamera_90.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/stereoCamera_90.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 0
-.PHONY : CMakeFiles/stereoCamera_90.dir/rule
-
-# Convenience name for target.
-stereoCamera_90: CMakeFiles/stereoCamera_90.dir/rule
-
-.PHONY : stereoCamera_90
+.PHONY : hStereo
 
 # clean rule for target.
-CMakeFiles/stereoCamera_90.dir/clean:
-	$(MAKE) -f CMakeFiles/stereoCamera_90.dir/build.make CMakeFiles/stereoCamera_90.dir/clean
-.PHONY : CMakeFiles/stereoCamera_90.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/stereoCamera_N.dir
-
-# All Build rule for target.
-CMakeFiles/stereoCamera_N.dir/all:
-	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/depend
-	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=5,6 "Built target stereoCamera_N"
-.PHONY : CMakeFiles/stereoCamera_N.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/stereoCamera_N.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/stereoCamera_N.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 0
-.PHONY : CMakeFiles/stereoCamera_N.dir/rule
-
-# Convenience name for target.
-stereoCamera_N: CMakeFiles/stereoCamera_N.dir/rule
-
-.PHONY : stereoCamera_N
-
-# clean rule for target.
-CMakeFiles/stereoCamera_N.dir/clean:
-	$(MAKE) -f CMakeFiles/stereoCamera_N.dir/build.make CMakeFiles/stereoCamera_N.dir/clean
-.PHONY : CMakeFiles/stereoCamera_N.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/featureDetection.dir
-
-# All Build rule for target.
-CMakeFiles/featureDetection.dir/all:
-	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/depend
-	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=1,2 "Built target featureDetection"
-.PHONY : CMakeFiles/featureDetection.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/featureDetection.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/featureDetection.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 0
-.PHONY : CMakeFiles/featureDetection.dir/rule
-
-# Convenience name for target.
-featureDetection: CMakeFiles/featureDetection.dir/rule
-
-.PHONY : featureDetection
-
-# clean rule for target.
-CMakeFiles/featureDetection.dir/clean:
-	$(MAKE) -f CMakeFiles/featureDetection.dir/build.make CMakeFiles/featureDetection.dir/clean
-.PHONY : CMakeFiles/featureDetection.dir/clean
+CMakeFiles/hStereo.dir/clean:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/clean
+.PHONY : CMakeFiles/hStereo.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
