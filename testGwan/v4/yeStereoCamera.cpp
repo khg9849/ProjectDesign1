@@ -74,7 +74,7 @@ bool Calibration::doCalibration(std::vector<std::string> &imgList){
 	cv::stereoCalibrate(objpoints_left, imgpoints_left, imgpoints_right, cameraMatrix_left, distCoeffs_left, cameraMatrix_right, distCoeffs_right, imgsize, R, T, E, F, cv::CALIB_FIX_PRINCIPAL_POINT, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 1e-6));
 	
 	//save XLM file
-	
+
 	cv::FileStorage fs("calibration.xml", cv::FileStorage::WRITE);
 	if(fs.isOpened()){
 		fs << "image_Size" << imgsize;
