@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<image_Size>
+  640 480</image_Size>
+<CameraMatrix_LEFT type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    4.3707802295420572e+02 0. 3.1950000000000000e+02 0.
+    4.3553183606412802e+02 2.3950000000000000e+02 0. 0. 1.</data></CameraMatrix_LEFT>
+<DistCoefficient_LEFT type_id="opencv-matrix">
+  <rows>1</rows>
+  <cols>5</cols>
+  <dt>d</dt>
+  <data>
+    -4.2503171131963557e-01 2.3975469354988679e-01
+    6.0465897716233674e-03 5.1047696228163734e-03
+    -8.3837785824970742e-02</data></DistCoefficient_LEFT>
+<CameraMatrix_RIGHT type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    4.3509821075530493e+02 0. 3.1950000000000000e+02 0.
+    4.3696586664997250e+02 2.3950000000000000e+02 0. 0. 1.</data></CameraMatrix_RIGHT>
+<DistCoefficient_RIGHT type_id="opencv-matrix">
+  <rows>1</rows>
+  <cols>5</cols>
+  <dt>d</dt>
+  <data>
+    -4.1477833448750001e-01 2.2500830799961175e-01
+    6.6476527040250019e-03 9.6119073596204821e-03
+    -6.5975097317507184e-02</data></DistCoefficient_RIGHT>
+<RotationMatrix type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    9.9996018704330969e-01 2.0309937941276300e-03 8.6890386417188773e-03
+    -2.0078389303104733e-03 9.9999441253314403e-01
+    -2.6727299381001744e-03 -8.6944183899211134e-03
+    2.6551773387670967e-03 9.9995867770731439e-01</data></RotationMatrix>
+<TranslationVector type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>1</cols>
+  <dt>d</dt>
+  <data>
+    -5.7771065404256412e+01 -6.0068392983825991e-01
+    4.4430170190692753e+00</data></TranslationVector>
+<EssentialMatrix type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    1.4143459945035131e-02 -4.4445871162172086e+00
+    -5.8878412359874455e-01 3.9405543159690182e+00
+    1.6241616369074657e-01 5.7807283717947527e+01 7.1665500899915524e-01
+    -5.7769522625009500e+01 1.5962582193972355e-01</data></EssentialMatrix>
+<FundamentalMatrix type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    -9.6312795233676055e-06 3.0373777646211146e-03
+    -5.4913068971962442e-01 -2.6719321420641839e-03
+    -1.1051886551198344e-04 -1.6251910480724796e+01
+    4.3066790106557645e-01 1.6233270189794709e+01 9.9999999999999989e-01</data></FundamentalMatrix>
+<R1 type_id="opencv-matrix">
+  <rows>0</rows>
+  <cols>0</cols>
+  <dt>u</dt>
+  <data></data></R1>
+<R2 type_id="opencv-matrix">
+  <rows>0</rows>
+  <cols>0</cols>
+  <dt>u</dt>
+  <data></data></R2>
+<P1>P2</P1>
+<Q type_id="opencv-matrix">
+  <rows>0</rows>
+  <cols>0</cols>
+  <dt>u</dt>
+  <data></data></Q>
+</opencv_storage>
