@@ -14,5 +14,5 @@ find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 
-add_executable(myProject main.cpp yeStereoCamera.hpp yeStereoCamera.cpp stereo.hpp stereo.cpp)
+add_executable(myProject main.cpp yeStereoCamera.cpp stereo.cpp)
 target_link_libraries(myProject ${OpenCV_LIBS})
