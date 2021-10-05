@@ -1,9 +1,9 @@
 file(REMOVE_RECURSE
   "CMakeFiles/myProject.dir/main.cpp.o"
-  "CMakeFiles/myProject.dir/calib7.cpp.o"
-  "CMakeFiles/myProject.dir/match1.cpp.o"
-  "myProject.pdb"
+  "CMakeFiles/myProject.dir/stereo.cpp.o"
+  "CMakeFiles/myProject.dir/yeStereoCamera.cpp.o"
   "myProject"
+  "myProject.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

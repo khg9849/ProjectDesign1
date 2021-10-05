@@ -1,31 +1,16 @@
-#pragma warning(disable : 4996);
-
-#include <stdio.h>
 #include <iostream>
-#include <vector>
-#include "calibration.h"
-#include "matching.h"
 
+#include "stereo.hpp"
 
 using namespace cv;
 using namespace std;
+using namespace SYE;
 
 int main()
 {
-	// string path = "./resources/CameraDataSet/sCalibration-90/*.jpg";
-	// cb myCB = cb();
-	// myCB.calib(path, "output.xml");
-	// myCB.printCalibResult();
-	// myCB.readCalibResult("output.xml");
+    const char *path = "./resources/CameraDataSet/sCalibration-90/*.jpg";
+    stereo s1;
+    s1.doCalibration(path);
 
-	// path="resources/CameraDataSet/s1625714490-90/1625714490.692858.jpg";
-	 String path2="result_undistorted.jpg";
-
-    // myCB.undistort2(path, path2);
-	stereoMatch(path2, "result_ScoreType_FAST.jpg");
-
-	
-
-
-	return 0;
+    return 0;
 }

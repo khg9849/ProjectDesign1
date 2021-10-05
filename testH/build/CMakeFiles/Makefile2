@@ -74,12 +74,12 @@ clean: CMakeFiles/hStereo.dir/clean
 CMakeFiles/hStereo.dir/all:
 	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/depend
 	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=1,2,3 "Built target hStereo"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=1,2,3,4 "Built target hStereo"
 .PHONY : CMakeFiles/hStereo.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/hStereo.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/hStereo.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 0
 .PHONY : CMakeFiles/hStereo.dir/rule

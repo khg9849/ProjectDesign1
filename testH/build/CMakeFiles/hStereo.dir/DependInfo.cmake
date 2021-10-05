@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ubuntu/ProjectDesign1/testH/calibration.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/hStereo.dir/calibration.cpp.o"
   "/home/ubuntu/ProjectDesign1/testH/main.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/hStereo.dir/main.cpp.o"
+  "/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/hStereo.dir/yeStereoCamera.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

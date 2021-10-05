@@ -51,15 +51,14 @@ using cv::xfeatures2d::SURF;
 using cv::xfeatures2d::DAISY;
 using cv::xfeatures2d::FREAK;
 
-//const double kDistanceCoef = 4.0;
-const double kDistanceCoef = 444.0;
+const double kDistanceCoef = 4.0;
 const int kMaxMatchingSize = 50;
 
 inline void detect_and_compute(string type, Mat& img, vector<KeyPoint>& kpts, Mat& desc) {
     if (type.find("fast") == 0) {
         type = type.substr(4);
         //creat(int threshold = 10, bool nonmaxSuppression = true, FastFreatureDetector::DetectorType type = FastFeatureDetector::TYPE_9_16);
-        Ptr<FastFeatureDetector> detector = FastFeatureDetector::create(100, true);
+        Ptr<FastFeatureDetector> detector = FastFeatureDetector::create(10, true);
         detector->detect(img, kpts);
     }
     if (type.find("blob") == 0) {
@@ -131,17 +130,24 @@ inline void match(string type, Mat& desc1, Mat& desc2, vector<DMatch>& matches) 
     }
 }
 
-inline void findKeyPointsHomography(vector<KeyPoint>& kpts1, vector<KeyPoint>& kpts2,
+inline void findKeyPointsHomography(
+        vector<KeyPoint>& kpts1, vector<KeyPoint>& kpts2,
         vector<DMatch>& matches, vector<char>& match_mask) {
     if (static_cast<int>(match_mask.size()) < 3) {
         return;
     }
     vector<Point2f> pts1;
     vector<Point2f> pts2;
+
+    //how to view Point by using matching
     for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
         pts1.push_back(kpts1[matches[i].queryIdx].pt);
+        cout << kpts1[matches[i].queryIdx].pt << "\n";
         pts2.push_back(kpts2[matches[i].trainIdx].pt);
+        cout << kpts2[matches[i].trainIdx].pt << "\n\n";
     }
+
+
     findHomography(pts1, pts2, cv::RANSAC, 4, match_mask);
 }
 
@@ -155,6 +161,8 @@ int main(int argc, char** argv) {
     //   - path to the object image file
     //   - path to the scene image file
     //
+
+    /*
     if (argc != 5) {
         cerr << "\nError: wrong (you had: " << argc << ") number of arguments (should be 5).\n";
         cerr    << "\nExample 16-2. 2D Feature detectors and 2D Extra Features framework\n\n"
@@ -177,15 +185,22 @@ int main(int argc, char** argv) {
                 << std::endl;
         exit(1);
     }
+    */
 
     string desc_type(argv[1]);
     string match_type(argv[2]);
 
     string img_file1(argv[3]);
-    string img_file2(argv[4]);
+    //string img_file2(argv[4]);
 
-    Mat img1 = cv::imread(img_file1);
-    Mat img2 = cv::imread(img_file2);
+    Mat imgTemp = cv::imread(img_file1);
+
+    Mat img1 = imgTemp(cv::Range::all(), cv::Range(0, imgTemp.cols/2));
+    Mat img2 = imgTemp(cv::Range::all(), cv::Range(imgTemp.cols/2, imgTemp.cols));
+
+
+    //Mat img1 = cv::imread(img_file1);
+    //Mat img2 = cv::imread(img_file2);
 
     if (img1.channels() != 1) {
         cvtColor(img1, img1, cv::COLOR_RGB2GRAY);

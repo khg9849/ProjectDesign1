@@ -9,6 +9,7 @@ ADD_EXECUTABLE(
 	hStereo
 	main.cpp
 	calibration.cpp
+	yeStereoCamera.cpp
 	)
 
 target_include_directories(

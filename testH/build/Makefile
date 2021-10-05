@@ -177,6 +177,33 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+yeStereoCamera.o: yeStereoCamera.cpp.o
+
+.PHONY : yeStereoCamera.o
+
+# target to build an object file
+yeStereoCamera.cpp.o:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/yeStereoCamera.cpp.o
+.PHONY : yeStereoCamera.cpp.o
+
+yeStereoCamera.i: yeStereoCamera.cpp.i
+
+.PHONY : yeStereoCamera.i
+
+# target to preprocess a source file
+yeStereoCamera.cpp.i:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/yeStereoCamera.cpp.i
+.PHONY : yeStereoCamera.cpp.i
+
+yeStereoCamera.s: yeStereoCamera.cpp.s
+
+.PHONY : yeStereoCamera.s
+
+# target to generate assembly for a file
+yeStereoCamera.cpp.s:
+	$(MAKE) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/yeStereoCamera.cpp.s
+.PHONY : yeStereoCamera.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -192,6 +219,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... yeStereoCamera.o"
+	@echo "... yeStereoCamera.i"
+	@echo "... yeStereoCamera.s"
 .PHONY : help
 
 

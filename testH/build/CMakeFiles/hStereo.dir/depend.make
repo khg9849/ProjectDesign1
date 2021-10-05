@@ -217,3 +217,6 @@ CMakeFiles/hStereo.dir/main.cpp.o: /usr/local/include/opencv4/opencv2/video/back
 CMakeFiles/hStereo.dir/main.cpp.o: /usr/local/include/opencv4/opencv2/video/tracking.hpp
 CMakeFiles/hStereo.dir/main.cpp.o: /usr/local/include/opencv4/opencv2/videoio.hpp
 
+CMakeFiles/hStereo.dir/yeStereoCamera.cpp.o: ../includes/yeStereoCamera.hpp
+CMakeFiles/hStereo.dir/yeStereoCamera.cpp.o: ../yeStereoCamera.cpp
+
