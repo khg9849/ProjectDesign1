@@ -7,7 +7,7 @@ bool hwangCalibration::doCalibration(const char *pPath){
 
 	for(int i = 0; i < CHECKERBOARD[1]; i++){
 		for(int j = 0; j < CHECKERBOARD[0]; j++){
-			objp.push_back(cv::Point3f(j*23.6, i*23.6, 0));
+			objp.push_back(cv::Point3f(j*20, i*20, 0));
 		}
 	}
 
@@ -34,6 +34,10 @@ bool hwangCalibration::doCalibration(const char *pPath){
 					imgpoints_right.push_back(corner_pts);
 				}
 			}
+
+			cv::drawChessboardCorners(pic[j], cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, true);
+			cv::imshow("test", pic[j]);
+			cv::waitKey(0);
 		}
 	}
 

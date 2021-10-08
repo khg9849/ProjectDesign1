@@ -28,16 +28,6 @@ string
 calibration.hpp
 /home/ubuntu/ProjectDesign1/testH/calibration.hpp
 
-/home/ubuntu/ProjectDesign1/testH/main.cpp
-calibration.hpp
-/home/ubuntu/ProjectDesign1/testH/calibration.hpp
-
-/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp
-yeStereoCamera.hpp
-/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.hpp
-iostream
--
-
 /usr/local/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp
 /usr/local/include/opencv4/opencv2/opencv2/core.hpp
