@@ -51,8 +51,8 @@ using cv::xfeatures2d::SURF;
 using cv::xfeatures2d::DAISY;
 using cv::xfeatures2d::FREAK;
 
-const double kDistanceCoef = 4.0;
-const int kMaxMatchingSize = 50;
+const double kDistanceCoef = 2.0;
+const int kMaxMatchingSize = 100;
 
 inline void detect_and_compute(string type, Mat& img, vector<KeyPoint>& kpts, Mat& desc) {
     if (type.find("fast") == 0) {
@@ -125,9 +125,9 @@ inline void match(string type, Mat& desc1, Mat& desc2, vector<DMatch>& matches) 
     while (matches.front().distance * kDistanceCoef < matches.back().distance) {
         matches.pop_back();
     }
-    while (matches.size() > kMaxMatchingSize) {
-        matches.pop_back();
-    }
+    //while (matches.size() > kMaxMatchingSize) {
+    //    matches.pop_back();
+    //}
 }
 
 inline void findKeyPointsHomography(
@@ -142,11 +142,10 @@ inline void findKeyPointsHomography(
     //how to view Point by using matching
     for (int i = 0; i < static_cast<int>(matches.size()); ++i) {
         pts1.push_back(kpts1[matches[i].queryIdx].pt);
-        cout << kpts1[matches[i].queryIdx].pt << "\n";
+        //cout << "x : " << kpts1[matches[i].queryIdx].pt.x << "//// y : " << kpts1[matches[i].queryIdx].pt.y << "\n";
         pts2.push_back(kpts2[matches[i].trainIdx].pt);
-        cout << kpts2[matches[i].trainIdx].pt << "\n\n";
+        //cout << "x : " << kpts2[matches[i].trainIdx].pt.x << "//// y : " << kpts2[matches[i].trainIdx].pt.y << "\n\n";
     }
-
 
     findHomography(pts1, pts2, cv::RANSAC, 4, match_mask);
 }
@@ -223,15 +222,39 @@ int main(int argc, char** argv) {
 
     match(match_type, desc1, desc2, matches);
 
-    vector<char> match_mask(matches.size(), 1);
-    findKeyPointsHomography(kpts1, kpts2, matches, match_mask);
+    //vector<char> match_mask(matches.size(), 1);
+    //findKeyPointsHomography(kpts1, kpts2, matches, match_mask);
 
     Mat res;
-    cv::drawMatches(img1, kpts1, img2, kpts2, matches, res, Scalar::all(-1),
-        Scalar::all(-1), match_mask, DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 
-    cv::imshow("result", res);
-    cv::waitKey(0);
+    //cv::drawMatches(img1, kpts1, img2, kpts2, matches, res, Scalar::all(-1),
+    //                Scalar::all(-1), match_mask, DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+
+    //cv::imshow("result", res);
+    //cv::waitKey(0);
+    
+    for(int i = 0; i < matches.size(); i++)
+    {
+        vector<DMatch> one_matchptr;
+        one_matchptr.push_back(matches[i]); //check just one metches points
+        cv::KeyPoint ptrl = kpts1[one_matchptr[0].queryIdx]; //left matches point
+        cv::KeyPoint ptrr = kpts2[one_matchptr[0].trainIdx]; //right matches point
+        
+        //detect correct match point
+        if(ptrl.pt.y - ptrr.pt.y < -30
+        && ptrl.pt.y - ptrr.pt.y > -20) continue;
+
+        printf("%.3f %.3f\n", ptrl.pt.x , ptrl.pt.y);
+        printf("%.3f %.3f\n", ptrr.pt.x , ptrr.pt.y);
+        cout << "x differences : " << ptrl.pt.x - ptrr.pt.x << "\n";
+        cout << "y differences : " << ptrl.pt.y - ptrr.pt.y << "\n\n";
+        
+        cv::drawMatches(img1, kpts1, img2, kpts2, one_matchptr, res, Scalar::all(-1),
+                        Scalar::all(-1), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+        cv::imshow("result", res);
+        cv::waitKey(0);
+
+    }
 
     return 0;
 }
