@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <time.h>
 using namespace std;
 
 int main(){
@@ -13,15 +14,17 @@ int main(){
 	cv::Mat distCoeff_left, cameraMatrix_left;
 	cv::Mat distCoeff_right, cameraMatrix_right;
 
+	cv::Mat T;
+	fsr["translationVector"] >> T;
 	fsr["leftCameraDistCoeff"] >> distCoeff_left;
 	fsr["leftCameraMatrix"] >> cameraMatrix_left;
 	fsr["rightCameraDistCoeff"] >> distCoeff_right;
 	fsr["rightCameraMatrix"] >> cameraMatrix_right;
 
 	ofstream fp;
-	fp.open("40cm_right.txt");
+	//fp.open("40cm_right.txt");
 
-	string path = "../resources/cube/new/40cm_RIGHT.jpg";
+	string path = "../resources/cube/40cm";
 	vector<cv::String> images;
 	cv::glob(path, images);
 
@@ -54,10 +57,12 @@ int main(){
 					vector<cv::DMatch> temp;
 					temp.push_back(matches.at(k).at(m));
 					cv::drawMatches(pic[0], kp[0], pic[1], kp[1], temp, output, cv::Scalar::all(-1), cv::Scalar::all(-1), vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
-					fp<<"pixel difference : " << (int)kp[0].at(temp.at(0).queryIdx).pt.x-(int)kp[1].at(temp.at(0).trainIdx).pt.x << ", z value : ";
-					fp<<60/(-mat2.at<double>(0,0)*(int)(kp[1].at(temp.at(0).trainIdx).pt.x)-mat2.at<double>(0,2)+mat1.at<double>(0,0)*(int)(kp[0].at(temp.at(0).queryIdx).pt.x)+mat1.at<double>(0,2))<<'\n';
-					//cv::imshow("test", output);
-					//cv::waitKey(0);
+					cout<<"pixel difference : " << (int)kp[0].at(temp.at(0).queryIdx).pt.x-(int)kp[1].at(temp.at(0).trainIdx).pt.x << ", z value : ";
+					
+					cout<< -T.at<double>(0,0)/(-mat2.at<double>(0,0)*(int)(kp[1].at(temp.at(0).trainIdx).pt.x)-mat2.at<double>(0,2)+mat1.at<double>(0,0)*(int)(kp[0].at(temp.at(0).queryIdx).pt.x)+mat1.at<double>(0,2))<<'\n';
+
+					cv::imshow("test", output);
+					cv::waitKey(0);
 				}
 			}
 		}

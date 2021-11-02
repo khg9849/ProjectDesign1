@@ -39,13 +39,13 @@
     1.3104950809954944e-02 9.5536900357917642e-04 9.9996708048189908e-01
     -8.0576189146723456e-03 -1.3097672682227161e-02
     8.0694441329415400e-03 9.9988166051873095e-01</data></rotationMatrix>
-<translationVertor type_id="opencv-matrix">
+<translationVector type_id="opencv-matrix">
   <rows>3</rows>
   <cols>1</cols>
   <dt>d</dt>
   <data>
     -6.0114373392532400e+01 -3.4697106064396760e-01
-    6.4335388079150124e-01</data></translationVertor>
+    6.4335388079150124e-01</data></translationVector>
 <essentialMatrix type_id="opencv-matrix">
   <rows>3</rows>
   <cols>3</cols>

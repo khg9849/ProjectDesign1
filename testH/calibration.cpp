@@ -35,9 +35,9 @@ bool hwangCalibration::doCalibration(const char *pPath){
 				}
 			}
 
-			cv::drawChessboardCorners(pic[j], cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, true);
-			cv::imshow("test", pic[j]);
-			cv::waitKey(0);
+			//cv::drawChessboardCorners(pic[j], cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, true);
+			//cv::imshow("test", pic[j]);
+			//cv::waitKey(0);
 		}
 	}
 
@@ -57,7 +57,7 @@ bool hwangCalibration::doCalibration(const char *pPath){
 	fsw << "rightCameraMatrix" << cameraMatrix_right;
 	fsw << "rightCameraDistCoeff" << distCoeffs_right;
 	fsw << "rotationMatrix" << R;
-	fsw << "translationVertor" << T;
+	fsw << "translationVector" << T;
 	fsw << "essentialMatrix" << E;
 	fsw << "fundamentalMatrix" << F;
 	fsw << "rectifyR1" << R1;
