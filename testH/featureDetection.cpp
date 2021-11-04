@@ -4,8 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <time.h>
+//#include <darknet.h>
 using namespace std;
+using namespace cv::dnn::dnn4_v20210608;
 
 int main(){
 	
@@ -43,6 +44,15 @@ int main(){
 		img = cv::imread(images[i]);
 		cv::cvtColor(img, gray, cv::COLOR_RGB2GRAY);
 
+		Net net = readNetFromDarknet("darknet/cfg/yolov4.cfg", "darknet/yolov4.weights");
+		net.setPreferableBackend(DNN_BACKEND_OPENCV);
+		net.setPreferableTarget(DNN_TARGET_CPU);
+		string outputFile = "yolo_out_cpp.avi";
+		string str = parser.get<String>(img);
+		ifstream ifile(str);
+		//Detector yoloDetector("./darknet/cfg/yolov4.cfg", "./darknet/yolov4.weights");
+		//yoloDetector.detect(img, 0.7);
+
 		pic[0] = gray(cv::Range::all(), cv::Range(0, gray.cols/2));
 		pic[1] = gray(cv::Range::all(), cv::Range(gray.cols/2, gray.cols));
 		
@@ -50,7 +60,7 @@ int main(){
 			orb->detectAndCompute(pic[j], cv::Mat(), kp[j], dc[j]);
 		}
 		matcher_orb->radiusMatch(dc[0], dc[1], matches, 25);
-		
+		/*
 		if(matches.size()){
 			for(int k = 0; k < matches.size(); k++){
 				for(int m = 0; m < matches.at(k).size(); m++){
@@ -65,7 +75,7 @@ int main(){
 					cv::waitKey(0);
 				}
 			}
-		}
+		}*/
 	}
 
 	return 0;
