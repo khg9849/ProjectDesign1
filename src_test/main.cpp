@@ -7,8 +7,21 @@ void display3DReCon(cv::Mat image);
 
 int main(int argc, char **argv){
 	
-	image temp = make_image(100,100,100);
-	
+	//TODO : Load image.
+	cv::Mat mat;
+	cv::imshow("test", mat);
+
+	// Call Yolo( detection )
+
+
+	// Feature detecting & matching.
+
+	// 3D reconstruction.
+
+
+	cv::imshow("test", mat);
+	cv::waitKey(0);
+
 
 	return 0;
 }
