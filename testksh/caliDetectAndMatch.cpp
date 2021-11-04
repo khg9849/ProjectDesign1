@@ -22,6 +22,9 @@
 #include <opencv2/core/utility.hpp>
 #include <opencv2/core/ocl.hpp>
 
+#include "darknet.h"
+#include "yolo_v2_class.hpp"
+
 using std::cout;
 using std::cerr;
 using std::vector;
@@ -222,17 +225,49 @@ int main(int argc, char** argv) {
 
     match(match_type, desc1, desc2, matches);
 
-    //vector<char> match_mask(matches.size(), 1);
-    //findKeyPointsHomography(kpts1, kpts2, matches, match_mask);
+    vector<char> match_mask(matches.size(), 1);
+    /*************************************************************************************************************/
+    findKeyPointsHomography(kpts1, kpts2, matches, match_mask);
 
     Mat res;
 
-    //cv::drawMatches(img1, kpts1, img2, kpts2, matches, res, Scalar::all(-1),
-    //                Scalar::all(-1), match_mask, DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+    cv::drawMatches(img1, kpts1, img2, kpts2, matches, res, Scalar::all(-1),
+                    Scalar::all(-1), match_mask, DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 
-    //cv::imshow("result", res);
-    //cv::waitKey(0);
     
+
+    std::string cfg_filepath = "../darknet/cfg/yolov3.cfg";
+    std::string weight_filepath = "../darknet/yolov3.weights";
+
+    Detector* detector = new Detector(cfg_filepath, weight_filepath);
+
+    bbox_t_container cont;
+    
+    //img1;
+    //img2;
+
+    const char *photo_filepath = "./linkFolder/dataset_1014/45cm/WIN_20211014_15_29_30_Pro.jpg";
+
+    //int detectsize = detect_image(photo_filepath, cont);
+    std::vector<bbox_t> detection = detector->detect(photo_filepath);
+    for(size_t i = 0; i < detection.size(); ++i)
+    {
+        cont.candidates[i] = detection[i];
+        printf("check data : %d %d %d %d\n", cont.candidates[i].x, cont.candidates[i].y, cont.candidates[i].w, cont.candidates[i].h);
+        
+        //cv::rectangle(image, left_top point, right_bottom point, color, empty or colored, line type)
+        cv::rectangle(res,
+                    cv::Point(cont.candidates[i].x, cont.candidates[i].y),
+                    cv::Point(cont.candidates[i].x + cont.candidates[i].w, cont.candidates[i].y + cont.candidates[i].h),1,8,0);
+    }
+
+
+    cv::imshow("result", res);
+    cv::waitKey(0);
+
+    //printf("detectsize : %d\n", detectsize);
+    
+    /*
     for(int i = 0; i < matches.size(); i++)
     {
         vector<DMatch> one_matchptr;
