@@ -14,6 +14,10 @@ protected:
 public:
 	YeStereoCamera();
 	//virtual ~YeStereoCamera();
+
+	virtual int doTest(int i) {
+		return i * i;
+	}
 };
 
 }

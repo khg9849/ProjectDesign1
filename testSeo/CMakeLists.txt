@@ -7,10 +7,16 @@ INCLUDE_DIRECTORIES(
 #   ${jsoncpp_INCLUDE_DIR}
 	../src
    ./
+	../../darknet/include
+)
+
+LINK_DIRECTORIES(
+	../../darknet
 )
 
 LIST(APPEND LINK_LIBS
 	${OpenCV_LIBS}
+	darknet
 #   ${CMAKE_THREAD_LIBS_INIT}
 #   ${Jsoncpp_LIBRARY}
 #    mysqlclient
