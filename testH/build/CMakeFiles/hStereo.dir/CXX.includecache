@@ -6,32 +6,18 @@
 
 #IncludeRegexTransform: 
 
-../darknet/include/darknet.h
-stdlib.h
--
-stdio.h
--
-string.h
--
-stdint.h
--
-assert.h
--
-pthread.h
--
-cuda_runtime.h
--
-curand.h
--
-cublas_v2.h
--
-cudnn.h
--
-
-/home/ubuntu/ProjectDesign1/testH/exampleSeo.cpp
-darknet.h
-/home/ubuntu/ProjectDesign1/testH/darknet.h
+/home/ubuntu/ProjectDesign1/testH/featureDetection.cpp
 opencv2/opencv.hpp
+-
+opencv2/features2d.hpp
+-
+opencv2/xfeatures2d.hpp
+-
+iostream
+-
+vector
+-
+fstream
 -
 
 /usr/local/include/opencv4/opencv2/calib3d.hpp
@@ -1043,4 +1029,14 @@ opencv2/imgproc.hpp
 /usr/local/include/opencv4/opencv2/videoio.hpp
 opencv2/core.hpp
 /usr/local/include/opencv4/opencv2/opencv2/core.hpp
+
+/usr/local/include/opencv4/opencv2/xfeatures2d.hpp
+opencv2/features2d.hpp
+/usr/local/include/opencv4/opencv2/opencv2/features2d.hpp
+opencv2/xfeatures2d/nonfree.hpp
+/usr/local/include/opencv4/opencv2/opencv2/xfeatures2d/nonfree.hpp
+
+/usr/local/include/opencv4/opencv2/xfeatures2d/nonfree.hpp
+opencv2/features2d.hpp
+/usr/local/include/opencv4/opencv2/xfeatures2d/opencv2/features2d.hpp
 

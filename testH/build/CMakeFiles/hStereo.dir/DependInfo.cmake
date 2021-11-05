@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/ProjectDesign1/testH/exampleSeo.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/hStereo.dir/exampleSeo.cpp.o"
+  "/home/ubuntu/ProjectDesign1/testH/featureDetection.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/hStereo.dir/featureDetection.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

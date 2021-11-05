@@ -76,27 +76,27 @@ include CMakeFiles/hStereo.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/hStereo.dir/flags.make
 
-CMakeFiles/hStereo.dir/exampleSeo.cpp.o: CMakeFiles/hStereo.dir/flags.make
-CMakeFiles/hStereo.dir/exampleSeo.cpp.o: ../exampleSeo.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/hStereo.dir/exampleSeo.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/hStereo.dir/exampleSeo.cpp.o -c /home/ubuntu/ProjectDesign1/testH/exampleSeo.cpp
+CMakeFiles/hStereo.dir/featureDetection.cpp.o: CMakeFiles/hStereo.dir/flags.make
+CMakeFiles/hStereo.dir/featureDetection.cpp.o: ../featureDetection.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/hStereo.dir/featureDetection.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/hStereo.dir/featureDetection.cpp.o -c /home/ubuntu/ProjectDesign1/testH/featureDetection.cpp
 
-CMakeFiles/hStereo.dir/exampleSeo.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hStereo.dir/exampleSeo.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/ProjectDesign1/testH/exampleSeo.cpp > CMakeFiles/hStereo.dir/exampleSeo.cpp.i
+CMakeFiles/hStereo.dir/featureDetection.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hStereo.dir/featureDetection.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/ProjectDesign1/testH/featureDetection.cpp > CMakeFiles/hStereo.dir/featureDetection.cpp.i
 
-CMakeFiles/hStereo.dir/exampleSeo.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hStereo.dir/exampleSeo.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/ProjectDesign1/testH/exampleSeo.cpp -o CMakeFiles/hStereo.dir/exampleSeo.cpp.s
+CMakeFiles/hStereo.dir/featureDetection.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hStereo.dir/featureDetection.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/ProjectDesign1/testH/featureDetection.cpp -o CMakeFiles/hStereo.dir/featureDetection.cpp.s
 
 # Object files for target hStereo
 hStereo_OBJECTS = \
-"CMakeFiles/hStereo.dir/exampleSeo.cpp.o"
+"CMakeFiles/hStereo.dir/featureDetection.cpp.o"
 
 # External object files for target hStereo
 hStereo_EXTERNAL_OBJECTS =
 
-hStereo: CMakeFiles/hStereo.dir/exampleSeo.cpp.o
+hStereo: CMakeFiles/hStereo.dir/featureDetection.cpp.o
 hStereo: CMakeFiles/hStereo.dir/build.make
 hStereo: CMakeFiles/hStereo.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable hStereo"

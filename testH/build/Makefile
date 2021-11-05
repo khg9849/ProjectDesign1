@@ -142,32 +142,32 @@ hStereo/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/build
 .PHONY : hStereo/fast
 
-exampleSeo.o: exampleSeo.cpp.o
+featureDetection.o: featureDetection.cpp.o
 
-.PHONY : exampleSeo.o
+.PHONY : featureDetection.o
 
 # target to build an object file
-exampleSeo.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/exampleSeo.cpp.o
-.PHONY : exampleSeo.cpp.o
+featureDetection.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/featureDetection.cpp.o
+.PHONY : featureDetection.cpp.o
 
-exampleSeo.i: exampleSeo.cpp.i
+featureDetection.i: featureDetection.cpp.i
 
-.PHONY : exampleSeo.i
+.PHONY : featureDetection.i
 
 # target to preprocess a source file
-exampleSeo.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/exampleSeo.cpp.i
-.PHONY : exampleSeo.cpp.i
+featureDetection.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/featureDetection.cpp.i
+.PHONY : featureDetection.cpp.i
 
-exampleSeo.s: exampleSeo.cpp.s
+featureDetection.s: featureDetection.cpp.s
 
-.PHONY : exampleSeo.s
+.PHONY : featureDetection.s
 
 # target to generate assembly for a file
-exampleSeo.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/exampleSeo.cpp.s
-.PHONY : exampleSeo.cpp.s
+featureDetection.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/featureDetection.cpp.s
+.PHONY : featureDetection.cpp.s
 
 # Help Target
 help:
@@ -178,9 +178,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... hStereo"
-	@echo "... exampleSeo.o"
-	@echo "... exampleSeo.i"
-	@echo "... exampleSeo.s"
+	@echo "... featureDetection.o"
+	@echo "... featureDetection.i"
+	@echo "... featureDetection.s"
 .PHONY : help
 
 

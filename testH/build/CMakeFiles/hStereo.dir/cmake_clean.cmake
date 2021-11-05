@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/hStereo.dir/exampleSeo.cpp.o"
+  "CMakeFiles/hStereo.dir/featureDetection.cpp.o"
   "hStereo"
   "hStereo.pdb"
 )

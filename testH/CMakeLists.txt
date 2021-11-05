@@ -7,8 +7,7 @@ project(
 
 ADD_EXECUTABLE(
 	hStereo
-	#	featureDetection.cpp
-	exampleSeo.cpp
+	featureDetection.cpp
 	)
 
 target_include_directories(
