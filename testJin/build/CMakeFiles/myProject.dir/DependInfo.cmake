@@ -1,18 +1,14 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CXX"
   )
-# The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/jessie/develop/works/ProjectDesign1/testJin/main.cpp" "/home/jessie/develop/works/ProjectDesign1/testJin/build/CMakeFiles/myProject.dir/main.cpp.o"
-  "/home/jessie/develop/works/ProjectDesign1/testJin/stereo.cpp" "/home/jessie/develop/works/ProjectDesign1/testJin/build/CMakeFiles/myProject.dir/stereo.cpp.o"
-  "/home/jessie/develop/works/ProjectDesign1/testJin/yeStereoCamera.cpp" "/home/jessie/develop/works/ProjectDesign1/testJin/build/CMakeFiles/myProject.dir/yeStereoCamera.cpp.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
 
-# The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/usr/local/include/opencv4"
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/swedu/6027/ProjectDesign1/testJin/diplay3dReCon.cpp" "CMakeFiles/myProject.dir/diplay3dReCon.cpp.o" "gcc" "CMakeFiles/myProject.dir/diplay3dReCon.cpp.o.d"
   )
 
 # Targets to which this target links.

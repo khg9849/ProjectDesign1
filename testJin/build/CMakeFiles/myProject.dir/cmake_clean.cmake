@@ -1,7 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/myProject.dir/main.cpp.o"
-  "CMakeFiles/myProject.dir/stereo.cpp.o"
-  "CMakeFiles/myProject.dir/yeStereoCamera.cpp.o"
+  "CMakeFiles/myProject.dir/diplay3dReCon.cpp.o"
+  "CMakeFiles/myProject.dir/diplay3dReCon.cpp.o.d"
   "myProject"
   "myProject.pdb"
 )
