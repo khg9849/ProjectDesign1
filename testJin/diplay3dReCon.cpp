@@ -88,7 +88,8 @@ int main(int argc, char** argv)
     }
 
     //! [load_views]
-    VideoCapture video("../resources/dataset_1104/WIN_20211104_15_51_04_Pro.mp4");
+    
+    VideoCapture video("../darknet/data/WIN_20211104_15_51_04_Pro.mp4");
     
 
     float videoFPS = video.get(CAP_PROP_FPS);
@@ -105,6 +106,7 @@ int main(int argc, char** argv)
         cout << "Can't write video" << endl;
         return 0;
     }
+
 
     Mat frame;
     vector<cv::String> images;	

@@ -12,7 +12,6 @@ set(CMAKE_C_COMPILER "g++")
 # header file, package
 find_package(OpenCV REQUIRED)
 
-
 include_directories(
     ${OpenCV_INCLUDE_DIRS} 
     ${CMAKE_SOURCE_DIR}/darknet/include
