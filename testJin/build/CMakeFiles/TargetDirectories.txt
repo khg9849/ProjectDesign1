@@ -1,3 +1,0 @@
-/home/swedu/6027/ProjectDesign1/testJin/build/CMakeFiles/myProject.dir
-/home/swedu/6027/ProjectDesign1/testJin/build/CMakeFiles/edit_cache.dir
-/home/swedu/6027/ProjectDesign1/testJin/build/CMakeFiles/rebuild_cache.dir
