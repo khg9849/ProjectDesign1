@@ -1,30 +1,18 @@
 cmake_minimum_required(VERSION 3.2)
+
 project(projKSH)
 find_package(OpenCV REQUIRED)
 
 include_directories(
 	${OpenCV_INCLUDE_DIRS}
+	${CMAKE_SOURCE_DIR}/../darknet/include
 	../src
 	./
 )
 
-LIST(APPEND LINK_LIBS
+link_libraries(
 	${OpenCV_LIBS}
+	${CMAKE_SOURCE_DIR}/../darknet/libdarknet.so
 )
 
-#file(GLOB SOURCEFILES
-#	../src/*.cpp
-#)
-
-#ADD_LIBRARY(libName SHARED ${SOURCEFILES})
-#TARGET_LINK_LIBRARIES(libName ${LINK_LIBS})
-
-ADD_EXECUTABLE(caliParam caliParam.cpp)
-ADD_EXECUTABLE(caliPic caliPic.cpp)
-ADD_EXECUTABLE(caliDetectAndMatch caliDetectAndMatch.cpp)
-ADD_EXECUTABLE(testKSH testKSH.cpp yeStereoCamera.cpp)
-
-target_link_libraries(caliParam ${OpenCV_LIBS})
-target_link_libraries(caliPic ${OpenCV_LIBS})
-target_link_libraries(caliDetectAndMatch ${OpenCV_LIBS})
-target_link_libraries(testKSH ${OpenCV_LIBS})
+ADD_EXECUTABLE(caliDetectAndMatch caliDetectAndMatch.cpp CallYolo.cpp)
