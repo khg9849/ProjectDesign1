@@ -15,4 +15,4 @@ link_libraries(
 	${CMAKE_SOURCE_DIR}/../darknet/libdarknet.so
 )
 
-ADD_EXECUTABLE(caliDetectAndMatch caliDetectAndMatch.cpp)
+ADD_EXECUTABLE(caliDetectAndMatch caliDetectAndMatch.cpp CallYolo.cpp)

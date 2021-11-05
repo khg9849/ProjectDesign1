@@ -24,6 +24,7 @@
 
 #include "darknet.h"
 #include "yolo_v2_class.hpp"
+#include "CallYolo.h"
 
 using std::cout;
 using std::cerr;
@@ -125,6 +126,8 @@ inline void match(string type, Mat& desc1, Mat& desc2, vector<DMatch>& matches) 
         }
     }
     std::sort(matches.begin(), matches.end());
+    
+    /*ignore unuseful matching point */
     while (matches.front().distance * kDistanceCoef < matches.back().distance) {
         matches.pop_back();
     }
@@ -212,6 +215,7 @@ int main(int argc, char** argv) {
         cvtColor(img2, img2, cv::COLOR_RGB2GRAY);
     }
 
+    
     vector<KeyPoint> kpts1;
     vector<KeyPoint> kpts2;
 
@@ -226,7 +230,8 @@ int main(int argc, char** argv) {
     match(match_type, desc1, desc2, matches);
 
     vector<char> match_mask(matches.size(), 1);
-    /*************************************************************************************************************/
+
+    /*Homography*/
     findKeyPointsHomography(kpts1, kpts2, matches, match_mask);
 
     Mat res;
@@ -235,7 +240,7 @@ int main(int argc, char** argv) {
                     Scalar::all(-1), match_mask, DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 
     
-
+/* using yolo api
     std::string cfg_filepath = "../darknet/cfg/yolov3.cfg";
     std::string weight_filepath = "../darknet/yolov3.weights";
 
@@ -243,9 +248,6 @@ int main(int argc, char** argv) {
 
     bbox_t_container cont;
     
-    //img1;
-    //img2;
-
     const char *photo_filepath = "./linkFolder/dataset_1014/45cm/WIN_20211014_15_29_30_Pro.jpg";
 
     //int detectsize = detect_image(photo_filepath, cont);
@@ -261,6 +263,25 @@ int main(int argc, char** argv) {
                     cv::Point(cont.candidates[i].x + cont.candidates[i].w, cont.candidates[i].y + cont.candidates[i].h),1,8,0);
     }
 
+*/
+    std::string cfg_filepath = "../darknet/cfg/yolov3.cfg";
+    std::string weight_filepath = "../darknet/yolov3.weights";
+    const char *photo_filepath = "./linkFolder/dataset_1014/45cm/WIN_20211014_15_29_30_Pro.jpg";
+    //std::string photo_filepath = "./linkFolder/dataset_1014/45cm/WIN_20211014_15_29_30_Pro.jpg";
+    
+
+    CallYolo *callYolo = new CallYolo();
+    callYolo->init(cfg_filepath, weight_filepath);
+    callYolo->setPhoto(photo_filepath);
+    bbox_t_container cont = callYolo->getCont();
+    size_t contsize = callYolo->getContSize();
+
+    for(int i = 1; i <= contsize; i++){
+        printf("detect siez is : %ld\n", contsize);
+        cv::rectangle(res,
+            cv::Point(cont.candidates[i].x, cont.candidates[i].y),
+            cv::Point(cont.candidates[i].x + cont.candidates[i].w, cont.candidates[i].y + cont.candidates[i].h),1,8,0);
+    }
 
     cv::imshow("result", res);
     cv::waitKey(0);
@@ -278,7 +299,7 @@ int main(int argc, char** argv) {
         //detect correct match point
         if(ptrl.pt.y - ptrr.pt.y < -30
         && ptrl.pt.y - ptrr.pt.y > -20) continue;
-
+        
         printf("%.3f %.3f\n", ptrl.pt.x , ptrl.pt.y);
         printf("%.3f %.3f\n", ptrr.pt.x , ptrr.pt.y);
         cout << "x differences : " << ptrl.pt.x - ptrr.pt.x << "\n";
@@ -288,8 +309,7 @@ int main(int argc, char** argv) {
                         Scalar::all(-1), vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
         cv::imshow("result", res);
         cv::waitKey(0);
-
-    }
+    }*/
 
     return 0;
 }
