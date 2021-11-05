@@ -24,5 +24,7 @@ link_libraries(
 	${CMAKE_SOURCE_DIR}/darknet/libdarknet.so
 )
 
-add_executable(${PROJECT_NAME} diplay3dReCon.cpp)
+add_executable(${PROJECT_NAME} diplay3dReConTest.cpp)
+
+#add_executable(${PROJECT_NAME} diplay3dReCon.cpp)
 #add_executable(${PROJECT_NAME} main.cpp CallYolo.cpp)
