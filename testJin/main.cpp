@@ -7,7 +7,8 @@
 
 #define CHAIR 56
 #define MONITER 62
-#define THRESHOLD 0.8
+#define CONTROLLER 67
+#define THRESHOLD 0.9
 
 void callYolo(cv::Mat image);
 void display3DReCon(cv::Mat image);
@@ -18,24 +19,27 @@ bbox_t_container readCont(char *filepath, int *contsize);
 
 int main(int argc, char **argv)
 {
-
-	std::string photopath = "../resources/anotherImg.jpg";
 	std::string cfgpath = "../darknet/cfg/yolov4.cfg";
 	std::string weightspath = "../darknet/yolov4.weights";
 	bbox_t_container cont;
 	int contsize;
 
-	CallYolo *yolo = new CallYolo();
-	yolo->init(cfgpath, weightspath);
-	yolo->setPhoto(photopath);
-	cont = yolo->getCont();
-	contsize = (int)yolo->getContSize();
+	std::string photopath = "../resources/135cm/135cm_1.jpg";
+	std::string detectedpath="../resources/135cm/135cm_detected.jpg";
+	char *contpath = "../cont135.txt";
 
+	// CallYolo *yolo = new CallYolo();
+	// yolo->init(cfgpath, weightspath);
+	// yolo->setPhoto(photopath);
+	// cont = yolo->getCont();
+	// contsize = (int)yolo->getContSize();
+	// bool isContSaved = saveCont(contpath, cont, contsize);
+	
+	cont=readCont(contpath,&contsize);
+	
 	cv::Mat src = cv::imread(photopath);
-	char *contpath = "../cont2.txt";
-	bool isContSaved = saveCont(contpath, cont, contsize);
-	//cont=readCont(contpath,&contsize);
 	cv::Mat detected = cropDetection(cont, contsize, src);
+	cv::imwrite(detectedpath, detected);
 
 	return 0;
 }
@@ -50,6 +54,10 @@ cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src)
 	int lx = src.cols, ly = 0;
 	int rx = 0, ry = 0;
 
+
+	cv::Mat mask = cv::Mat::zeros(res.size(), CV_8U);  
+	cv::Mat masked = cv::Mat::zeros(res.size(), CV_8U); 
+
 	for (int i = 0; i < contsize; i++)
 	{
 		int cx = cont.candidates[i].x;
@@ -59,9 +67,10 @@ cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src)
 
 		printf("obj_id, cx, cy, cw, ch, prob = (%d, %d,%d,%d,%d,%lf)\n", cont.candidates[i].obj_id, cx, cy, cw, ch, cont.candidates[i].prob);
 
-		cv::rectangle(res, cv::Point(cx, cy), cv::Point(cx + cw, cx + ch), 1, 8, 0);
-
-		if (cont.candidates[i].obj_id == 1 && cont.candidates[i].prob >= THRESHOLD)
+		cv::rectangle(res, cv::Point(cx, cy), cv::Point(cx + cw, cy + ch), 1, 8, 0);
+		cv::imshow("continue...",res);
+		cv::waitKey(0);
+		if (cont.candidates[i].obj_id == CHAIR && cont.candidates[i].prob >= THRESHOLD)
 		{
 			if (cx < lx)
 			{
@@ -75,15 +84,22 @@ cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src)
 			}
 			wmax = std::max(wmax, cw);
 			hmax = std::max(hmax, ch);
+
+			cv::rectangle(mask,cv::Rect(cx,cy,cw,ch),cv::Scalar(255),-1,8,0);
 		}
 	}
 
 	croptedImg[0] = src(cv::Rect(lx, ly, wmax, hmax));
 	croptedImg[1] = src(cv::Rect(rx, ry, wmax, hmax));
 	hconcat(croptedImg[0], croptedImg[1], detected);
+	
 
-	cv::imwrite("../resources/detected.jpg", detected);
-	printf("../resources/detected.jpg is saved\n");
+	// src.copyTo(masked,mask);
+	// cv::imshow("result",res);
+	// cv::imshow("masked",masked);
+	// cv::imwrite("../resources/45cm_masked.jpg", masked);
+	// printf("../resources/masked.jpg is saved\n");
+	
 	return detected;
 }
 

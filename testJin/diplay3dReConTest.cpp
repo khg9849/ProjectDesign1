@@ -13,7 +13,7 @@ using namespace cv;
 using namespace cv::ximgproc;
 using namespace std;
 
-
+#define DEBUG 1
 
 const String keys =
     "{help h usage ? |                  | print this message                                                }"
@@ -25,10 +25,10 @@ const String keys =
     "{algorithm      |bm                | stereo matching method (bm or sgbm)                               }"
     "{filter         |wls_conf          | used post-filtering (wls_conf or wls_no_conf or fbs_conf)         }"
     "{no-display     |                  | don't display results                                             }"
-    "{no-downscale   |                  | force stereo matching on full-sized views to improve quality      }"
+    "{no-downscale   |1                 | force stereo matching on full-sized views to improve quality      }"
     "{dst_conf_path  |None              | optional path to save the confidence map used in filtering        }"
-    "{vis_mult       |1.0               | coefficient used to scale disparity map visualizations            }"
-    "{max_disparity  |32                | parameter of stereo matching                                      }"
+    "{vis_mult       |5.0               | coefficient used to scale disparity map visualizations            }"
+    "{max_disparity  |16                | parameter of stereo matching                                      }"
     "{window_size    |-1                | parameter of stereo matching                                      }"
     "{wls_lambda     |8000.0            | parameter of wls post-filtering                                   }"
     "{wls_sigma      |1.5               | parameter of wls post-filtering                                   }"
@@ -59,22 +59,33 @@ int main(int argc, char** argv)
     vector<cv::String> images;	
 
     // load 2 images
-	string path = "../resources";
+	string path = "../resources/45cm";
     glob(path, images);		
     
 	// cout << "로드한 이미지 개수 : " << images.size() << endl;
 	// if (images.size() == 0)
 	// 	cout << "이미지가 존재하지 않음! \n" << endl;
+    
     Mat srcImg=imread(images[0]);
     Mat detectedImg=imread(images[1]);
-    double elapsed1,elapsed2;
-    double difference;
+    // Mat maskedImg=imread(images[i+2]);
 
-    for(int i = 0;i < images.size();i++){
+    double elapsed1,elapsed2,elapsed3;
+    double diff=0;
+    double sum=0;
+    int epoch=300;
+    double avg=0;
+
+    for(int i = 0;i < epoch;i++){
         elapsed1=test3dReCon(srcImg);
         elapsed2=test3dReCon(detectedImg);
-
+      //  elapsed3=test3dReCon(maskedImg);
+        diff=elapsed1-elapsed2;
+        printf("[%d] difference: %lf\n",i,diff);
+        sum+=(diff);
     }
+    avg=sum/epoch;
+    printf("avg is %lf\n",avg);
 }
 
 
@@ -154,9 +165,11 @@ double test3dReCon(Mat frame){
         //video >> frame;
         Mat left  = frame(Range::all(), Range(0, frame.cols/2));
         Mat right = frame(Range::all(), Range(frame.cols/2, frame.cols));
+    #if DEBUG
         namedWindow("origin", WINDOW_AUTOSIZE);
         imshow("origin", frame);
         waitKey(0);
+    #endif
         //! [load_views]
 
         bool noGT;
@@ -427,12 +440,13 @@ double test3dReCon(Mat frame){
         }
 
         //collect and print all the stats:
+    #if DEBUG
         cout.precision(2);
         cout<<"Matching time:  "<<matching_time<<"s"<<endl;
         cout<<"Filtering time: "<<filtering_time<<"s"<<endl;
         cout<<"Solving time: "<<solving_time<<"s"<<endl;
         cout<<endl;
-
+#endif
         double MSE_before,percent_bad_before,MSE_after,percent_bad_after;
         if(!noGT)
         {
@@ -489,10 +503,11 @@ double test3dReCon(Mat frame){
             //imshow("raw disparity", raw_disp_vis);
             Mat filtered_disp_vis;
             getDisparityVis(filtered_disp,filtered_disp_vis,vis_mult);
+#if DEBUG
             namedWindow("filtered disparity", WINDOW_AUTOSIZE);
             imshow("filtered disparity", filtered_disp_vis);
             waitKey(0);
-
+#endif
             if(!solved_disp.empty())
             {
                 Mat solved_disp_vis;
@@ -519,7 +534,7 @@ double test3dReCon(Mat frame){
             }*/
             //! [visualization]
         }
-    return 0;
+    return matching_time+solving_time;
 }
 
 Rect computeROI(Size2i src_sz, Ptr<StereoMatcher> matcher_instance)
