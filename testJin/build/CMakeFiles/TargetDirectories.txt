@@ -1,3 +1,0 @@
-/home/jessie/develop/works/ProjectDesign1/testJin/build/CMakeFiles/rebuild_cache.dir
-/home/jessie/develop/works/ProjectDesign1/testJin/build/CMakeFiles/edit_cache.dir
-/home/jessie/develop/works/ProjectDesign1/testJin/build/CMakeFiles/myProject.dir

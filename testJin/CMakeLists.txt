@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.8)
 
 #project info
 project(myProject)
@@ -11,8 +11,18 @@ set(CMAKE_C_COMPILER "g++")
 
 # header file, package
 find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
 
+include_directories(
+    ${OpenCV_INCLUDE_DIRS} 
+    ${CMAKE_SOURCE_DIR}/darknet/include
+	../src
+	./
+) #header
 
-add_executable(myProject main.cpp yeStereoCamera.cpp stereo.cpp)
-target_link_libraries(myProject ${OpenCV_LIBS})
+link_libraries(
+	${OpenCV_LIBS}
+	${CMAKE_SOURCE_DIR}/darknet/libdarknet.so
+)
+
+add_executable(${PROJECT_NAME} main.cpp CallYolo.cpp Display3DReCon.cpp calib7.cpp)
+add_executable(calibrate calibTest.cpp calib7.cpp)
