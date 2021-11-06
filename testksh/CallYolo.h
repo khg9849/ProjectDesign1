@@ -13,6 +13,7 @@ private:
 
 public:
     CallYolo();
+    ~CallYolo();
 
     void init(std::string _cfg, std::string _weight);
     void setPhoto(std::string);
