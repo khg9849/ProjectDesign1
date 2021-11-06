@@ -6,36 +6,18 @@
 
 #IncludeRegexTransform: 
 
-../includes/calibration.hpp
-yeStereoCamera.hpp
-../includes/yeStereoCamera.hpp
+/home/ubuntu/ProjectDesign1/testH/featureDetection.cpp
 opencv2/opencv.hpp
 -
-opencv2/calib3d/calib3d_c.h
+opencv2/features2d.hpp
+-
+opencv2/xfeatures2d.hpp
 -
 iostream
 -
 vector
 -
-
-../includes/yeStereoCamera.hpp
-vector
--
-string
--
-
-/home/ubuntu/ProjectDesign1/testH/calibration.cpp
-calibration.hpp
-/home/ubuntu/ProjectDesign1/testH/calibration.hpp
-
-/home/ubuntu/ProjectDesign1/testH/main.cpp
-calibration.hpp
-/home/ubuntu/ProjectDesign1/testH/calibration.hpp
-
-/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp
-yeStereoCamera.hpp
-/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.hpp
-iostream
+fstream
 -
 
 /usr/local/include/opencv4/opencv2/calib3d.hpp
@@ -45,10 +27,6 @@ opencv2/features2d.hpp
 /usr/local/include/opencv4/opencv2/opencv2/features2d.hpp
 opencv2/core/affine.hpp
 /usr/local/include/opencv4/opencv2/opencv2/core/affine.hpp
-
-/usr/local/include/opencv4/opencv2/calib3d/calib3d_c.h
-opencv2/core/types_c.h
-/usr/local/include/opencv4/opencv2/calib3d/opencv2/core/types_c.h
 
 /usr/local/include/opencv4/opencv2/core.hpp
 opencv2/core/cvdef.h
@@ -365,24 +343,6 @@ opencv2/core/cvstd.hpp
 /usr/local/include/opencv4/opencv2/core/opencv2/core/cvstd.hpp
 opencv2/core/matx.hpp
 /usr/local/include/opencv4/opencv2/core/opencv2/core/matx.hpp
-
-/usr/local/include/opencv4/opencv2/core/types_c.h
-ipl.h
--
-ipl/ipl.h
--
-opencv2/core/cvdef.h
-/usr/local/include/opencv4/opencv2/core/opencv2/core/cvdef.h
-assert.h
--
-stdlib.h
--
-string.h
--
-float.h
--
-opencv2/core.hpp
-/usr/local/include/opencv4/opencv2/core/opencv2/core.hpp
 
 /usr/local/include/opencv4/opencv2/core/utility.hpp
 opencv2/core.hpp
@@ -1069,4 +1029,14 @@ opencv2/imgproc.hpp
 /usr/local/include/opencv4/opencv2/videoio.hpp
 opencv2/core.hpp
 /usr/local/include/opencv4/opencv2/opencv2/core.hpp
+
+/usr/local/include/opencv4/opencv2/xfeatures2d.hpp
+opencv2/features2d.hpp
+/usr/local/include/opencv4/opencv2/opencv2/features2d.hpp
+opencv2/xfeatures2d/nonfree.hpp
+/usr/local/include/opencv4/opencv2/opencv2/xfeatures2d/nonfree.hpp
+
+/usr/local/include/opencv4/opencv2/xfeatures2d/nonfree.hpp
+opencv2/features2d.hpp
+/usr/local/include/opencv4/opencv2/xfeatures2d/opencv2/features2d.hpp
 

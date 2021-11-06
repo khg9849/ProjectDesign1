@@ -7,9 +7,7 @@ project(
 
 ADD_EXECUTABLE(
 	hStereo
-	main.cpp
-	calibration.cpp
-	yeStereoCamera.cpp
+	featureDetection.cpp
 	)
 
 target_include_directories(
@@ -17,9 +15,11 @@ target_include_directories(
 PUBLIC
 	${CMAKE_SOURCE_DIR}/includes
 	${OPENCV_INCLUDE_DIRS}
+	${CMAKE_SOURCE_DIR}/darknet/include
 	)
 
 target_link_libraries(
 	hStereo
 	${OPENCV_LIBRARIES}
+	${CMAKE_SOURCE_DIR}/darknet
 	)
