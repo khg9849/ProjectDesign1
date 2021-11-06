@@ -24,4 +24,5 @@ link_libraries(
 	${CMAKE_SOURCE_DIR}/darknet/libdarknet.so
 )
 
-add_executable(${PROJECT_NAME} main.cpp CallYolo.cpp Display3DReCon.cpp)
+add_executable(${PROJECT_NAME} main.cpp CallYolo.cpp Display3DReCon.cpp calib7.cpp)
+add_executable(calibrate calibTest.cpp calib7.cpp)

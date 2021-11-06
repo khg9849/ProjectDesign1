@@ -7,21 +7,24 @@
 #include "CallYolo.h"
 #include "Display3DReCon.h"
 
+#include "calibration.h"
+
+#define BICYCLE 1
 #define CHAIR 56
 #define MONITER 62
 #define CONTROLLER 67
 #define THRESHOLD 0.9
 
-#define EPOCH 10
+#define EPOCH 300
 
 //void callYolo(cv::Mat image);
 //void display3DReCon(cv::Mat image);
 
-cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src);
+cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src, int object);
 bool saveCont(char *filepath, bbox_t_container cont, int contsize);
 bbox_t_container readCont(char *filepath, int *contsize);
 
-#define DEBUG 1
+#define DEBUG 0
 
 const String keys =
     "{help h usage ? |                  | print this message                                                }"
@@ -30,13 +33,13 @@ const String keys =
     "{GT             |./aloeGT.png| optional ground-truth disparity (MPI-Sintel or Middlebury format) }"
     "{dst_path       |None              | optional path to save the resulting filtered disparity map        }"
     "{dst_raw_path   |None              | optional path to save raw disparity map before filtering          }"
-    "{algorithm      |bm                | stereo matching method (bm or sgbm)                               }"
+    "{algorithm      |sgbm                | stereo matching method (bm or sgbm)                               }"
     "{filter         |wls_conf          | used post-filtering (wls_conf or wls_no_conf or fbs_conf)         }"
-    "{no-display     |                  | don't display results                                             }"
-    "{no-downscale   |                  | force stereo matching on full-sized views to improve quality      }"
+    "{no-display     |1                  | don't display results                                             }"
+    "{no-downscale   |1                 | force stereo matching on full-sized views to improve quality      }"
     "{dst_conf_path  |None              | optional path to save the confidence map used in filtering        }"
-    "{vis_mult       |1.0               | coefficient used to scale disparity map visualizations            }"
-    "{max_disparity  |16                | parameter of stereo matching                                      }"
+    "{vis_mult       |5.0               | coefficient used to scale disparity map visualizations            }"
+    "{max_disparity  |32                | parameter of stereo matching                                      }"
     "{window_size    |-1                | parameter of stereo matching                                      }"
     "{wls_lambda     |8000.0            | parameter of wls post-filtering                                   }"
     "{wls_sigma      |1.5               | parameter of wls post-filtering                                   }"
@@ -49,10 +52,26 @@ const String keys =
 
 int main(int argc, char **argv)
 {
+	cb myCB = cb();
+	std::string path1 = "../resources/calib_data/*.jpg";
+	std::string path2="../calibration.xml";
+
+    //myCB.calib(path1, path2);
+	//myCB.readCalibResult(path2);
+
+//	cv::Mat T = myCB.T;
+//	float baseline = T.at<float>(0,0);
+//	if(baseline<0) baseline*-1;
+//	cout<<"baseline is "<<baseline<<'\n';
+
 	std::string cfgpath = "../darknet/cfg/yolov4.cfg";
 	std::string weightspath = "../darknet/yolov4.weights";
 	bbox_t_container cont;
 	int contsize;
+
+	// std::string photopath = "../resources/testImg_1.jpg";
+	// std::string detectedpath="../resources/testImg_detected.jpg";
+	// char *contpath = "../cont2.txt";
 
 	std::string photopath = "../resources/135cm/135cm_1.jpg";
 	std::string detectedpath="../resources/135cm/135cm_detected.jpg";
@@ -68,7 +87,7 @@ int main(int argc, char **argv)
 	cont=readCont(contpath,&contsize);
 	
 	cv::Mat srcImg = cv::imread(photopath);
-	cv::Mat detectedImg = cropDetection(cont, contsize, srcImg);
+	cv::Mat detectedImg = cropDetection(cont, contsize, srcImg,CHAIR);
 	cv::imshow("srcImg",srcImg);
 	cv::imshow("detectedImg",detectedImg);
 	cv::imwrite(detectedpath, detectedImg);
@@ -94,16 +113,14 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src)
+cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src, int object)
 {
 	cv::Mat res = src.clone();
 	cv::Mat detected;
 	cv::Mat croptedImg[2];
 
-	int wmax = 0, hmax = 0;
-	int lx = src.cols, ly = 0;
-	int rx = 0, ry = 0;
-
+	int lx = src.cols,ly,lw,lh;
+	int rx=0,ry,rw,rh;
 
 	cv::Mat mask = cv::Mat::zeros(res.size(), CV_8U);  
 	cv::Mat masked = cv::Mat::zeros(res.size(), CV_8U); 
@@ -121,25 +138,33 @@ cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src)
 		cv::imshow("making boxes...",res);
 		cv::waitKey(0);
 #endif
-		if (cont.candidates[i].obj_id == CHAIR && cont.candidates[i].prob >= THRESHOLD)
+		if (cont.candidates[i].obj_id == object && cont.candidates[i].prob >= THRESHOLD)
 		{
-			if (cx < lx)
-			{
-				lx = cx;
-				ly = cy;
+			if(cx<lx){
+				lx=cx;
+				ly=cy;
+				lw=cw;
+				lh=ch;
 			}
-			if (cx > rx)
-			{
-				rx = cx;
-				ry = cy;
+			if(cx>rx){
+				rx=cx;
+				ry=cy;
+				rw=cw;
+				rh=ch;
 			}
-			wmax = std::max(wmax, cw);
-			hmax = std::max(hmax, ch);
 		}
 	}
+	int rx2=rx-src.cols/2;
+	int nx,ny,nw,nh;
+	nx=min(lx,rx2);
+	ny=min(ly,ry);
+	nw=max(lx+lw,rx2+rw)-nx;
+	nh=max(ly+lh,ry+rh)-ny;
 
-	croptedImg[0] = src(cv::Rect(lx, ly, wmax, hmax));
-	croptedImg[1] = src(cv::Rect(rx, ry, wmax, hmax));
+	printf("(nx,ny,nw,nh) = (%d,%d,%d,%d)\n",nx,ny,nw,nh);
+
+	croptedImg[0] = src(cv::Rect(nx, ny, nw, nh));
+	croptedImg[1] = src(cv::Rect(nx+src.cols/2, ny, nw, nh));
 	hconcat(croptedImg[0], croptedImg[1], detected);
 	
 	return detected;

@@ -81,11 +81,11 @@ double Display3DReCon::test3dReCon(Mat frame){
         //video >> frame;
         Mat left  = frame(Range::all(), Range(0, frame.cols/2));
         Mat right = frame(Range::all(), Range(frame.cols/2, frame.cols));
-    #if DEBUG
-        namedWindow("origin", WINDOW_AUTOSIZE);
-        imshow("origin", frame);
-        waitKey(0);
-    #endif
+
+        // namedWindow("origin", WINDOW_AUTOSIZE);
+        // imshow("origin", frame);
+        // waitKey(0);
+
         //! [load_views]
 
         bool noGT;
@@ -319,6 +319,8 @@ double Display3DReCon::test3dReCon(Mat frame){
                 matching_time = (double)getTickCount();
                 matcher->compute(left_for_matcher,right_for_matcher,left_disp);
                 matching_time = ((double)getTickCount() - matching_time)/getTickFrequency();
+
+                
             }
             else if(algo=="sgbm")
             {
@@ -348,6 +350,8 @@ double Display3DReCon::test3dReCon(Mat frame){
             filtering_time = (double)getTickCount();
             wls_filter->filter(left_disp,left,filtered_disp,Mat(),ROI);
             filtering_time = ((double)getTickCount() - filtering_time)/getTickFrequency();
+
+            
         }
         else
         {
@@ -356,7 +360,7 @@ double Display3DReCon::test3dReCon(Mat frame){
         }
 
         //collect and print all the stats:
-    #if DEBUG
+#if DEBUG
         cout.precision(2);
         cout<<"Matching time:  "<<matching_time<<"s"<<endl;
         cout<<"Filtering time: "<<filtering_time<<"s"<<endl;
@@ -419,11 +423,13 @@ double Display3DReCon::test3dReCon(Mat frame){
             //imshow("raw disparity", raw_disp_vis);
             Mat filtered_disp_vis;
             getDisparityVis(filtered_disp,filtered_disp_vis,vis_mult);
-#if DEBUG
+
             namedWindow("filtered disparity", WINDOW_AUTOSIZE);
             imshow("filtered disparity", filtered_disp_vis);
             waitKey(0);
-#endif
+
+
+
             if(!solved_disp.empty())
             {
                 Mat solved_disp_vis;
