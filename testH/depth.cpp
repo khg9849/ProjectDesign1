@@ -7,8 +7,8 @@ using namespace std;
 
 int main(int argc, char** argv){
 	
-	if(argc!=6){
-		cout<<"./depth jpgfilepath/*.jpg left_row left_col right_row right_col\n";
+	if(argc!=2){
+		cout<<"./depth jpgfilepath/*.jpg\n";
 		
 		return 1;
 	}
@@ -55,6 +55,7 @@ int main(int argc, char** argv){
 	cv::waitKey(0);
 
 	for(int k = 0; k < matches.size(); k++){
+		//cout<<kp[1][matches[k].trainIdx].pt.x<<' '<<kp[0][matches[k].queryIdx].pt.x<<'\n';
 		if(kp[1][matches[k].trainIdx].pt.x > kp[0][matches[k].queryIdx].pt.x){
 			int col_r = kp[1][matches[k].trainIdx].pt.x;
 			int row_r = kp[1][matches[k].trainIdx].pt.y;
@@ -71,8 +72,8 @@ int main(int argc, char** argv){
 			mat3.at<uchar>(row_r+1, col_r-1) = 255;
 			mat3.at<uchar>(row_r-1, col_r+1) = 255;
 			mat3.at<uchar>(kp[1][matches[k].trainIdx].pt.y, kp[1][matches[k].trainIdx].pt.x) = */
-			int temp = T.at<double>(0,0)/(-mat2.at<double>(0,0)*(int)(kp[1][matches[k].trainIdx].pt.x)-mat2.at<double>(0,2)+mat1.at<double>(0,0)*(int)(kp[0][matches[k].queryIdx].pt.x)+mat1.at<double>(0,2))/200*255+255;
-			mat3.at<uchar>(row_r-1, col_r) = temp;
+			int temp = 255;//T.at<double>(0,0)/(-mat2.at<double>(0,0)*(int)(kp[1][matches[k].trainIdx].pt.x)-mat2.at<double>(0,2)+mat1.at<double>(0,0)*(int)(kp[0][matches[k].queryIdx].pt.x)+mat1.at<double>(0,2))/2650*255+255;
+			/*mat3.at<uchar>(row_r-1, col_r) = temp;
 			mat3.at<uchar>(row_r+1, col_r) = temp;
 			mat3.at<uchar>(row_r, col_r-1) = temp;
 			mat3.at<uchar>(row_r, col_r+1) = temp;
@@ -83,11 +84,12 @@ int main(int argc, char** argv){
 			mat3.at<uchar>(row_r+1, col_r+1) = temp;
 			mat3.at<uchar>(row_r-1, col_r-1) = temp;
 			mat3.at<uchar>(row_r+1, col_r-1) = temp;
-			mat3.at<uchar>(row_r-1, col_r+1) = temp;
+			mat3.at<uchar>(row_r-1, col_r+1) = temp;*/
 			mat3.at<uchar>(kp[1][matches[k].trainIdx].pt.y, kp[1][matches[k].trainIdx].pt.x) = temp;
 		}		
 	}
 
+	cv::imwrite("output_one.jpg", mat3);
 	cv::imshow("test", mat3);
 	cv::waitKey(0);
 
