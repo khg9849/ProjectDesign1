@@ -2,3 +2,4 @@ testSeo/build
 *.swp
 testJin/build
 testJin/darknet
+testJin/.vscode/
