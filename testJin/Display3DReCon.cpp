@@ -1,74 +1,37 @@
-#include "opencv2/calib3d.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/core/utility.hpp"
-#include "opencv2/ximgproc.hpp"
-#include <iostream>
-#include <string>
-#include <unistd.h>
+#include "Display3DReCon.h"
 
-
-using namespace cv;
-using namespace cv::ximgproc;
-using namespace std;
-
-Rect computeROI(Size2i src_sz, Ptr<StereoMatcher> matcher_instance);
-
-const String keys =
-    "{help h usage ? |                  | print this message                                                }"
-    "{@left          |./data/aloeL.jpg  | left view of the stereopair                                       }"
-    "{@right         |./data/aloeR.jpg  | right view of the stereopair                                      }"
-    "{GT             |./aloeGT.png| optional ground-truth disparity (MPI-Sintel or Middlebury format) }"
-    "{dst_path       |None              | optional path to save the resulting filtered disparity map        }"
-    "{dst_raw_path   |None              | optional path to save raw disparity map before filtering          }"
-    "{algorithm      |bm                | stereo matching method (bm or sgbm)                               }"
-    "{filter         |wls_conf          | used post-filtering (wls_conf or wls_no_conf or fbs_conf)         }"
-    "{no-display     |                  | don't display results                                             }"
-    "{no-downscale   |                  | force stereo matching on full-sized views to improve quality      }"
-    "{dst_conf_path  |None              | optional path to save the confidence map used in filtering        }"
-    "{vis_mult       |1.0               | coefficient used to scale disparity map visualizations            }"
-    "{max_disparity  |16                | parameter of stereo matching                                      }"
-    "{window_size    |-1                | parameter of stereo matching                                      }"
-    "{wls_lambda     |8000.0            | parameter of wls post-filtering                                   }"
-    "{wls_sigma      |1.5               | parameter of wls post-filtering                                   }"
-    "{fbs_spatial    |16.0              | parameter of fbs post-filtering                                   }"
-    "{fbs_luma       |8.0               | parameter of fbs post-filtering                                   }"
-    "{fbs_chroma     |8.0               | parameter of fbs post-filtering                                   }"
-    "{fbs_lambda     |128.0             | parameter of fbs post-filtering                                   }"
+Display3DReCon::Display3DReCon(){
     ;
+}
+bool Display3DReCon::init(CommandLineParser parser){
 
-int main(int argc, char** argv)
-{
-    CommandLineParser parser(argc,argv,keys);
     parser.about("Disparity Filtering Demo");
     if (parser.has("help"))
     {
         parser.printMessage();
-        return 0;
+        return false;
     }
 
-    String left_im = parser.get<String>(0);
-    String right_im = parser.get<String>(1);
-    String GT_path = parser.get<String>("GT");
+     left_im = parser.get<String>(0);
+     right_im = parser.get<String>(1);
+     GT_path = parser.get<String>("GT");
 
-    String dst_path = parser.get<String>("dst_path");
-    String dst_raw_path = parser.get<String>("dst_raw_path");
-    String dst_conf_path = parser.get<String>("dst_conf_path");
-    String algo = parser.get<String>("algorithm");
-    String filter = parser.get<String>("filter");
-    bool no_display = parser.has("no-display");
-    bool no_downscale = parser.has("no-downscale");
-    int max_disp = parser.get<int>("max_disparity");
-    double lambda = parser.get<double>("wls_lambda");
-    double sigma  = parser.get<double>("wls_sigma");
-    double fbs_spatial = parser.get<double>("fbs_spatial");
-    double fbs_luma = parser.get<double>("fbs_luma");
-    double fbs_chroma = parser.get<double>("fbs_chroma");
-    double fbs_lambda = parser.get<double>("fbs_lambda");
-    double vis_mult = parser.get<double>("vis_mult");
+     dst_path = parser.get<String>("dst_path");
+     dst_raw_path = parser.get<String>("dst_raw_path");
+     dst_conf_path = parser.get<String>("dst_conf_path");
+     algo = parser.get<String>("algorithm");
+     filter = parser.get<String>("filter");
+     no_display = parser.has("no-display");
+     no_downscale = parser.has("no-downscale");
+     max_disp = parser.get<int>("max_disparity");
+     lambda = parser.get<double>("wls_lambda");
+     sigma  = parser.get<double>("wls_sigma");
+     fbs_spatial = parser.get<double>("fbs_spatial");
+     fbs_luma = parser.get<double>("fbs_luma");
+     fbs_chroma = parser.get<double>("fbs_chroma");
+     fbs_lambda = parser.get<double>("fbs_lambda");
+     vis_mult = parser.get<double>("vis_mult");
 
-    int wsize;
     if(parser.get<int>("window_size")>=0) //user provided window_size value
         wsize = parser.get<int>("window_size");
     else
@@ -84,7 +47,7 @@ int main(int argc, char** argv)
     if (!parser.check())
     {
         parser.printErrors();
-        return -1;
+        return false;
     }
 
     //! [load_views]
@@ -98,33 +61,31 @@ int main(int argc, char** argv)
     int fourcc = VideoWriter::fourcc('D', 'I', 'V', 'X');
     if(!video.isOpened()){
         cout << "Can't open the video" << endl;
-        return 0;
+        return false;
     }
 
-    VideoWriter newVideo("disparity.mp4", fourcc, videoFPS, Size(videoWidth, videoHeight), true);
+    newVideo = VideoWriter("disparity.mp4", fourcc, videoFPS, Size(videoWidth, videoHeight), true);
     if(!newVideo.isOpened()){
         cout << "Can't write video" << endl;
-        return 0;
+        return false;
     }
+    return true;
+
+}
+    
 
 
-    Mat frame;
-    vector<cv::String> images;	
 
-	string path = "../resources";
-    glob(path, images);		
-	cout << "로드한 이미지 개수 : " << images.size() << endl;
-	if (images.size() == 0)
-		cout << "이미지가 존재하지 않음! \n" << endl;
+double Display3DReCon::test3dReCon(Mat frame){
 
-    for(int i = 0;i < images.size();i++){
-        frame=imread(images[i]);
         //video >> frame;
         Mat left  = frame(Range::all(), Range(0, frame.cols/2));
         Mat right = frame(Range::all(), Range(frame.cols/2, frame.cols));
+    #if DEBUG
         namedWindow("origin", WINDOW_AUTOSIZE);
         imshow("origin", frame);
         waitKey(0);
+    #endif
         //! [load_views]
 
         bool noGT;
@@ -351,7 +312,7 @@ int main(int argc, char** argv)
                 matcher->setUniquenessRatio(0);
                 cvtColor(left_for_matcher,  left_for_matcher, COLOR_BGR2GRAY);
                 cvtColor(right_for_matcher, right_for_matcher, COLOR_BGR2GRAY);
-                ROI = computeROI(left_for_matcher.size(),matcher);
+                ROI = this->computeROI(left_for_matcher.size(),matcher);
                 wls_filter = createDisparityWLSFilterGeneric(false);
                 wls_filter->setDepthDiscontinuityRadius((int)ceil(0.33*wsize));
 
@@ -368,7 +329,7 @@ int main(int argc, char** argv)
                 matcher->setP1(24*wsize*wsize);
                 matcher->setP2(96*wsize*wsize);
                 matcher->setMode(StereoSGBM::MODE_SGBM_3WAY);
-                ROI = computeROI(left_for_matcher.size(),matcher);
+                ROI = this->computeROI(left_for_matcher.size(),matcher);
                 wls_filter = createDisparityWLSFilterGeneric(false);
                 wls_filter->setDepthDiscontinuityRadius((int)ceil(0.5*wsize));
 
@@ -395,13 +356,13 @@ int main(int argc, char** argv)
         }
 
         //collect and print all the stats:
+    #if DEBUG
         cout.precision(2);
-        cout<<"image path:"<<images[i]<<'\n';
         cout<<"Matching time:  "<<matching_time<<"s"<<endl;
         cout<<"Filtering time: "<<filtering_time<<"s"<<endl;
         cout<<"Solving time: "<<solving_time<<"s"<<endl;
         cout<<endl;
-
+#endif
         double MSE_before,percent_bad_before,MSE_after,percent_bad_after;
         if(!noGT)
         {
@@ -458,10 +419,11 @@ int main(int argc, char** argv)
             //imshow("raw disparity", raw_disp_vis);
             Mat filtered_disp_vis;
             getDisparityVis(filtered_disp,filtered_disp_vis,vis_mult);
+#if DEBUG
             namedWindow("filtered disparity", WINDOW_AUTOSIZE);
             imshow("filtered disparity", filtered_disp_vis);
             waitKey(0);
-
+#endif
             if(!solved_disp.empty())
             {
                 Mat solved_disp_vis;
@@ -488,15 +450,10 @@ int main(int argc, char** argv)
             }*/
             //! [visualization]
         }
-    }
-
-    video.release();
-    newVideo.release();
-
-    return 0;
+    return matching_time+solving_time;
 }
 
-Rect computeROI(Size2i src_sz, Ptr<StereoMatcher> matcher_instance)
+Rect Display3DReCon::computeROI(Size2i src_sz, Ptr<StereoMatcher> matcher_instance)
 {
     int min_disparity = matcher_instance->getMinDisparity();
     int num_disparities = matcher_instance->getNumDisparities();
