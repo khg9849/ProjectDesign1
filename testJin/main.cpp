@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "CallYolo.h"
 #include "Display3DReCon.h"
@@ -15,7 +16,7 @@
 #define CONTROLLER 67
 #define THRESHOLD 0.9
 
-#define EPOCH 300
+#define EPOCH 100
 
 //void callYolo(cv::Mat image);
 //void display3DReCon(cv::Mat image);
@@ -69,10 +70,6 @@ int main(int argc, char **argv)
 	bbox_t_container cont;
 	int contsize;
 
-	// std::string photopath = "../resources/testImg_1.jpg";
-	// std::string detectedpath="../resources/testImg_detected.jpg";
-	// char *contpath = "../cont2.txt";
-
 	std::string photopath = "../resources/135cm/135cm_1.jpg";
 	std::string detectedpath="../resources/135cm/135cm_detected.jpg";
 	char *contpath = "../cont135.txt";
@@ -80,18 +77,14 @@ int main(int argc, char **argv)
 	// CallYolo *yolo = new CallYolo();
 	// yolo->init(cfgpath, weightspath);
 	// yolo->setPhoto(photopath);
-	// cont = yolo->getCont();
-	// contsize = (int)yolo->getContSize();
+	
 	// bool isContSaved = saveCont(contpath, cont, contsize);
+
 	
-	cont=readCont(contpath,&contsize);
-	
-	cv::Mat srcImg = cv::imread(photopath);
-	cv::Mat detectedImg = cropDetection(cont, contsize, srcImg,CHAIR);
-	cv::imshow("srcImg",srcImg);
-	cv::imshow("detectedImg",detectedImg);
-	cv::imwrite(detectedpath, detectedImg);
-	cv::waitKey(0);
+	//cv::imshow("srcImg",srcImg);
+	//cv::imshow("detectedImg",detectedImg);
+	//cv::imwrite(detectedpath, detectedImg);
+	//cv::waitKey(0);
 	
 	CommandLineParser parser(argc,argv,keys);
     Display3DReCon* dp=new Display3DReCon();
@@ -100,12 +93,26 @@ int main(int argc, char **argv)
     double elapsed1,elapsed2,diff;
     double sum=0,avg;
 
+	cv::Mat srcImg = cv::imread(photopath);
+	cv::Mat detectedImg;
+	double detecting_time;
+
+	cont=readCont(contpath,&contsize);
+	printf("\telapsed1\tdetecting_time\telpased2\tdetecting_time+elpased2\tdiff\n");
     for(int i = 0;i < EPOCH;i++){
+		detecting_time = (double)getTickCount();
+		//cont = yolo->getCont();
+		usleep(10000); //sleep 10ms
+		detectedImg = cropDetection(cont, contsize, srcImg,CHAIR);
+		
+		detecting_time = ((double)getTickCount() - detecting_time)/getTickFrequency();
+        
         elapsed1=dp->test3dReCon(srcImg);
         elapsed2=dp->test3dReCon(detectedImg);
-        diff=elapsed1-elapsed2;
+        diff=elapsed1-(detecting_time+elapsed2);
         sum+=(diff);
-		printf("[%d] difference: %lf\n",i,diff);
+		//printf("[%d] difference: %lf\n",i,diff);
+		printf("%d\t%lf\t%lf\t%lf\t%lf\t%lf\n",i,elapsed1,detecting_time,elapsed2,detecting_time+elapsed2,diff);
     }
     avg=sum/EPOCH;
     printf("avg is %lf\n",avg);
@@ -160,9 +167,9 @@ cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src, int obje
 	ny=min(ly,ry);
 	nw=max(lx+lw,rx2+rw)-nx;
 	nh=max(ly+lh,ry+rh)-ny;
-
+#if DEBUG
 	printf("(nx,ny,nw,nh) = (%d,%d,%d,%d)\n",nx,ny,nw,nh);
-
+#endif
 	croptedImg[0] = src(cv::Rect(nx, ny, nw, nh));
 	croptedImg[1] = src(cv::Rect(nx+src.cols/2, ny, nw, nh));
 	hconcat(croptedImg[0], croptedImg[1], detected);

@@ -6,6 +6,12 @@ CallYolo::CallYolo()
     photopath = "";
 }
 
+CallYolo::~CallYolo()
+{
+    if(detector != NULL)
+        delete detector;
+}
+
 void CallYolo::init(std::string _cfg, std::string _weight)
 {
     if((detector = new Detector(_cfg, _weight)) == NULL){

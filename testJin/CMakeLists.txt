@@ -25,4 +25,3 @@ link_libraries(
 )
 
 add_executable(${PROJECT_NAME} main.cpp CallYolo.cpp Display3DReCon.cpp calib7.cpp)
-add_executable(calibrate calibTest.cpp calib7.cpp)
