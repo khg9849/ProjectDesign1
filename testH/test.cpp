@@ -1,10 +1,26 @@
-#include <darknet.h>
+#include <fstream>
+#include <iostream>
+using namespace std;
 
-int main(int argc, char**argv){
-	float thresh = find_float_arg(argc, argv, "-thresh", .24);
-	int ext_output = find_arg(argc, argv, "-ext_output");
-	char *filename = (argc > 4) ? argv[4]: 0;
-	test_detector("darknet/cfg/coco.data", argv[2], argv[3], filename, thresh, 0.5, 0, ext_output, 0, NULL, 0, 0);
+int main(){
+	ifstream ifp;
+	ofstream ofp;
+
+	ofp.open("test.bin", ios::binary);
+
+	for(int i = 0; i < 10; i++){
+		cout<<(char*)&i<<'\n';
+		ofp.write((char*)&i, sizeof(int));
+	}
+	ofp.close();
+
+	ifp.open("test.bin", ios::binary);
+	for(int i = 0; i < 10; i++){
+		int temp;
+		ifp.read((char*)&temp, sizeof(int));
+		cout<<temp<<' ';
+	}
+	cout<<'\n';
 
 	return 0;
 }

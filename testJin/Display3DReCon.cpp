@@ -161,7 +161,7 @@ double Display3DReCon::test3dReCon(Mat frame){
             }
             else if(algo=="sgbm")
             {
-                Ptr<StereoSGBM> left_matcher  = StereoSGBM::create(0,max_disp,wsize);
+                Ptr<StereoSGBM> left_matcher  = StereoSGBM::create(0,1280,wsize);
                 left_matcher->setP1(24*wsize*wsize);
                 left_matcher->setP2(96*wsize*wsize);
                 left_matcher->setPreFilterCap(63);

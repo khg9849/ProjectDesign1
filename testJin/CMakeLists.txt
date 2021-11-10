@@ -14,14 +14,14 @@ find_package(OpenCV REQUIRED)
 
 include_directories(
     ${OpenCV_INCLUDE_DIRS} 
-    ${CMAKE_SOURCE_DIR}/darknet/include
+	${CMAKE_SOURCE_DIR}/..testH/darknet/include
 	../src
 	./
 ) #header
 
 link_libraries(
 	${OpenCV_LIBS}
-	${CMAKE_SOURCE_DIR}/darknet/libdarknet.so
+	${CMAKE_SOURCE_DIR}/../testH/darknet/libdarknet.so
 )
 
 add_executable(${PROJECT_NAME} main.cpp CallYolo.cpp Display3DReCon.cpp calib7.cpp)
