@@ -10,10 +10,6 @@
 
 #include "calibration.h"
 
-#define BICYCLE 1
-#define CHAIR 56
-#define MONITER 62
-#define CONTROLLER 67
 
 cv::Mat cropDetection(bbox_t bbox1,cv::Mat img1,bbox_t bbox2,cv::Mat img2);
 bbox_t getBbox(bbox_t_container cont, int contSize,int obj_id, double threshold);
@@ -46,9 +42,23 @@ const String keys =
     "{fbs_lambda     |128.0             | parameter of fbs post-filtering                                   }"
     ;
 
+/*
+BICYCLE 1
+CUP 41
+CHAIR 56
+MONITER 62
+CONTROLLER 67
+MICROWAVE 68
+CLOCK 74
+SCISSORS 76
+*/
 // ./myProject ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/135cm/135cm_1.jpg 56 0.99
-// ./myProject ../darknet/cfg/yolov4-tiny.cfg ../darknet/yolov4-tiny.weights ../resources/135cm/135cm_1.jpg 56 0.5
 // ./myProject ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/testImg_1.jpg 1 0.5
+// ./myProject ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/cup.jpg 41 0.5
+// ./myProject ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/microwave.jpg 68 0.5
+// ./myProject ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/1115 Dataset/WIN_20211115_17_09_34_Pro.jpg 41 0.5
+
+// ./myProject ../darknet/cfg/yolov4-tiny.cfg ../darknet/yolov4-tiny.weights ../resources/135cm/135cm_1.jpg 56 0.5
 
 int main(int argc, char **argv)
 {
@@ -107,6 +117,8 @@ int main(int argc, char **argv)
 	bbox2=getBbox( cont2,contsize2,obj_id, threshold);
 	
 	cv::Mat detectedImg = cropDetection(bbox1,img1,bbox2,img2);
+
+	imshow("srcImg",srcImg);
 	imshow("detectedImg",detectedImg);
 	waitKey(0);
 
