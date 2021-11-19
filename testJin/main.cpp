@@ -14,16 +14,12 @@
 #define CHAIR 56
 #define MONITER 62
 #define CONTROLLER 67
-#define THRESHOLD 0.5
 
-#define EPOCH 100
+cv::Mat cropDetection(bbox_t bbox1,cv::Mat img1,bbox_t bbox2,cv::Mat img2);
+bbox_t getBbox(bbox_t_container cont, int contSize,int obj_id, double threshold);
 
-//void callYolo(cv::Mat image);
-//void display3DReCon(cv::Mat image);
-
-cv::Mat cropDetection(bbox_t_container cont, int contsize,cv::Mat src, int object);
-bool saveCont(char *filepath, bbox_t_container cont, int contsize);
-bbox_t_container readCont(char *filepath, int *contsize);
+// bool saveCont(char *filepath, bbox_t_container cont, int contsize);
+// bbox_t_container readCont(char *filepath, int *contsize);
 
 #define DEBUG 1
 
@@ -36,11 +32,11 @@ const String keys =
     "{dst_raw_path   |None              | optional path to save raw disparity map before filtering          }"
     "{algorithm      |sgbm                | stereo matching method (bm or sgbm)                               }"
     "{filter         |wls_conf          | used post-filtering (wls_conf or wls_no_conf or fbs_conf)         }"
-    "{no-display     |1                  | don't display results                                             }"
+    "{no-display     |                  | don't display results                                             }"
     "{no-downscale   |1                 | force stereo matching on full-sized views to improve quality      }"
     "{dst_conf_path  |None              | optional path to save the confidence map used in filtering        }"
-    "{vis_mult       |10.0               | coefficient used to scale disparity map visualizations            }"
-    "{max_disparity  |32                | parameter of stereo matching                                      }"
+    "{vis_mult       |8.0               | coefficient used to scale disparity map visualizations            }"
+    "{max_disparity  |16                | parameter of stereo matching                                      }"
     "{window_size    |-1                | parameter of stereo matching                                      }"
     "{wls_lambda     |8000.0            | parameter of wls post-filtering                                   }"
     "{wls_sigma      |1.5               | parameter of wls post-filtering                                   }"
@@ -50,153 +46,115 @@ const String keys =
     "{fbs_lambda     |128.0             | parameter of fbs post-filtering                                   }"
     ;
 
+// ./myProject ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/135cm/135cm_1.jpg 56 0.99
+// ./myProject ../darknet/cfg/yolov4-tiny.cfg ../darknet/yolov4-tiny.weights ../resources/135cm/135cm_1.jpg 56 0.5
+// ./myProject ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/testImg_1.jpg 1 0.5
 
 int main(int argc, char **argv)
 {
-	cb myCB = cb();
-	std::string path1 = "../resources/calib_data/*.jpg";
-	std::string path2="../calibration.xml";
+	if(argc!=6){
+		std::cout<<"usage: ./myProject cfg_path weights_path src_path obj_id threshold"<<'\n';
+		exit(1);
+	}
 
-    //myCB.calib(path1, path2);
-	//myCB.readCalibResult(path2);
+	std::string cfgpath = argv[1];
+	std::string weightspath = argv[2];
+	std::string photopath = argv[3];
+	
+	int obj_id;
+	std::stringstream ssInt(argv[4]);
+	ssInt>>obj_id;
 
-//	cv::Mat T = myCB.T;
-//	float baseline = T.at<float>(0,0);
-//	if(baseline<0) baseline*-1;
-//	cout<<"baseline is "<<baseline<<'\n';
-
-	std::string cfgpath = "../darknet/cfg/yolov4-tiny.cfg";
-	std::string weightspath = "../darknet/yolov4-tiny.weights";
-	bbox_t_container cont1,cont2;
-	int contsize1,contsize2;
-
-	std::string photopath = "../resources/135cm/135cm_1.jpg";
-	std::string detectedpath="../resources/135cm/135cm_detected.jpg";
-	char *contpath = "../cont135.txt";
+	double threshold;
+	std::stringstream ssDouble(argv[5]);
+	ssDouble>>threshold;
 
 	CallYolo *yolo = new CallYolo();
 	yolo->init(cfgpath, weightspath);
+	cv::Mat srcImg = cv::imread(photopath);
 
 	CommandLineParser parser(argc,argv,keys);
     Display3DReCon* dp=new Display3DReCon();
     dp->init(parser);
 
-    double elapsed1,elapsed2,diff;
-    double sum=0,avg;
+	bbox_t_container cont1,cont2;
+	int contsize1,contsize2;
 
-	cv::Mat srcImg = cv::imread(photopath);
-	cv::Mat detectedImg;
-	double detecting_time;
-
+	cv::Mat img1=srcImg(cv::Rect(0,0,srcImg.cols/2,srcImg.rows));
+	cv::Mat img2=srcImg(cv::Rect(srcImg.cols/2,0,srcImg.cols/2,srcImg.rows));
 	std::string photopath1 = "left.jpg";
 	std::string photopath2 = "right.jpg";
-	imwrite(photopath1,srcImg(cv::Rect(0,0,srcImg.cols/2,srcImg.rows)));
-	imwrite(photopath2,srcImg(cv::Rect(srcImg.cols/2,0,srcImg.cols/2,srcImg.rows)));
+	imwrite(photopath1,img1);
+	imwrite(photopath2,img2);
 
-	//bool isContSaved = saveCont(contpath, cont, contsize);
+	//printf("\telapsed1\tdetecting_time\telpased2\tdetecting_time+elpased2\tdiff\n");
 
-	
-	// cv::imshow("srcImg",srcImg);
-	// cv::imshow("detectedImg",detectedImg);
-	// cv::imwrite(detectedpath, detectedImg);
-	// cv::waitKey(0);
-	
-	
+	double begin = (double)getTickCount();
 
-	//cont=readCont(contpath,&contsize);
-	printf("\telapsed1\tdetecting_time\telpased2\tdetecting_time+elpased2\tdiff\n");
-    for(int i = 0;i < EPOCH;i++){
-		detecting_time = (double)getTickCount();
-		yolo->setPhoto(photopath1);
-		cont1 = yolo->getCont();
-		contsize1=yolo->getContSize();
-		yolo->setPhoto(photopath2);
-		cont2 = yolo->getCont();
-		contsize2=yolo->getContSize();
-		detecting_time = ((double)getTickCount() - detecting_time)/getTickFrequency();
-        
-		for(int i=0;i<contsize2;i++){
-			cont1.candidates[contsize1+i]=cont2.candidates[i];
-			cont1.candidates[contsize1+i].x+=srcImg.cols/2;
-		}
-		contsize1+=contsize2;
+	yolo->setPhoto(photopath1);
+	cont1 = yolo->getCont();
+	contsize1=yolo->getContSize();
 
-		detectedImg = cropDetection(cont1, contsize1,srcImg,CHAIR);
-        elapsed1=dp->test3dReCon(srcImg);
-        elapsed2=dp->test3dReCon(detectedImg);
-        diff=elapsed1-(detecting_time+elapsed2);
-        sum+=(diff);
-		//printf("[%d] difference: %lf\n",i,diff);
-		printf("%d\t%lf\t%lf\t%lf\t%lf\t%lf\n",i,elapsed1,detecting_time,elapsed2,detecting_time+elapsed2,diff);
-    }
-    avg=sum/EPOCH;
-    printf("avg is %lf\n",avg);
+	yolo->setPhoto(photopath2);
+	cont2 = yolo->getCont();
+	contsize2=yolo->getContSize();
+
+	double end=(double)getTickCount();
+	double detecting_time = (end-begin)/getTickFrequency();
 	
+	bbox_t bbox1,bbox2;
+	bbox1=getBbox( cont1,contsize1,obj_id, threshold);
+	bbox2=getBbox( cont2,contsize2,obj_id, threshold);
+	
+	cv::Mat detectedImg = cropDetection(bbox1,img1,bbox2,img2);
+	imshow("detectedImg",detectedImg);
+	waitKey(0);
+
+	double elapsed1=dp->test3dReCon(srcImg);
+	double elapsed2=dp->test3dReCon(detectedImg);
+	double diff=elapsed1-(detecting_time+elapsed2);
+	printf("difference: %lf\n",diff);
+	//printf("\t%lf\t%lf\t%lf\t%lf\t%lf\n",elapsed1,detecting_time,elapsed2,detecting_time+elapsed2,diff);
 	return 0;
 }
 
-cv::Mat cropDetection(bbox_t_container cont, int contsize, cv::Mat src, int object)
+cv::Mat cropDetection(bbox_t bbox1,cv::Mat img1,bbox_t bbox2,cv::Mat img2)
 {
-
-	cv::Mat res = src.clone();
 	cv::Mat detected;
-	cv::Mat croptedImg[2];
-
-	int lx = src.cols,ly,lw,lh;
-	int rx=0,ry,rw,rh;
-
-	cv::Mat mask = cv::Mat::zeros(res.size(), CV_8U);  
-	cv::Mat masked = cv::Mat::zeros(res.size(), CV_8U); 
-
-	for (int i = 0; i < contsize; i++)
-	{
-		int cx = cont.candidates[i].x;
-		int cy = cont.candidates[i].y;
-		int cw = cont.candidates[i].w;
-		int ch = cont.candidates[i].h;
-
-		cv::Scalar color=cv::Scalar(255,0,0);
-		if(cont.candidates[i].obj_id==object)
-			color=cv::Scalar(0,0,255);
-		cv::rectangle(res, cv::Point(cx, cy), cv::Point(cx + cw, cy + ch), color, 8, 0);
-		
-#if DEBUG
-		printf("obj_id, cx, cy, cw, ch, prob = (%d, %d,%d,%d,%d,%lf)\n", cont.candidates[i].obj_id, cx, cy, cw, ch, cont.candidates[i].prob);
-		cv::imshow("making boxes...",res);
-		cv::waitKey(0);
-#endif
-		if (cont.candidates[i].obj_id == object && cont.candidates[i].prob >= THRESHOLD)
-		{
-			if(cx<lx){
-				lx=cx;
-				ly=cy;
-				lw=cw;
-				lh=ch;
-			}
-			if(cx>rx){
-				rx=cx;
-				ry=cy;
-				rw=cw;
-				rh=ch;
-			}
-		}
-	}
-	int rx2=rx-src.cols/2;
 	int nx,ny,nw,nh;
-	nx=min(lx,rx2);
-	ny=min(ly,ry);
-	nw=max(lx+lw,rx2+rw)-nx;
-	nh=max(ly+lh,ry+rh)-ny;
-#if DEBUG
-	printf("(nx,ny,nw,nh) = (%d,%d,%d,%d)\n",nx,ny,nw,nh);
-#endif
-	croptedImg[0] = src(cv::Rect(nx, ny, nw, nh));
-	croptedImg[1] = src(cv::Rect(nx+src.cols/2, ny, nw, nh));
-	hconcat(croptedImg[0], croptedImg[1], detected);
-	
+
+	nx=min(bbox1.x,bbox2.x);
+	ny=min(bbox1.y,bbox2.y);
+	nw=max(bbox1.x+bbox1.w,bbox2.x+bbox2.w)-nx;
+	nh=max(bbox1.y+bbox1.h,bbox2.y+bbox2.h)-ny;
+
+	hconcat(img1(cv::Rect(nx,ny,nw,nh)), img2(cv::Rect(nx,ny,nw,nh)),detected);
 	return detected;
 }
 
+bbox_t getBbox(bbox_t_container cont, int contSize,int obj_id, double threshold){
+	bbox_t bbox;
+	bool flag=false;
+
+	for(int i=0;i<contSize;i++){
+		printf("cont[%d]: obj_id %d, (%d, %d, %d, %d), prob: %lf\n",i,cont.candidates[i].obj_id,cont.candidates[i].x,cont.candidates[i].y,cont.candidates[i].w,cont.candidates[i].h,cont.candidates[i].prob);
+	
+		if(cont.candidates[i].obj_id==obj_id&&cont.candidates[i].prob>=threshold){
+			if(!flag){
+				bbox=cont.candidates[i];
+				flag=true;
+				printf("bbox: (%d, %d, %d, %d)\n",bbox.x,bbox.y,bbox.w,bbox.h);
+			}
+			else{
+				std::cout<<"There are more than one object("<<obj_id<<")in the container."<<'\n';
+				exit(1);
+			}
+		}
+	}
+	return bbox;
+}
+
+/*
 bool saveCont(char *filepath, bbox_t_container cont, int contsize)
 {
 	FILE *fp = fopen(filepath, "w");
@@ -242,3 +200,4 @@ bbox_t_container readCont(char *filepath, int *contsize)
 	printf("%s is read\n", filepath);
 	return cont;
 }
+*/
