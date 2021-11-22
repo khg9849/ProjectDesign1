@@ -22,6 +22,8 @@ private:
 	cv::Mat matDistCoffs2;
 	cv::Mat matT;			// translation matrix between two lens.
 	cv::Mat matR;			// rotation matrix between two lens.
+	cv::Mat matE;			// essential matrix between two lens.
+	cv::Mat matF;			// fundamental matrix between two lens.
 protected:
 public:
 	YeStereoCamera();
@@ -32,8 +34,8 @@ public:
 	}*/
 
 	//경로 내부의 이미지 파일을 읽어서 켈리브레이션 실시.
-	bool doCalibration(const char *pPath, const char *ext = ".jpg");
-	bool doCalibration(std::vector<std::string> &imgList);
+	bool doCalibration(const char *pPath, const char *ext = "*.jpg", const char* xmlName);
+	bool doCalibration(std::vector<std::string> &imgList, const char* xmlName);
 
 	// Yolo를 이용하여 특정 이름의 영역을 추출.
 	bool findImage(const cv::Mat mat, const char *objName, bbox_t *pObjRect);
