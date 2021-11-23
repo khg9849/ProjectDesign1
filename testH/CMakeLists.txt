@@ -6,12 +6,13 @@ project(
 	)
 
 ADD_EXECUTABLE(
-	hStereo
-	featureDetection.cpp
+	yeStereo
+	main.cpp
+	yeStereoCamera.cpp
 	)
 
 target_include_directories(
-	hStereo
+	yeStereo
 PUBLIC
 	${CMAKE_SOURCE_DIR}/includes
 	${OPENCV_INCLUDE_DIRS}
@@ -19,7 +20,7 @@ PUBLIC
 	)
 
 target_link_libraries(
-	hStereo
+	yeStereo
 	${OPENCV_LIBRARIES}
 	${CMAKE_SOURCE_DIR}/darknet
 	)
