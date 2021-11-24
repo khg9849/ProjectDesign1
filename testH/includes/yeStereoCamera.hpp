@@ -17,15 +17,15 @@ struct YePos3D {
 };
 
 class YeStereoCamera {
-	public:
+private:
 	cv::Mat matCamMat1; //camera matrix.
 	cv::Mat matCamMat2; //camera matrix.
 	cv::Mat matDistCoffs1;
 	cv::Mat matDistCoffs2;
 	cv::Mat matT;			// translation matrix between two lens.
 	cv::Mat matR;			// rotation matrix between two lens.
-//protected:
-//public:
+protected:
+public:
 	YeStereoCamera();
 	~YeStereoCamera();
 	/*
@@ -41,7 +41,8 @@ class YeStereoCamera {
 	bool findImage(const cv::Mat mat, const char *objName, bbox_t *pObjRect);
 
 	//Absolute length from camera.
-	bool getAbsoluteLengthInRect(const cv::Mat src, bbox_t *pObjRect, std::vector<YePos3D> &features);
+	bool getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<YePos3D> &features);
+	bool getAbsoluteLengthInRect(const cv::Mat src, bbox_t *pObjRect, int num, std::vector<YePos3D> &features);
 
 
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.

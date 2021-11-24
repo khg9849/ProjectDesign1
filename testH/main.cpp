@@ -11,23 +11,27 @@ int main(int argc, char** argv){
 	fsr["leftCameraMatrix"] >> a.matCamMat1;
 	fsr["rightCameraMatrix"] >> a.matCamMat2;
 
-	bbox_t temp;
-	temp.x = 600;
-	temp.y = 160;
-	temp.w = 1080;
-	temp.h = 500;
+	bbox_t temp[2];
+	temp[0].x = 600;
+	temp[0].y = 250;
+	temp[0].w = 1000;
+	temp[0].h = 500;
+	temp[1].x = 1750;
+	temp[1].y = 250;
+	temp[1].w = 2150;
+	temp[1].h = 500;
 
-	cv::Mat img = cv::imread("../resources/cube/new/20CM.jpg");
+	cv::Mat img = cv::imread("../resources/cube/new/30cm.jpg");
 
 	std::vector<SYE::YePos3D> feature;
 
-	a.getAbsoluteLengthInRect(img, &temp, feature);
+	a.getAbsoluteLengthInRect(img, temp, 2, feature);
 
-	cv::imshow("test", img(cv::Range(160, 500), cv::Range(600, 1080)));
+	cv::imshow("test", img(cv::Range(250, 500), cv::Range(600, 1000)));
 	cv::waitKey(0);
 
 	for(int i = 0; i < feature.size(); i++){
-		//std::cout<<feature[i].x<<' '<<feature[i].y<<' '<<feature[i].z<<'\n';
+		std::cout<<feature[i].x<<' '<<feature[i].y<<' '<<feature[i].z<<'\n';
 	}
 
 	return 0;
