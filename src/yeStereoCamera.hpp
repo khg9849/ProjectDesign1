@@ -50,6 +50,7 @@ public:
 	}*/
 
 	//경로 내부의 이미지 파일을 읽어서 켈리브레이션 실시.
+	bool initCalibData(const char* xmlName);
 	bool doCalibration(const char *pPath, const char* xmlName, const char* ext = ".jpg");
 	bool doCalibration(std::vector<std::string> &imgList, const char* xmlName);
 

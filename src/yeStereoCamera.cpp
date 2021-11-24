@@ -18,6 +18,28 @@ YeStereoCamera::~YeStereoCamera() {
 }
 
 // //경로 내부의 이미지 파일을 읽어서 켈리브레이션 실시.
+bool YeStereoCamera::initCalibData(const char* xmlName) {
+
+	cv::FileStorage fs(xmlName, cv::FileStorage::READ);
+
+	if (fs.isOpened()) {
+
+		fs["matCamMat1"] >> matCamMat1;
+		fs["matDistCoffs1"] >> matDistCoffs1;
+		fs["matCamMat2"] >> matCamMat2;
+		fs["matDistCoffs2"] >> matDistCoffs2;
+		fs["matR"] >> matR;
+		fs["matT"] >> matT;
+
+	}
+
+	else {
+
+		return false;
+
+	}
+	return true;
+}
 
 bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const char* ext) {
 	
@@ -83,10 +105,7 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 					cv::drawChessboardCorners(frame, cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, success);
 				}
 				else {
-					for (int k = 0; k < corner_pts.size(); k++)
-					{
-						corner_pts[k].x += lrImage[l].cols;
-					}
+					
 					cv::drawChessboardCorners(frame, cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, success);
 
 				}
@@ -115,6 +134,7 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 
 	cv::Mat R_left, T_left, R_right, T_right;
 	cv::Mat matR, matT, matE, matF, matCamMat1, matCamMat2, matDistCoffs1, matDistCoffs2;
+	cv::Rect validRoi[2];
 
 	cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(lrImage[0].rows, lrImage[0].cols), matCamMat1, matDistCoffs1, R_left, T_left);
 	cv::calibrateCamera(objpoints_right, imgpoints_right, cv::Size(lrImage[1].rows, lrImage[1].cols), matCamMat2, matDistCoffs2, R_right, T_right);
@@ -126,6 +146,8 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 	cv::stereoCalibrate(objpoints_left, imgpoints_left, imgpoints_right,
 		matCamMat1, matDistCoffs1, matCamMat2, matDistCoffs2, imgsize,
 		matR, matT, matE, matF, cv::CALIB_FIX_INTRINSIC, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 1e-6));
+
+	cv::stereoRectify(matCamMat1, matDistCoffs1, matCamMat2, matDistCoffs2, imgsize, matR, matT, R1, R2, P1, P2, Q, cv::CALIB_ZERO_DISPARITY, 1, imgsize, &validRoi[0], &validRoi[1]);
 
 	cv::FileStorage fs(xmlName, cv::FileStorage::WRITE);
 	if (fs.isOpened()) {
@@ -228,7 +250,7 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 
 
 	cv::Mat R_left, T_left, R_right, T_right;
-
+	cv::Rect validRoi[2];
 	cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(lrImage[0].rows, lrImage[0].cols), matCamMat1, matDistCoffs1, R_left, T_left);
 	cv::calibrateCamera(objpoints_right, imgpoints_right, cv::Size(lrImage[1].rows, lrImage[1].cols), matCamMat2, matDistCoffs2, R_right, T_right);
 
@@ -238,6 +260,7 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 	cv::stereoCalibrate(objpoints_left, imgpoints_left, imgpoints_right,
 		matCamMat1, matDistCoffs1, matCamMat2, matDistCoffs2, imgsize,
 		matR, matT, matE, matF, cv::CALIB_FIX_INTRINSIC, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 1e-6));
+	cv::stereoRectify(matCamMat1, matDistCoffs1, matCamMat2, matDistCoffs2, imgsize, matR, matT, R1, R2, P1, P2, Q, cv::CALIB_ZERO_DISPARITY, 1, imgsize, &validRoi[0], &validRoi[1]);
 
 	cv::FileStorage fs(xmlName, cv::FileStorage::WRITE);
 	if (fs.isOpened()) {
