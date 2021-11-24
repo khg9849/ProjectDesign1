@@ -407,6 +407,18 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
+		if(pObjRect[left].x+pObjRect[left].w > 1280){
+			pObjRect[left].w = 1280-pObjRect[left].x;
+		}
+		if(pObjRect[left].y+pObjRect[left].h > 960){
+			pObjRect[left].h = 960-pObjRect[left].y;
+		}
+		if(pObjRect[right].x+pObjRect[right].w > 2560){
+			pObjRect[right].w = 2560-pObjRect[right].x;
+		}
+		if(pObjRect[right].y+960-pObjRect[right].h > 960){
+			pObjRect[right].h = 960-pObjRect[right].y;
+		}
 		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].y+pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].x+pObjRect[left].w));
 		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].y+pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].x+pObjRect[right].w));
 
@@ -474,6 +486,19 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
+
+		if(pObjRect[left].x+pObjRect[left].w > 1280){
+			pObjRect[left].w = 1280-pObjRect[left].x;
+		}
+		if(pObjRect[left].y+pObjRect[left].h > 960){
+			pObjRect[left].h = 960-pObjRect[left].y;
+		}
+		if(pObjRect[right].x+pObjRect[right].w > 2560){
+			pObjRect[right].w = 2560-pObjRect[right].x;
+		}
+		if(pObjRect[right].y+960-pObjRect[right].h > 960){
+			pObjRect[right].h = 960-pObjRect[right].y;
+		}
 		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].y+pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].x+pObjRect[left].w));
 		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].y+pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].x+pObjRect[right].w));
 
