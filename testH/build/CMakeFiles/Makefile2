@@ -72,7 +72,7 @@ CMAKE_BINARY_DIR = /home/ubuntu/ProjectDesign1/testH/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/hStereo.dir/all
+all: CMakeFiles/yeStereo.dir/all
 
 .PHONY : all
 
@@ -82,36 +82,36 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/hStereo.dir/clean
+clean: CMakeFiles/yeStereo.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/hStereo.dir
+# Target rules for target CMakeFiles/yeStereo.dir
 
 # All Build rule for target.
-CMakeFiles/hStereo.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=1,2 "Built target hStereo"
-.PHONY : CMakeFiles/hStereo.dir/all
+CMakeFiles/yeStereo.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=1,2,3 "Built target yeStereo"
+.PHONY : CMakeFiles/yeStereo.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/hStereo.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/hStereo.dir/all
+CMakeFiles/yeStereo.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/yeStereo.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/ProjectDesign1/testH/build/CMakeFiles 0
-.PHONY : CMakeFiles/hStereo.dir/rule
+.PHONY : CMakeFiles/yeStereo.dir/rule
 
 # Convenience name for target.
-hStereo: CMakeFiles/hStereo.dir/rule
+yeStereo: CMakeFiles/yeStereo.dir/rule
 
-.PHONY : hStereo
+.PHONY : yeStereo
 
 # clean rule for target.
-CMakeFiles/hStereo.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/clean
-.PHONY : CMakeFiles/hStereo.dir/clean
+CMakeFiles/yeStereo.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/clean
+.PHONY : CMakeFiles/yeStereo.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

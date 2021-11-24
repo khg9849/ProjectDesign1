@@ -130,44 +130,71 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named hStereo
+# Target rules for targets named yeStereo
 
 # Build rule for target.
-hStereo: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hStereo
-.PHONY : hStereo
+yeStereo: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 yeStereo
+.PHONY : yeStereo
 
 # fast build rule for target.
-hStereo/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/build
-.PHONY : hStereo/fast
+yeStereo/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/build
+.PHONY : yeStereo/fast
 
-featureDetection.o: featureDetection.cpp.o
+main.o: main.cpp.o
 
-.PHONY : featureDetection.o
+.PHONY : main.o
 
 # target to build an object file
-featureDetection.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/featureDetection.cpp.o
-.PHONY : featureDetection.cpp.o
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-featureDetection.i: featureDetection.cpp.i
+main.i: main.cpp.i
 
-.PHONY : featureDetection.i
+.PHONY : main.i
 
 # target to preprocess a source file
-featureDetection.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/featureDetection.cpp.i
-.PHONY : featureDetection.cpp.i
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-featureDetection.s: featureDetection.cpp.s
+main.s: main.cpp.s
 
-.PHONY : featureDetection.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-featureDetection.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hStereo.dir/build.make CMakeFiles/hStereo.dir/featureDetection.cpp.s
-.PHONY : featureDetection.cpp.s
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/main.cpp.s
+.PHONY : main.cpp.s
+
+yeStereoCamera.o: yeStereoCamera.cpp.o
+
+.PHONY : yeStereoCamera.o
+
+# target to build an object file
+yeStereoCamera.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o
+.PHONY : yeStereoCamera.cpp.o
+
+yeStereoCamera.i: yeStereoCamera.cpp.i
+
+.PHONY : yeStereoCamera.i
+
+# target to preprocess a source file
+yeStereoCamera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.i
+.PHONY : yeStereoCamera.cpp.i
+
+yeStereoCamera.s: yeStereoCamera.cpp.s
+
+.PHONY : yeStereoCamera.s
+
+# target to generate assembly for a file
+yeStereoCamera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/yeStereo.dir/build.make CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.s
+.PHONY : yeStereoCamera.cpp.s
 
 # Help Target
 help:
@@ -177,10 +204,13 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... hStereo"
-	@echo "... featureDetection.o"
-	@echo "... featureDetection.i"
-	@echo "... featureDetection.s"
+	@echo "... yeStereo"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
+	@echo "... yeStereoCamera.o"
+	@echo "... yeStereoCamera.i"
+	@echo "... yeStereoCamera.s"
 .PHONY : help
 
 
