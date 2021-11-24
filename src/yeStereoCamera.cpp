@@ -105,13 +105,13 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 
 			}
 		}
-		cv::imshow("Image", frame);
+		//cv::imshow("Image", frame);
 
 		index++;
 
 		cv::waitKey(0);	
 	}
-	cv::destroyAllWindows(); 
+	//cv::destroyAllWindows(); 
 
 	cv::Mat R_left, T_left, R_right, T_right;
 	cv::Mat matR, matT, matE, matF, matCamMat1, matCamMat2, matDistCoffs1, matDistCoffs2;
