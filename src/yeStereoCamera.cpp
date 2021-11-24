@@ -350,9 +350,6 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 		cv::Mat pic[2], dc[2];
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
-	}
-}
-
 
 		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].w));
 		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].w));
@@ -385,7 +382,7 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 
 		features.push_back(feature_temp[0]);
 		features.push_back(feature_temp[1]);
-	
+	}
 }
 
 // 추춘된 특정 영역만 SGBM 3D reconstruction.
