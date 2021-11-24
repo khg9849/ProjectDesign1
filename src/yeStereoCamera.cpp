@@ -138,6 +138,7 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 
 
 }
+
 bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xmlName) {
 	
 	int CHECKERBOARD[2]{ 6, 9 };
@@ -385,7 +386,7 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat r
 
 		features.push_back(feature_temp[0]);
 		features.push_back(feature_temp[1]);
-	}
+	
 }
 
 // 추춘된 특정 영역만 SGBM 3D reconstruction.
