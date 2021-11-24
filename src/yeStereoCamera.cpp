@@ -1,8 +1,10 @@
 #include "yeStereoCamera.hpp"
-
+#include <vector>
 #include <iostream>
-
+#include <opencv2/opencv.hpp>
+#include <opencv2/calib3d/calib3d_c.h>
 using namespace SYE;
+using std::vector;
 
 YeStereoCamera::YeStereoCamera() {
 	std::cout << "Create class" << std::endl;
@@ -10,37 +12,37 @@ YeStereoCamera::YeStereoCamera() {
 YeStereoCamera::~YeStereoCamera() {
 }
 
-//°æ·Î ³»ºÎÀÇ ÀÌ¹ÌÁö ÆÄÀÏÀ» ÀÐ¾î¼­ ÄÌ¸®ºê·¹ÀÌ¼Ç ½Ç½Ã.
-bool YeStereoCamera::doCalibration(const char* pPath, const char* ext = "*.jpg", const char* xmlName) {
+//ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾î¼­ ï¿½Ì¸ï¿½ï¿½ê·¹ï¿½Ì¼ï¿½ ï¿½Ç½ï¿½.
+bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const char* ext) {
 	
 	int CHECKERBOARD[2]{ 6, 9 };
 
 	/*		Load Images		*/
-
+	
 	vector<cv::String> images;
-	cv::glob(pPath + ext, images);
+	cv::glob(pPath, images);
 	std::cout << "Number of Loaded images : " << images.size() << std::endl;
 	if (images.size() == 0) {
 		std::cout << "Error: No images!\n" << std::endl;
 		return false;
 	}
 
-	/*   Calibration ½ÃÀÛ   */
+	/*   Calibration ï¿½ï¿½ï¿½ï¿½   */
 
-	vector<vector<cv::Point3f> > objpoints_right;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 3D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
-	vector<vector<cv::Point3f> > objpoints_left;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 3D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
+	vector<vector<cv::Point3f> > objpoints_right;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	vector<vector<cv::Point3f> > objpoints_left;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-	vector<vector<cv::Point2f> > imgpoints_right;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 2D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
-	vector<vector<cv::Point2f> > imgpoints_left;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 2D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
+	vector<vector<cv::Point2f> > imgpoints_right;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	vector<vector<cv::Point2f> > imgpoints_left;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-	vector<cv::Point3f> objp;								// ¿ùµå ÁÂÇ¥°è ¼±¾ð
+	vector<cv::Point3f> objp;								// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 
 	for (int i = 0; i < CHECKERBOARD[1]; i++)		// CHECKERBOARD[1] = 6
 	{
 		for (int j = 0; j < CHECKERBOARD[0]; j++)	// CHECKERBOARD[0] = 9
 		{
-			objp.push_back(cv::Point3f(j * 23, i * 23, 0));	// Ã¼½ºº¸µå ÇÑ Ä­ÀÇ ±æÀÌ Á¶Á¤ÇØ¾ß ÇÔ
+			objp.push_back(cv::Point3f(j * 23, i * 23, 0));	// Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½
 			
 		}
 	}
@@ -69,7 +71,7 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* ext = "*.jpg",
 			{
 				cv::TermCriteria criteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.001);
 				
-				cv::cornerSubPix(lrImage[l], corner_pts, cv::Size(11, 11), cv::Size(-1, -1), criteria);	// ÁÖ¾îÁø 2D point¿¡ ´ëÇØ ´õ Á¤Á¦½ÃÄÑ ¾÷µ¥ÀÌÆ®
+				cv::cornerSubPix(lrImage[l], corner_pts, cv::Size(11, 11), cv::Size(-1, -1), criteria);	// ï¿½Ö¾ï¿½ï¿½ï¿½ 2D pointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 			
 				if ((l % 2) == 0) {
 					cv::drawChessboardCorners(frame, cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, success);
@@ -97,20 +99,22 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* ext = "*.jpg",
 
 			}
 		}
-		cv::imshow("Image", frame);//image ¶ç¿ì±â
+		cv::imshow("Image", frame);//image ï¿½ï¿½ï¿½ï¿½
 
 		index++;
 
 		cv::waitKey(0);	
 	}
-	cv::destroyAllWindows(); // À©µµ¿ì Ã¢ °­Á¦Á¾·á, imshow »©¸é °°ÀÌ »©±â
+	cv::destroyAllWindows(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã¢ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, imshow ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 
 	cv::Mat R_left, T_left, R_right, T_right;
+	cv::Mat matR, matT, matE, matF, matCamMat1, matCamMat2, matDistCoffs1, matDistCoffs2;
 
 	cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(lrImage[0].rows, lrImage[0].cols), matCamMat1, matDistCoffs1, R_left, T_left);
 	cv::calibrateCamera(objpoints_right, imgpoints_right, cv::Size(lrImage[1].rows, lrImage[1].cols), matCamMat2, matDistCoffs2, R_right, T_right);
 
+	
 
 	cv::Size imgsize(gray.rows, gray.cols / 2);
 
@@ -133,27 +137,27 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* ext = "*.jpg",
 	return true;
 
 }
-bool YeStereoCamera::doCalibration(std::vector<std::string>& imgList, const char* xmlName) {
+bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xmlName) {
 	
 	int CHECKERBOARD[2]{ 6, 9 };
 
 
-	/*   Calibration ½ÃÀÛ   */
+	/*   Calibration ï¿½ï¿½ï¿½ï¿½   */
 
-	vector<vector<cv::Point3f> > objpoints_right;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 3D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
-	vector<vector<cv::Point3f> > objpoints_left;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 3D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
+	vector<vector<cv::Point3f> > objpoints_right;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	vector<vector<cv::Point3f> > objpoints_left;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 3D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-	vector<vector<cv::Point2f> > imgpoints_right;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 2D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
-	vector<vector<cv::Point2f> > imgpoints_left;			// °¢ ÀÌ¹ÌÁö¿¡ ´ëÇØ 2D ÁÂÇ¥¸¦ ÀúÀåÇÏ´Â º¤ÅÍ ¼±¾ð
+	vector<vector<cv::Point2f> > imgpoints_right;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	vector<vector<cv::Point2f> > imgpoints_left;			// ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 2D ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-	vector<cv::Point3f> objp;								// ¿ùµå ÁÂÇ¥°è ¼±¾ð
+	vector<cv::Point3f> objp;								// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 
 	for (int i = 0; i < CHECKERBOARD[1]; i++)		// CHECKERBOARD[1] = 6
 	{
 		for (int j = 0; j < CHECKERBOARD[0]; j++)	// CHECKERBOARD[0] = 9
 		{
-			objp.push_back(cv::Point3f(j * 23, i * 23, 0));	// Ã¼½ºº¸µå ÇÑ Ä­ÀÇ ±æÀÌ Á¶Á¤ÇØ¾ß ÇÔ
+			objp.push_back(cv::Point3f(j * 23, i * 23, 0));	// Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½ï¿½
 
 		}
 	}
@@ -182,7 +186,7 @@ bool YeStereoCamera::doCalibration(std::vector<std::string>& imgList, const char
 			{
 				cv::TermCriteria criteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.001);
 
-				cv::cornerSubPix(lrImage[l], corner_pts, cv::Size(11, 11), cv::Size(-1, -1), criteria);	// ÁÖ¾îÁø 2D point¿¡ ´ëÇØ ´õ Á¤Á¦½ÃÄÑ ¾÷µ¥ÀÌÆ®
+				cv::cornerSubPix(lrImage[l], corner_pts, cv::Size(11, 11), cv::Size(-1, -1), criteria);	// ï¿½Ö¾ï¿½ï¿½ï¿½ 2D pointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
 				if ((l % 2) == 0) {
 					cv::drawChessboardCorners(frame, cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, success);
@@ -248,23 +252,20 @@ bool YeStereoCamera::doCalibration(std::vector<std::string>& imgList, const char
 
 
 
-// Yolo¸¦ ÀÌ¿ëÇÏ¿© Æ¯Á¤ ÀÌ¸§ÀÇ ¿µ¿ªÀ» ÃßÃâ.
+// Yoloï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ Æ¯ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, bbox_t* pObjRect) 
 {
 
 }
-
-
 
 //Absolute length from camera.
 bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect, std::vector<YePos3D>& features) {
 
 }
 
-
-// ÃßÃáµÈ Æ¯Á¤ ¿µ¿ª¸¸ SGBM 3D reconstruction.
+// ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ SGBM 3D reconstruction.
 bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat rtn) {
 
 }
 
-/*--------------------------------------------------4 ÆÀ È­ ÀÌ ÆÃ ! ! ! ,,----------------------------------------------------*/
+/*--------------------------------------------------4 ï¿½ï¿½ È­ ï¿½ï¿½ ï¿½ï¿½ ! ! ! ,,----------------------------------------------------*/

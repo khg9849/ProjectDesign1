@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <string>
-
-#include <yolo_v2_class.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/calib3d/calib3d_c.h>
+//#include <yolo_v4_class.hpp>
 
 namespace SYE {
 
@@ -34,7 +35,7 @@ public:
 	}*/
 
 	//경로 내부의 이미지 파일을 읽어서 켈리브레이션 실시.
-	bool doCalibration(const char *pPath, const char *ext = "*.jpg", const char* xmlName);
+	bool doCalibration(const char *pPath, const char* xmlName, const char* ext = ".jpg");
 	bool doCalibration(std::vector<std::string> &imgList, const char* xmlName);
 
 	// Yolo를 이용하여 특정 이름의 영역을 추출.
