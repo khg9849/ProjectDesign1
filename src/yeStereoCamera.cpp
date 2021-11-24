@@ -70,7 +70,7 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 	{
 		for (int j = 0; j < CHECKERBOARD[0]; j++)	// CHECKERBOARD[0] = 9
 		{
-			objp.push_back(cv::Point3f(j * 23, i * 23, 0));
+			objp.push_back(cv::Point3f(j * 23.8, i * 23.8, 0));
 			
 		}
 	}
@@ -80,7 +80,6 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 	vector<cv::Point2f> corner_pts;	
 	bool success;
 	char buf[256];
-	int index = 0;
 
 
 	for (int i = 0; i < images.size(); i++) {
@@ -124,15 +123,10 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 
 			}
 		}
-		//cv::imshow("Image", frame);
-
-		index++;
-
-		cv::waitKey(0);	
+	
 	}
-	//cv::destroyAllWindows(); 
 
-	cv::Mat R_left, T_left, R_right, T_right;
+	cv::Mat R_left, T_left, R_right, T_right, R1, R2, P1, P2, Q;
 	cv::Mat matR, matT, matE, matF, matCamMat1, matCamMat2, matDistCoffs1, matDistCoffs2;
 	cv::Rect validRoi[2];
 
@@ -141,7 +135,7 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 
 	
 
-	cv::Size imgsize(gray.rows, gray.cols / 2);
+	cv::Size imgsize = lrImage[0].size();
 
 	cv::stereoCalibrate(objpoints_left, imgpoints_left, imgpoints_right,
 		matCamMat1, matDistCoffs1, matCamMat2, matDistCoffs2, imgsize,
@@ -184,7 +178,8 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 	{
 		for (int j = 0; j < CHECKERBOARD[0]; j++)	// CHECKERBOARD[0] = 9
 		{
-			objp.push_back(cv::Point3f(j * 23, i * 23, 0));	
+			objp.push_back(cv::Point3f(j * 23.8, i * 23.8, 0));
+
 		}
 	}
 
@@ -193,11 +188,10 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 	vector<cv::Point2f> corner_pts;
 	bool success;
 	char buf[256];
-	int index = 0;
 
 
-	for (int i = 0; i < imgList.size(); i++){
-		frame = cv::imread(imgList[i]);
+	for (int i = 0; i < images.size(); i++) {
+		frame = cv::imread(images[i]);
 		cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
 
 
@@ -212,16 +206,13 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 			{
 				cv::TermCriteria criteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.001);
 
-				cv::cornerSubPix(lrImage[l], corner_pts, cv::Size(11, 11), cv::Size(-1, -1), criteria);	
+				cv::cornerSubPix(lrImage[l], corner_pts, cv::Size(11, 11), cv::Size(-1, -1), criteria);
 
 				if ((l % 2) == 0) {
 					cv::drawChessboardCorners(frame, cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, success);
 				}
 				else {
-					for (int k = 0; k < corner_pts.size(); k++)
-					{
-						corner_pts[k].x += lrImage[l].cols;
-					}
+
 					cv::drawChessboardCorners(frame, cv::Size(CHECKERBOARD[0], CHECKERBOARD[1]), corner_pts, success);
 
 				}
@@ -240,26 +231,24 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 
 			}
 		}
-		cv::imshow("Image", frame);
 
-		index++;
-
-		cv::waitKey(0);
 	}
-	cv::destroyAllWindows();
 
-
-	cv::Mat R_left, T_left, R_right, T_right;
+	cv::Mat R_left, T_left, R_right, T_right, R1, R2, P1, P2, Q;
+	cv::Mat matR, matT, matE, matF, matCamMat1, matCamMat2, matDistCoffs1, matDistCoffs2;
 	cv::Rect validRoi[2];
+
 	cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(lrImage[0].rows, lrImage[0].cols), matCamMat1, matDistCoffs1, R_left, T_left);
 	cv::calibrateCamera(objpoints_right, imgpoints_right, cv::Size(lrImage[1].rows, lrImage[1].cols), matCamMat2, matDistCoffs2, R_right, T_right);
 
 
-	cv::Size imgsize(gray.rows, gray.cols / 2);
+
+	cv::Size imgsize = lrImage[0].size();
 
 	cv::stereoCalibrate(objpoints_left, imgpoints_left, imgpoints_right,
 		matCamMat1, matDistCoffs1, matCamMat2, matDistCoffs2, imgsize,
 		matR, matT, matE, matF, cv::CALIB_FIX_INTRINSIC, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 1e-6));
+
 	cv::stereoRectify(matCamMat1, matDistCoffs1, matCamMat2, matDistCoffs2, imgsize, matR, matT, R1, R2, P1, P2, Q, cv::CALIB_ZERO_DISPARITY, 1, imgsize, &validRoi[0], &validRoi[1]);
 
 	cv::FileStorage fs(xmlName, cv::FileStorage::WRITE);
@@ -275,6 +264,7 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 	}
 
 	return true;
+
 }
 
 
