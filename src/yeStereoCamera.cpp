@@ -536,7 +536,7 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 }
 
 // 추춘된 특정 영역만 SGBM 3D reconstruction.
-bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, int size, cv::Mat* rtn) {
+bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat* rtn) {
 	bool no_display = true;		//don't display results
 	bool no_downscale = true;	//force stereo matching on full-sized views to improve quality
 	double vis_mult = 8;		//coefficient used to scale disparity map visualizations
@@ -560,7 +560,7 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, int size,
 	int idx=0;
 	int stride=src.cols/2;
 	bbox_t bbox1,bbox2;
-	for(int i=0;i<size;i+=2){
+	for(int i=0;i<findImageSize;i+=2){
 		if(pObject[i].x<pObject[i+1].x){
 			bbox1=pObject[i];
 			bbox2=pObject[i+1];
@@ -577,7 +577,8 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, int size,
 		ny=std::min(bbox1.y,bbox2.y);
 		nw=std::max(bbox1.x+bbox1.w,bbox2.x-stride+bbox2.w)-nx;
 		nh=std::max(bbox1.y+bbox1.h,bbox2.y+bbox2.h)-ny;
-
+		if(nx+nw>=stride) nw=stride-nx;
+		if(ny+nh>=src.rows) nh=src.rows-ny;		
 		// cv::Mat srcCpy=src.clone();
 		// cv::rectangle(srcCpy,cv::Rect(nx,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
 		// cv::rectangle(srcCpy,cv::Rect(nx+stride,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
@@ -678,7 +679,8 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObjec
 		ny=std::min(bbox1.y,bbox2.y);
 		nw=std::max(bbox1.x+bbox1.w,bbox2.x-stride+bbox2.w)-nx;
 		nh=std::max(bbox1.y+bbox1.h,bbox2.y+bbox2.h)-ny;
-
+		if(nx+nw>=stride) nw=stride-nx;
+		if(ny+nh>=src.rows) nh=src.rows-ny;
 		// cv::Mat srcCpy=src.clone();
 		// cv::rectangle(srcCpy,cv::Rect(nx,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
 		// cv::rectangle(srcCpy,cv::Rect(nx+stride,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
