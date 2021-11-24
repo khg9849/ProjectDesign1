@@ -29,7 +29,7 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, bbox_t* p
 
 
 //Absolute length from camera.
-bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<YePos3D>& features) {
+bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<std::vector<YePos3D>>& features) {
 	
 	cv::Ptr<cv::Feature2D> fast = cv::FastFeatureDetector::create();
 	cv::Ptr<cv::Feature2D> brief = cv::xfeatures2d::BriefDescriptorExtractor::create();
@@ -66,19 +66,32 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox
 		brief->compute(pic[1], kp[1], dc[1]);
 		matcher->match(dc[0], dc[1], matches);
 
+		std::vector<YePos3D> feature_temp[2];
 		for(int j = 0; j < matches.size(); j++){
-			YePos3D temp;
+			YePos3D temp[2];
 		
-			temp.x = (int)kp[0][matches[j].queryIdx].pt.x+pObjRect[left].x;
-			temp.y = (int)kp[0][matches[j].queryIdx].pt.y+pObjRect[left].y;
-			temp.z = -matT.at<double>(0,0)/(-invMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+pObjRect[right].x-gray.cols/2)-invMat[1].at<double>(0,2)+invMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+pObjRect[left].x)+invMat[0].at<double>(0,2));
+			temp[0].x = invMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+pObjRect[left].x)+invMat[0].at<double>(0,2);
+			temp[1].x = invMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+pObjRect[right].x-gray.cols/2)+invMat[1].at<double>(0,2);
+			
+			temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
+			temp[1].z = temp[0].z;
 
-			features.push_back(temp);
+			temp[0].x = temp[0].x*temp[0].z;
+			temp[0].y = (invMat[0].at<double>(1,1)*((int)(kp[0][matches[j].queryIdx].pt.y)+pObjRect[left].y)+invMat[0].at<double>(1,2))*temp[0].z;
+
+			temp[1].x = temp[1].x*temp[1].z;
+			temp[1].y = (invMat[1].at<double>(1,1)*((int)(kp[1][matches[j].trainIdx].pt.y)+pObjRect[right].y)+invMat[1].at<double>(1,2))*temp[1].z;
+
+			feature_temp[0].push_back(temp[0]);
+			feature_temp[1].push_back(temp[1]);
 		}
+
+		features.push_back(feature_temp[0]);
+		features.push_back(feature_temp[1]);
 	}
 }
 
-bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect, int num, std::vector<YePos3D>& features) {
+bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect, int objNum, std::vector<std::vector<YePos3D>>& features) {
 
 	cv::Ptr<cv::Feature2D> fast = cv::FastFeatureDetector::create();
 	cv::Ptr<cv::Feature2D> brief = cv::xfeatures2d::BriefDescriptorExtractor::create();
@@ -91,7 +104,7 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 	invMat[0] = matCamMat1.inv();
 	invMat[1] = matCamMat2.inv();
 
-	for(int i = 0; i < num; i+=2){
+	for(int i = 0; i < objNum; i+=2){
 		int left, right;
 		if(pObjRect[i].x < pObjRect[i+1].x){
 			left = i;
@@ -115,15 +128,28 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 		brief->compute(pic[1], kp[1], dc[1]);
 		matcher->match(dc[0], dc[1], matches);
 
+		std::vector<YePos3D> feature_temp[2];
 		for(int j = 0; j < matches.size(); j++){
-			YePos3D temp;
+			YePos3D temp[2];
 		
-			temp.x = (int)kp[0][matches[j].queryIdx].pt.x+pObjRect[left].x;
-			temp.y = (int)kp[0][matches[j].queryIdx].pt.y+pObjRect[left].y;
-			temp.z = -matT.at<double>(0,0)/(-invMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+pObjRect[right].x-gray.cols/2)-invMat[1].at<double>(0,2)+invMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+pObjRect[left].x)+invMat[0].at<double>(0,2));
+			temp[0].x = invMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+pObjRect[left].x)+invMat[0].at<double>(0,2);
+			temp[1].x = invMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+pObjRect[right].x-gray.cols/2)+invMat[1].at<double>(0,2);
+			
+			temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
+			temp[1].z = temp[0].z;
 
-			features.push_back(temp);
+			temp[0].x = temp[0].x*temp[0].z;
+			temp[0].y = (invMat[0].at<double>(1,1)*((int)(kp[0][matches[j].queryIdx].pt.y)+pObjRect[left].y)+invMat[0].at<double>(1,2))*temp[0].z;
+
+			temp[1].x = temp[1].x*temp[1].z;
+			temp[1].y = (invMat[1].at<double>(1,1)*((int)(kp[1][matches[j].trainIdx].pt.y)+pObjRect[right].y)+invMat[1].at<double>(1,2))*temp[1].z;
+
+			feature_temp[0].push_back(temp[0]);
+			feature_temp[1].push_back(temp[1]);
 		}
+
+		features.push_back(feature_temp[0]);
+		features.push_back(feature_temp[1]);
 	}
 }
 

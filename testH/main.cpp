@@ -23,15 +23,15 @@ int main(int argc, char** argv){
 
 	cv::Mat img = cv::imread("../resources/cube/new/30cm.jpg");
 
-	std::vector<SYE::YePos3D> feature;
+	std::vector<std::vector<SYE::YePos3D>> feature;
 
 	a.getAbsoluteLengthInRect(img, temp, 2, feature);
 
 	cv::imshow("test", img(cv::Range(250, 500), cv::Range(600, 1000)));
 	cv::waitKey(0);
 
-	for(int i = 0; i < feature.size(); i++){
-		std::cout<<feature[i].x<<' '<<feature[i].y<<' '<<feature[i].z<<'\n';
+	for(int i = 0; i < feature[0].size(); i++){
+		std::cout<<feature[0][i].x<<' '<<feature[0][i].y<<' '<<feature[0][i].z<<'\n';
 	}
 
 	return 0;
