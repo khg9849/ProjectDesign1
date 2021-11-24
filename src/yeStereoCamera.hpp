@@ -8,6 +8,14 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
+#include "opencv2/calib3d.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/core/utility.hpp"
+#include "opencv2/ximgproc.hpp"
+
+
 namespace SYE {
 
 struct YePos3D {
@@ -45,7 +53,8 @@ public:
 
 
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
-	bool getSgbmInRect(const cv::Mat src, bbox_t *pObject, cv::Mat rtn);
+	bool getSgbmInRect(const cv::Mat src, bbox_t *pObject, int size, cv::Mat* rtn);
+	bool getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn);
 };
 
 }
