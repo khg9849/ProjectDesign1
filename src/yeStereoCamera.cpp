@@ -190,8 +190,8 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 	char buf[256];
 
 
-	for (int i = 0; i < images.size(); i++) {
-		frame = cv::imread(images[i]);
+	for (int i = 0; i < imgList.size(); i++) {
+		frame = cv::imread(imgList[i]);
 		cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
 
 
