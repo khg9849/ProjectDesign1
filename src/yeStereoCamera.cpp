@@ -13,8 +13,6 @@ YeStereoCamera::~YeStereoCamera() {
 }
 
 // //경로 내부의 이미지 파일을 읽어서 켈리브레이션 실시.
-bool YeStereoCamera::doCalibration(const char* pPath, const char* ext = ".jpg") {
-
 
 bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const char* ext) {
 	
@@ -332,27 +330,27 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 
 	cv::Mat gray;
 	cv::cvtColor(src, gray, cv::COLOR_RGB2GRAY);
-	
+
 	cv::Mat invMat[2];
 	invMat[0] = matCamMat1.inv();
 	invMat[1] = matCamMat2.inv();
 
-	for(int i = 0; i < objNum; i+=2){
+	for (int i = 0; i < objNum; i += 2) {
 		int left, right;
-		if(pObjRect[i].x < pObjRect[i+1].x){
+		if (pObjRect[i].x < pObjRect[i + 1].x) {
 			left = i;
-			right = i+1;
+			right = i + 1;
 		}
-		else{
-			left = i+1;
+		else {
+			left = i + 1;
 			right = i;
 		}
 
 		cv::Mat pic[2], dc[2];
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
-
-
+	}
+}
 bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat rtn) {
 
 
