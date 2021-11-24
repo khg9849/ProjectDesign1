@@ -34,6 +34,12 @@ private:
 	cv::Mat matR;			// rotation matrix between two lens.
 	cv::Mat matE;			// essential matrix between two lens.
 	cv::Mat matF;			// fundamental matrix between two lens.
+
+	
+	Detector *detector;
+	std::string weight_file;
+	std::string cfg_file;
+	int findImageSize;
 protected:
 public:
 	YeStereoCamera();
@@ -48,6 +54,9 @@ public:
 	bool doCalibration(std::vector<std::string> &imgList, const char* xmlName);
 
 	// Yolo를 이용하여 특정 이름의 영역을 추출.
+	void getWeight_file(std::string _w);
+	void getcfg_file(std::string _c);
+	bool findImage(const cv::Mat mat, const char *objName, std::vector<bbox_t> vObjRect);
 	bool findImage(const cv::Mat mat, const char *objName, bbox_t *pObjRect);
 
 	//Absolute length from camera.
