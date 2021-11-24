@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-<<<<<<< HEAD
 
 #include <yolo_v2_class.hpp>
 #include <opencv2/opencv.hpp>
@@ -16,11 +15,6 @@
 #include "opencv2/core/utility.hpp"
 #include "opencv2/ximgproc.hpp"
 
-=======
-#include <opencv2/opencv.hpp>
-#include <opencv2/calib3d/calib3d_c.h>
-//#include <yolo_v4_class.hpp>
->>>>>>> khg
 
 namespace SYE {
 
