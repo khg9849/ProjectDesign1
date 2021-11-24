@@ -135,7 +135,7 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 	}
 
 	return true;
->>>>>>> khg
+
 
 }
 bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xmlName) {
