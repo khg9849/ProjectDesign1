@@ -352,7 +352,6 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 		std::vector<cv::DMatch> matches;
 	}
 }
-bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat rtn) {
 
 
 		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].w));
