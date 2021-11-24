@@ -76,42 +76,42 @@ include CMakeFiles/yeStereo.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/yeStereo.dir/flags.make
 
-CMakeFiles/yeStereo.dir/main.cpp.o: CMakeFiles/yeStereo.dir/flags.make
-CMakeFiles/yeStereo.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/yeStereo.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/yeStereo.dir/main.cpp.o -c /home/ubuntu/ProjectDesign1/testH/main.cpp
+CMakeFiles/yeStereo.dir/main2.cpp.o: CMakeFiles/yeStereo.dir/flags.make
+CMakeFiles/yeStereo.dir/main2.cpp.o: ../main2.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/yeStereo.dir/main2.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/yeStereo.dir/main2.cpp.o -c /home/ubuntu/ProjectDesign1/testH/main2.cpp
 
-CMakeFiles/yeStereo.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/yeStereo.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/ProjectDesign1/testH/main.cpp > CMakeFiles/yeStereo.dir/main.cpp.i
+CMakeFiles/yeStereo.dir/main2.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/yeStereo.dir/main2.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/ProjectDesign1/testH/main2.cpp > CMakeFiles/yeStereo.dir/main2.cpp.i
 
-CMakeFiles/yeStereo.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/yeStereo.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/ProjectDesign1/testH/main.cpp -o CMakeFiles/yeStereo.dir/main.cpp.s
+CMakeFiles/yeStereo.dir/main2.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/yeStereo.dir/main2.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/ProjectDesign1/testH/main2.cpp -o CMakeFiles/yeStereo.dir/main2.cpp.s
 
-CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o: CMakeFiles/yeStereo.dir/flags.make
-CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o: ../yeStereoCamera.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o -c /home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp
+CMakeFiles/yeStereo.dir/calibration.cpp.o: CMakeFiles/yeStereo.dir/flags.make
+CMakeFiles/yeStereo.dir/calibration.cpp.o: ../calibration.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/yeStereo.dir/calibration.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/yeStereo.dir/calibration.cpp.o -c /home/ubuntu/ProjectDesign1/testH/calibration.cpp
 
-CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp > CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.i
+CMakeFiles/yeStereo.dir/calibration.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/yeStereo.dir/calibration.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ubuntu/ProjectDesign1/testH/calibration.cpp > CMakeFiles/yeStereo.dir/calibration.cpp.i
 
-CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp -o CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.s
+CMakeFiles/yeStereo.dir/calibration.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/yeStereo.dir/calibration.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ubuntu/ProjectDesign1/testH/calibration.cpp -o CMakeFiles/yeStereo.dir/calibration.cpp.s
 
 # Object files for target yeStereo
 yeStereo_OBJECTS = \
-"CMakeFiles/yeStereo.dir/main.cpp.o" \
-"CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o"
+"CMakeFiles/yeStereo.dir/main2.cpp.o" \
+"CMakeFiles/yeStereo.dir/calibration.cpp.o"
 
 # External object files for target yeStereo
 yeStereo_EXTERNAL_OBJECTS =
 
-yeStereo: CMakeFiles/yeStereo.dir/main.cpp.o
-yeStereo: CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o
+yeStereo: CMakeFiles/yeStereo.dir/main2.cpp.o
+yeStereo: CMakeFiles/yeStereo.dir/calibration.cpp.o
 yeStereo: CMakeFiles/yeStereo.dir/build.make
 yeStereo: CMakeFiles/yeStereo.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable yeStereo"

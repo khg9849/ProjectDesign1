@@ -377,6 +377,9 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char *objName, bbox_t *p
 
 //Absolute length from camera.
 bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<std::vector<YePos3D>>& features) {
+	if(pObjRect.size()<1){
+		return false;
+	}
 	
 	cv::Ptr<cv::Feature2D> fast = cv::FastFeatureDetector::create();
 	cv::Ptr<cv::Feature2D> brief = cv::xfeatures2d::BriefDescriptorExtractor::create();
@@ -404,8 +407,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
-		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].w));
-		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].w));
+		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].y+pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].x+pObjRect[left].w));
+		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].y+pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].x+pObjRect[right].w));
 
 		fast->detect(pic[0], kp[0], pic[1]);
 		brief->compute(pic[0], kp[0], dc[0]);
@@ -436,9 +439,14 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox
 		features.push_back(feature_temp[0]);
 		features.push_back(feature_temp[1]);
 	}
+
+	return true;
 }
 
-bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect, int objNum, std::vector<std::vector<YePos3D>>& features) {
+bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect, std::vector<std::vector<YePos3D>>& features) {
+	if(findImageSize<1){
+		return false;
+	}
 
 	cv::Ptr<cv::Feature2D> fast = cv::FastFeatureDetector::create();
 	cv::Ptr<cv::Feature2D> brief = cv::xfeatures2d::BriefDescriptorExtractor::create();
@@ -451,7 +459,7 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 	invMat[0] = matCamMat1.inv();
 	invMat[1] = matCamMat2.inv();
 
-	for (int i = 0; i < objNum; i += 2) {
+	for (int i = 0; i < findImageSize; i += 2) {
 		int left, right;
 		if (pObjRect[i].x < pObjRect[i + 1].x) {
 			left = i;
@@ -466,8 +474,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
-		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].w));
-		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].w));
+		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].y+pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].x+pObjRect[left].w));
+		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].y+pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].x+pObjRect[right].w));
 
 		fast->detect(pic[0], kp[0], pic[1]);
 		brief->compute(pic[0], kp[0], dc[0]);
@@ -498,6 +506,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 		features.push_back(feature_temp[0]);
 		features.push_back(feature_temp[1]);
 	}
+
+	return true;
 }
 
 // 추춘된 특정 영역만 SGBM 3D reconstruction.

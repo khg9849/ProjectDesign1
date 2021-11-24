@@ -7,7 +7,9 @@ int main(int argc, char** argv){
 	
 	SYE::YeStereoCamera a;
 
-	fsr["translationVector"] >> a.matT;
+	a.doCalibration("resources/calib_data/", "calibration.xml");
+
+	/*fsr["translationVector"] >> a.matT;
 	fsr["leftCameraMatrix"] >> a.matCamMat1;
 	fsr["rightCameraMatrix"] >> a.matCamMat2;
 
@@ -32,7 +34,7 @@ int main(int argc, char** argv){
 
 	for(int i = 0; i < feature[0].size(); i++){
 		std::cout<<feature[0][i].x<<' '<<feature[0][i].y<<' '<<feature[0][i].z<<'\n';
-	}
+	}*/
 
 	return 0;
 }

@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/ProjectDesign1/testH/main.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/yeStereo.dir/main.cpp.o"
-  "/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o"
+  "/home/ubuntu/ProjectDesign1/testH/calibration.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/yeStereo.dir/calibration.cpp.o"
+  "/home/ubuntu/ProjectDesign1/testH/main2.cpp" "/home/ubuntu/ProjectDesign1/testH/build/CMakeFiles/yeStereo.dir/main2.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
