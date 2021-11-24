@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/yeStereo.dir/main.cpp.o"
-  "CMakeFiles/yeStereo.dir/yeStereoCamera.cpp.o"
+  "CMakeFiles/yeStereo.dir/calibration.cpp.o"
+  "CMakeFiles/yeStereo.dir/main2.cpp.o"
   "yeStereo"
   "yeStereo.pdb"
 )
