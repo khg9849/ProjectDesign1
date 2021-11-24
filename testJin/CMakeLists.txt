@@ -25,4 +25,4 @@ link_libraries(
 )
 
 add_executable(saveCont saveCont.cpp CallYolo.cpp)
-add_executable(${PROJECT_NAME} main.cpp yeStereoCamera.cpp)
+add_executable(reconTest reconTest.cpp yeStereoCamera.cpp)
