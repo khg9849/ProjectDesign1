@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 		pObject.push_back(cont.candidates[i]);
 
 	SYE::YeStereoCamera *sye=new SYE::YeStereoCamera();
-	sye->getSgbmInRect(src,pObject,&rtn);
+	sye->getSgbmInRect(src,pObject,rtn);
 	for(cv::Mat res:rtn){
 		cv::imshow("result",res);
 		cv::waitKey(0);

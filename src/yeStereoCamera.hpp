@@ -71,8 +71,8 @@ public:
 
 
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
-	bool getSgbmInRect(const cv::Mat src, bbox_t *pObject, cv::Mat* rtn);
-	bool getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn);
+	bool getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>& rtn);
+	bool getSgbmInRect(const cv::Mat src, bbox_t* bbox1, bbox_t* bbox2, std::vector<cv::Mat>& rtn);
 };
 
 }

@@ -1,5 +1,6 @@
 #ifndef YESTEREOCAMERA_HPP
 #define YESTEREOCAMERA_HPP
+#define OPENCV
 
 #include <vector>
 #include <string>
@@ -36,11 +37,12 @@ private:
 	cv::Mat matE;			// essential matrix between two lens.
 	cv::Mat matF;			// fundamental matrix between two lens.
 
+	
 	Detector *detector;
 	std::string weight_file;
 	std::string cfg_file;
 	int findImageSize;
-
+	
 	std::vector<std::string> objNames;
 protected:
 public:
@@ -69,8 +71,8 @@ public:
 
 
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
-	bool getSgbmInRect(const cv::Mat src, bbox_t *pObject, cv::Mat* rtn);
-	bool getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn);
+	bool getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>& rtn);
+	bool getSgbmInRect(const cv::Mat src, bbox_t* bbox1, bbox_t* bbox2, std::vector<cv::Mat>& rtn);
 };
 
 }
