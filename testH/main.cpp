@@ -29,20 +29,21 @@ int main()
     }
 
     cv::Mat mat;
-	mat = cv::imread("../resources/cube/new/20cm.jpg");
+	//mat = cv::imread("../resources/cube/new/20cm.jpg");
     
-	/*cv::VideoCapture video("../resources/1/sample2.mp4");
+	cv::VideoCapture video("../resources/1/sample.mp4");
     if (!video.isOpened()) {
         cout << "Can't open the video" << endl;
         return 0;
-    }*/
+    }
 
 	temp->getcfg_file("../darknet/cfg/yolov4.cfg");
     temp->getWeight_file("../darknet/yolov4.weights");
 	temp->getObjNames_file("../darknet/data/coco.names");
 
-	//video>>mat;
-	//while(!mat.empty()){
+	temp->initMatrix();
+	video>>mat;
+	while(!mat.empty()){
         vector<bbox_t> pObject;
         if ((temp->findImage(mat, objName, pObject)) == false) {
             std::cout << "findImage failed\n";
@@ -65,7 +66,7 @@ int main()
         }
 
         for (cv::Mat res : rtn) {
-            cv::imshow("result", res);
+            cv::imshow("result", mat);
             cv::waitKey(0);
         }
 
@@ -81,8 +82,8 @@ int main()
         }
 		}
 
-	//	video>>mat;
-    //}
+		video>>mat;
+    }
 
     return 0;
 }

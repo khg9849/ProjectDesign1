@@ -44,6 +44,12 @@ private:
 	int findImageSize;
 	
 	std::vector<std::string> objNames;
+
+	cv::Ptr<cv::Feature2D> fast;
+	cv::Ptr<cv::Feature2D> brief;
+	cv::Ptr<cv::DescriptorMatcher> matcher;
+	cv::Mat invCamMat[2];
+	
 protected:
 public:
 	YeStereoCamera();
@@ -65,14 +71,13 @@ public:
 	bool findImage(const cv::Mat mat, const char *objName, std::vector<bbox_t> &vObjRect);
 	bool findImage(const cv::Mat mat, const char *objName, bbox_t *pObjRect);
 
+	void initMatrix();
 	//Absolute length from camera.
-	bool getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<std::vector<YePos3D>>& features);
-	bool getAbsoluteLengthInRect(const cv::Mat src, bbox_t *pObjRect, std::vector<std::vector<YePos3D>>& features);
-
+	bool getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<std::vector<YePos3D>> &features);
 
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
 	bool getSgbmInRect(const cv::Mat src, bbox_t *pObject, cv::Mat* rtn);
-	bool getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn);
+	bool getSgbmInRect(const cv::Mat &src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn);
 };
 
 }
