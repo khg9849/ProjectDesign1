@@ -1,36 +1,38 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<leftCameraMatrix type_id="opencv-matrix">
+<Size>
+  640 480</Size>
+<matCamMat1 type_id="opencv-matrix">
   <rows>3</rows>
   <cols>3</cols>
   <dt>d</dt>
   <data>
     4.2302493109427951e+02 0. 3.3215339764516028e+02 0.
-    4.2157179376550602e+02 2.5332725121955272e+02 0. 0. 1.</data></leftCameraMatrix>
-<leftCameraDistCoeff type_id="opencv-matrix">
+    4.2157179376550602e+02 2.5332725121955272e+02 0. 0. 1.</data></matCamMat1>
+<matDistCoffs1 type_id="opencv-matrix">
   <rows>1</rows>
   <cols>5</cols>
   <dt>d</dt>
   <data>
     2.9985289741615937e-02 -6.9038962349492056e-02
     3.5531025164682947e-04 -1.5865301541222946e-03
-    4.0273708570019745e-02</data></leftCameraDistCoeff>
-<rightCameraMatrix type_id="opencv-matrix">
+    4.0273708570019745e-02</data></matDistCoffs1>
+<matCamMat2 type_id="opencv-matrix">
   <rows>3</rows>
   <cols>3</cols>
   <dt>d</dt>
   <data>
     4.2135493699113101e+02 0. 3.3999434061876985e+02 0.
-    4.2029890047124093e+02 2.6708282890105920e+02 0. 0. 1.</data></rightCameraMatrix>
-<rightCameraDistCoeff type_id="opencv-matrix">
+    4.2029890047124093e+02 2.6708282890105920e+02 0. 0. 1.</data></matCamMat2>
+<matDistCoffs2 type_id="opencv-matrix">
   <rows>1</rows>
   <cols>5</cols>
   <dt>d</dt>
   <data>
     1.5257347604358842e-02 -4.2766819992248989e-02
     1.8442032779657335e-03 -2.7683507762358778e-03
-    1.6931712898821592e-02</data></rightCameraDistCoeff>
-<rotationMatrix type_id="opencv-matrix">
+    1.6931712898821592e-02</data></matDistCoffs2>
+<matR type_id="opencv-matrix">
   <rows>3</rows>
   <cols>3</cols>
   <dt>d</dt>
@@ -38,70 +40,12 @@
     9.9989675508583575e-01 -2.0332021801402465e-03
     1.4224811341835600e-02 2.0677640291272103e-03 9.9999494507930120e-01
     -2.4154021953177204e-03 -1.4219828435532876e-02
-    2.4445663705391610e-03 9.9989590486936386e-01</data></rotationMatrix>
-<translationVector type_id="opencv-matrix">
+    2.4445663705391610e-03 9.9989590486936386e-01</data></matR>
+<matT type_id="opencv-matrix">
   <rows>3</rows>
   <cols>1</cols>
   <dt>d</dt>
   <data>
     -5.9971674722896132e+01 1.7951814646906353e-01
-    -1.9637854567431323e+00</data></translationVector>
-<essentialMatrix type_id="opencv-matrix">
-  <rows>3</rows>
-  <cols>3</cols>
-  <dt>d</dt>
-  <data>
-    1.5079276845216530e-03 1.9642143739871387e+00 1.7475612780080491e-01
-    -2.8163696314333806e+00 1.5059751208448319e-01
-    5.9937497485943375e+01 -3.0350688389196256e-01
-    -5.9971006574149456e+01 1.4230210301660512e-01</data></essentialMatrix>
-<fundamentalMatrix type_id="opencv-matrix">
-  <rows>3</rows>
-  <cols>3</cols>
-  <dt>d</dt>
-  <data>
-    -3.8360867668889808e-09 -5.0140794317716593e-06
-    1.0834128629429803e-03 7.1826944634117450e-06
-    -3.8539844237460446e-07 -6.6952086330973645e-02
-    -1.5917397890309669e-03 6.6312449891190173e-02 1.</data></fundamentalMatrix>
-<rectifyR1 type_id="opencv-matrix">
-  <rows>3</rows>
-  <cols>3</cols>
-  <dt>d</dt>
-  <data>
-    9.9888507797613468e-01 -4.9438494953983518e-03
-    4.6948475468094761e-02 5.0011900326690853e-03 9.9998688459453156e-01
-    -1.1039643019658725e-03 -4.6942401886445675e-02
-    1.3375317154120819e-03 9.9889670232414007e-01</data></rectifyR1>
-<rectifyR2 type_id="opencv-matrix">
-  <rows>3</rows>
-  <cols>3</cols>
-  <dt>d</dt>
-  <data>
-    9.9945983322389165e-01 -2.9917653218737078e-03
-    3.2727528356563174e-02 2.9517944874416610e-03 9.9999483753878116e-01
-    1.2695688601630810e-03 -3.2731157654056819e-02
-    -1.1722781434543579e-03 9.9946350462764755e-01</data></rectifyR2>
-<rectifyP1 type_id="opencv-matrix">
-  <rows>3</rows>
-  <cols>4</cols>
-  <dt>d</dt>
-  <data>
-    3.9046506944907975e+02 0. 3.0789070510864258e+02 0. 0.
-    3.9046506944907975e+02 2.6126409721374512e+02 0. 0. 0. 1. 0.</data></rectifyP1>
-<rectifyP2 type_id="opencv-matrix">
-  <rows>3</rows>
-  <cols>4</cols>
-  <dt>d</dt>
-  <data>
-    3.9046506944907975e+02 0. 3.0789070510864258e+02
-    -2.3429499973119571e+04 0. 3.9046506944907975e+02
-    2.6126409721374512e+02 0. 0. 0. 1. 0.</data></rectifyP2>
-<rectifyQ type_id="opencv-matrix">
-  <rows>4</rows>
-  <cols>4</cols>
-  <dt>d</dt>
-  <data>
-    1. 0. 0. -3.0789070510864258e+02 0. 1. 0. -2.6126409721374512e+02 0.
-    0. 0. 3.9046506944907975e+02 0. 0. 1.6665531483687504e-02 0.</data></rectifyQ>
+    -1.9637854567431323e+00</data></matT>
 </opencv_storage>

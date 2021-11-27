@@ -1,40 +1,80 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include "yeStereoCamera.hpp"
+#define OPENCV
 
-#include <fstream>
+using namespace SYE;
+using namespace std;
 
-int main(int argc, char** argv){
-	cv::FileStorage fsr("calibration.xml", cv::FileStorage::READ);
-	
-	SYE::YeStereoCamera a;
+/*how to useage
 
-	a.doCalibration("resources/calib_data/", "calibration.xml");
+    ./yeStereoCamera 
 
-	/*fsr["translationVector"] >> a.matT;
-	fsr["leftCameraMatrix"] >> a.matCamMat1;
-	fsr["rightCameraMatrix"] >> a.matCamMat2;
+*/
+int main()
+{
+    YeStereoCamera *temp = new YeStereoCamera();
+    const char *filepath = "../resources/calib_data";
+    const char *objName = "clock";
 
-	bbox_t temp[2];
-	temp[0].x = 600;
-	temp[0].y = 250;
-	temp[0].w = 1000;
-	temp[0].h = 500;
-	temp[1].x = 1750;
-	temp[1].y = 250;
-	temp[1].w = 2150;
-	temp[1].h = 500;
 
-	cv::Mat img = cv::imread("../resources/cube/new/30cm.jpg");
+    if (!temp->initCalibData("calibration.xml")) {
+        if ((temp->doCalibration(filepath, "calibration.xml")) == false) {
+            std::cout << "doCalibration failed\n";
+            exit(1);
+        }
+    }
 
-	std::vector<std::vector<SYE::YePos3D>> feature;
+    cv::Mat mat;
+    
+	cv::VideoCapture video("../resources/1/sample2.mp4");
+    if (!video.isOpened()) {
+        cout << "Can't open the video" << endl;
+        return 0;
+    }
 
-	a.getAbsoluteLengthInRect(img, temp, 2, feature);
+	temp->getcfg_file("../darknet/cfg/yolov4.cfg");
+    temp->getWeight_file("../darknet/yolov4.weights");
+	temp->getObjNames_file("../darknet/data/coco.names");
 
-	cv::imshow("test", img(cv::Range(250, 500), cv::Range(600, 1000)));
-	cv::waitKey(0);
+	video>>mat;
+	while(!mat.empty()){
+        vector<bbox_t> pObject;
+        if ((temp->findImage(mat, objName, pObject)) == false) {
+            std::cout << "findImage failed\n";
+            exit(1);
+        }
 
-	for(int i = 0; i < feature[0].size(); i++){
-		std::cout<<feature[0][i].x<<' '<<feature[0][i].y<<' '<<feature[0][i].z<<'\n';
-	}*/
+        for (int i = 0; i < pObject.size(); i++) {
+            std::cout << "x y w h id : " << pObject[i].x << " " << pObject[i].y << " " << pObject[i].w << " " << pObject[i].h << " " << pObject[i].obj_id << "\n";
+        }
 
-	return 0;
+        vector<cv::Mat> rtn;
+        if ((temp->getSgbmInRect(mat, pObject, &rtn)) == false) {
+            std::cout << "getSgbmInRect failed\n";
+            exit(1);
+        }
+
+        for (cv::Mat res : rtn) {
+            cv::imshow("result", res);
+            cv::waitKey(0);
+        }
+
+        vector<vector<YePos3D>> feature;
+        if ((temp->getAbsoluteLengthInRect(mat, pObject, feature)) == false) {
+            std::cout << "getAbsoluteLengthInRect failed\n";
+            exit(1);
+        }
+
+        for (int i = 0; i < feature[0].size(); i++) {
+            std::cout << feature[0][i].x << ' ' << feature[0][i].y << ' ' << feature[0][i].z << '\n';
+        }
+
+		video>>mat;
+    }
+
+    return 0;
 }

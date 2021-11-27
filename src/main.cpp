@@ -17,7 +17,7 @@ using namespace std;
 int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
-    const char *filepath = "./calib_data";
+    const char *filepath = "../resources/calib_data";
     const char *objName = "clock";
 
 
@@ -28,25 +28,21 @@ int main()
         }
     }
 
-    //
-    const cv::Mat mat;
+    cv::Mat mat;
     
-    VideoCapture video("./dataset_1104/data/video/sample.mp4");
+	cv::VideoCapture video("../resources/1/sample2.mp4");
     if (!video.isOpened()) {
         cout << "Can't open the video" << endl;
         return 0;
     }
 
-    do{
+	temp->getcfg_file("../darknet/cfg/yolov4.cfg");
+    temp->getWeight_file("../darknet/yolov4.weights");
+	temp->getObjNames_file("../darknet/data/coco.names");
 
-        video >> mat;
-
-       
-
-        //
+	video>>mat;
+	while(!mat.empty()){
         vector<bbox_t> pObject;
-        temp->getcfg_file("../darknet/cfg/yolov4.cfg");
-        temp->getWeight_file("../darknet/yolov4.weights");
         if ((temp->findImage(mat, objName, pObject)) == false) {
             std::cout << "findImage failed\n";
             exit(1);
@@ -56,7 +52,6 @@ int main()
             std::cout << "x y w h id : " << pObject[i].x << " " << pObject[i].y << " " << pObject[i].w << " " << pObject[i].h << " " << pObject[i].obj_id << "\n";
         }
 
-        //
         vector<cv::Mat> rtn;
         if ((temp->getSgbmInRect(mat, pObject, &rtn)) == false) {
             std::cout << "getSgbmInRect failed\n";
@@ -68,7 +63,6 @@ int main()
             cv::waitKey(0);
         }
 
-        //
         vector<vector<YePos3D>> feature;
         if ((temp->getAbsoluteLengthInRect(mat, pObject, feature)) == false) {
             std::cout << "getAbsoluteLengthInRect failed\n";
@@ -78,6 +72,9 @@ int main()
         for (int i = 0; i < feature[0].size(); i++) {
             std::cout << feature[0][i].x << ' ' << feature[0][i].y << ' ' << feature[0][i].z << '\n';
         }
-    } while (mat.empty());
+
+		video>>mat;
+    }
+
     return 0;
 }

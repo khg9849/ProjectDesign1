@@ -394,6 +394,11 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char *objName, bbox_t *p
 //Absolute length from camera.
 bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<std::vector<YePos3D>>& features) {
 	if(pObjRect.size()<1){
+		std::cout<<"obj size is 0\n";
+		return false;
+	}
+	if(matCamMat1.rows != 3){
+		std::cout<<"can't read camera calibration matrix\n";
 		return false;
 	}
 	
@@ -473,6 +478,11 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox
 
 bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect, std::vector<std::vector<YePos3D>>& features) {
 	if(findImageSize<1){
+		std::cout<<"obj size is 0\n";
+		return false;
+	}
+	if(matCamMat1.rows != 3){
+		std::cout<<"can't read camera calibration matrix\n";
 		return false;
 	}
 

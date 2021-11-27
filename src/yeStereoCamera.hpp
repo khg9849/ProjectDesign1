@@ -1,5 +1,6 @@
 #ifndef YESTEREOCAMERA_HPP
 #define YESTEREOCAMERA_HPP
+#define OPENCV
 
 #include <vector>
 #include <string>

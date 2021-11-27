@@ -130,71 +130,71 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named calib
+# Target rules for targets named project
 
 # Build rule for target.
-calib: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 calib
-.PHONY : calib
+project: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 project
+.PHONY : project
 
 # fast build rule for target.
-calib/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/calib.dir/build.make CMakeFiles/calib.dir/build
-.PHONY : calib/fast
+project/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/build
+.PHONY : project/fast
 
-calibration.o: calibration.cpp.o
+main.o: main.cpp.o
 
-.PHONY : calibration.o
-
-# target to build an object file
-calibration.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/calib.dir/build.make CMakeFiles/calib.dir/calibration.cpp.o
-.PHONY : calibration.cpp.o
-
-calibration.i: calibration.cpp.i
-
-.PHONY : calibration.i
-
-# target to preprocess a source file
-calibration.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/calib.dir/build.make CMakeFiles/calib.dir/calibration.cpp.i
-.PHONY : calibration.cpp.i
-
-calibration.s: calibration.cpp.s
-
-.PHONY : calibration.s
-
-# target to generate assembly for a file
-calibration.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/calib.dir/build.make CMakeFiles/calib.dir/calibration.cpp.s
-.PHONY : calibration.cpp.s
-
-main2.o: main2.cpp.o
-
-.PHONY : main2.o
+.PHONY : main.o
 
 # target to build an object file
-main2.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/calib.dir/build.make CMakeFiles/calib.dir/main2.cpp.o
-.PHONY : main2.cpp.o
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-main2.i: main2.cpp.i
+main.i: main.cpp.i
 
-.PHONY : main2.i
+.PHONY : main.i
 
 # target to preprocess a source file
-main2.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/calib.dir/build.make CMakeFiles/calib.dir/main2.cpp.i
-.PHONY : main2.cpp.i
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-main2.s: main2.cpp.s
+main.s: main.cpp.s
 
-.PHONY : main2.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-main2.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/calib.dir/build.make CMakeFiles/calib.dir/main2.cpp.s
-.PHONY : main2.cpp.s
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/main.cpp.s
+.PHONY : main.cpp.s
+
+yeStereoCamera.o: yeStereoCamera.cpp.o
+
+.PHONY : yeStereoCamera.o
+
+# target to build an object file
+yeStereoCamera.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/yeStereoCamera.cpp.o
+.PHONY : yeStereoCamera.cpp.o
+
+yeStereoCamera.i: yeStereoCamera.cpp.i
+
+.PHONY : yeStereoCamera.i
+
+# target to preprocess a source file
+yeStereoCamera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/yeStereoCamera.cpp.i
+.PHONY : yeStereoCamera.cpp.i
+
+yeStereoCamera.s: yeStereoCamera.cpp.s
+
+.PHONY : yeStereoCamera.s
+
+# target to generate assembly for a file
+yeStereoCamera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/yeStereoCamera.cpp.s
+.PHONY : yeStereoCamera.cpp.s
 
 # Help Target
 help:
@@ -204,13 +204,13 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... calib"
-	@echo "... calibration.o"
-	@echo "... calibration.i"
-	@echo "... calibration.s"
-	@echo "... main2.o"
-	@echo "... main2.i"
-	@echo "... main2.s"
+	@echo "... project"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
+	@echo "... yeStereoCamera.o"
+	@echo "... yeStereoCamera.i"
+	@echo "... yeStereoCamera.s"
 .PHONY : help
 
 

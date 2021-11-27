@@ -6,13 +6,13 @@ project(
 	)
 
 ADD_EXECUTABLE(
-	calib
-	main2.cpp
-	calibration.cpp
+	project
+	main.cpp
+	yeStereoCamera.cpp
 	)
 
 target_include_directories(
-	calib
+	project
 PUBLIC
 	${CMAKE_SOURCE_DIR}/includes
 	${OPENCV_INCLUDE_DIRS}
@@ -20,7 +20,7 @@ PUBLIC
 	)
 
 target_link_libraries(
-	calib
+	project
 	${OPENCV_LIBRARIES}
-	${CMAKE_SOURCE_DIR}/darknet
+	${CMAKE_SOURCE_DIR}/darknet/libdarknet.so
 	)
