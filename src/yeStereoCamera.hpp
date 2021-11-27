@@ -62,7 +62,7 @@ public:
 	void getWeight_file(const char *_w);
 	void getcfg_file(const char *_c);
 	void getObjNames_file(const char *_c);
-	bool findImage(const cv::Mat &mat, const char *objName, std::vector<bbox_t> &vObjRect);
+	bool findImage(const cv::Mat &mat, const char *objName, std::vector<bbox_t> &pObjRect);
 
 	//Absolute length from camera.
 	bool getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<std::vector<YePos3D>>& features);
