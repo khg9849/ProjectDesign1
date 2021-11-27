@@ -276,6 +276,22 @@ void YeStereoCamera::getWeight_file(std::string _w){
 void YeStereoCamera::getcfg_file(std::string _c){
 	cfg_file = _c;
 }
+void YeStereoCamera::getObjNames_file(std::string _c){
+	std::string str;
+	std::ifstream file(_c);
+	if (file.is_open()) {
+		while (file) {
+			getline(file, str);
+			objNames.push_back(str);
+			//std::cout << str << std::endl;
+		}
+		file.close();
+	} else {
+		std::cout << "file open fail" << std::endl;
+		return;
+	}
+}
+
 bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vector<bbox_t> &pObjRect) {
 
 	if(weight_file == ""){
@@ -313,9 +329,9 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vect
 	//did you know how to match between obj_id and objName?
 	//*.names
     for(size_t i = 0; i < detectionSize; ++i){
-		if(	detection_left[i].obj_id == 56 && detection_left[i].prob >= threshold &&
-			detection_right[i].obj_id == 56 && detection_right[i].prob >= threshold &&
-			detection_left[i].obj_id == detection_right[i].obj_id){
+		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
+		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
+		
 			pObjRect.push_back(detection_left[i]);
 			detection_right[i].x += mat.cols/2;
 			pObjRect.push_back(detection_right[i]);
@@ -362,9 +378,8 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char *objName, bbox_t *p
 	//did you know how to match between obj_id and objName?
 	//*.names
     for(size_t i = 0; i < detectionSize; ++i){
-		if(	detection_left[i].obj_id == 0 && detection_left[i].prob >= threshold &&
-			detection_right[i].obj_id == 0 && detection_right[i].prob >= threshold &&
-			detection_left[i].obj_id == detection_right[i].obj_id){
+		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
+		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
 				pObjRect[i * 2] = detection_left[i];
 				detection_right[i].x += mat.cols/2;
 				pObjRect[i * 2 + 1] = detection_right[i];

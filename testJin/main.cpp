@@ -18,22 +18,22 @@ int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
     const char *filepath = "./calib_data";
-    const char *objName = "clock";
+    const char *objName = "clock"; 
 
     //
-    const cv::Mat mat = cv::imread("./1115Dataset/WIN_20211115_17_09_34_Pro.jpg");
-
-    if(!temp->initCalibData("calibration.xml")){
-        if((temp->doCalibration(filepath, "calibration.xml")) == false){
-            std::cout<<"doCalibration failed\n";
-            exit(1);
-        }
-    }
+    const cv::Mat mat = cv::imread("./source.jpg");
+    // if(!temp->initCalibData("calibration.xml")){
+    //     if((temp->doCalibration(filepath, "calibration.xml")) == false){
+    //         std::cout<<"doCalibration failed\n";
+    //         exit(1);
+    //     }
+    // }
 
     //
     vector<bbox_t> pObject;
     temp->getcfg_file("../darknet/cfg/yolov4.cfg");
     temp->getWeight_file("../darknet/yolov4.weights");
+    temp->getObjNames_file("../darknet/data/coco.names"); 
     if((temp->findImage(mat, objName, pObject)) == false){
         std::cout<<"findImage failed\n";
         exit(1);
@@ -56,15 +56,15 @@ int main()
     }
 
     //
-    vector<vector<YePos3D>> feature;
-    if((temp->getAbsoluteLengthInRect(mat,pObject,feature)) == false){
-        std::cout<<"getAbsoluteLengthInRect failed\n";
-        exit(1);
-    }
+    // vector<vector<YePos3D>> feature;
+    // if((temp->getAbsoluteLengthInRect(mat,pObject,feature)) == false){
+    //     std::cout<<"getAbsoluteLengthInRect failed\n";
+    //     exit(1);
+    // }
 
-    for(int i = 0; i < feature[0].size(); i++){
-        std::cout<<feature[0][i].x <<' '<<feature[0][i].y<<' '<<feature[0][i].z<<'\n';
-    }
+    // for(int i = 0; i < feature[0].size(); i++){
+    //     std::cout<<feature[0][i].x <<' '<<feature[0][i].y<<' '<<feature[0][i].z<<'\n';
+    // }
 
     return 0;
 }

@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 	int contsize;
 	cont=readCont("../cont.txt",&contsize);
 
-	const cv::Mat src=cv::imread("../img.jpg");
+	const cv::Mat src=cv::imread("../resources/1115Dataset/WIN_20211115_17_09_34_Pro.jpg");
 	
 	/* array */
 	/*

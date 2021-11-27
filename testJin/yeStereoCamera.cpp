@@ -127,7 +127,6 @@ bool YeStereoCamera::doCalibration(const char* pPath, const char* xmlName, const
 	}
 
 	cv::Mat R_left, T_left, R_right, T_right, R1, R2, P1, P2, Q;
-	cv::Mat matR, matT, matE, matF, matCamMat1, matCamMat2, matDistCoffs1, matDistCoffs2;
 	cv::Rect validRoi[2];
 
 	cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(lrImage[0].rows, lrImage[0].cols), matCamMat1, matDistCoffs1, R_left, T_left);
@@ -235,7 +234,6 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 	}
 
 	cv::Mat R_left, T_left, R_right, T_right, R1, R2, P1, P2, Q;
-	cv::Mat matR, matT, matE, matF, matCamMat1, matCamMat2, matDistCoffs1, matDistCoffs2;
 	cv::Rect validRoi[2];
 
 	cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(lrImage[0].rows, lrImage[0].cols), matCamMat1, matDistCoffs1, R_left, T_left);
@@ -278,7 +276,23 @@ void YeStereoCamera::getWeight_file(std::string _w){
 void YeStereoCamera::getcfg_file(std::string _c){
 	cfg_file = _c;
 }
-bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vector<bbox_t> pObjRect) {
+
+void YeStereoCamera::getObjNames_file(std::string _c){
+	std::string str;
+	std::ifstream file(_c);
+	if (file.is_open()) {
+		while (file) {
+			getline(file, str);
+			objNames.push_back(str);
+			//std::cout << str << std::endl;
+		}
+		file.close();
+	} else {
+		std::cout << "file open fail" << std::endl;
+		return;
+	}
+}
+bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vector<bbox_t> &pObjRect) {
 
 	if(weight_file == ""){
 		perror("findImage error : failed to find weight file!");
@@ -315,12 +329,14 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vect
 	//did you know how to match between obj_id and objName?
 	//*.names
     for(size_t i = 0; i < detectionSize; ++i){
-		if(	detection_left[i].obj_id == 0 && detection_left[i].prob >= threshold &&
-			detection_right[i].obj_id == 0 && detection_right[i].prob >= threshold &&
-			detection_left[i].obj_id == detection_right[i].obj_id){
-				pObjRect.push_back(detection_left[i]);
-				pObjRect.push_back(detection_right[i]);
-			}
+		
+		if(	objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
+			objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
+			pObjRect.push_back(detection_left[i]);
+			detection_right[i].x += mat.cols/2;
+			pObjRect.push_back(detection_right[i]);
+				
+		}
 	}
 
     return true;
@@ -363,9 +379,9 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char *objName, bbox_t *p
 	//*.names
     for(size_t i = 0; i < detectionSize; ++i){
 		if(	detection_left[i].obj_id == 0 && detection_left[i].prob >= threshold &&
-			detection_right[i].obj_id == 0 && detection_right[i].prob >= threshold &&
-			detection_left[i].obj_id == detection_right[i].obj_id){
+			detection_right[i].obj_id == 0 && detection_right[i].prob >= threshold){
 				pObjRect[i * 2] = detection_left[i];
+				detection_right[i].x += mat.cols/2;
 				pObjRect[i * 2 + 1] = detection_right[i];
 			}
 	}
@@ -407,6 +423,18 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
+		if(pObjRect[left].x+pObjRect[left].w > 1280){
+			pObjRect[left].w = 1280-pObjRect[left].x;
+		}
+		if(pObjRect[left].y+pObjRect[left].h > 960){
+			pObjRect[left].h = 960-pObjRect[left].y;
+		}
+		if(pObjRect[right].x+pObjRect[right].w > 2560){
+			pObjRect[right].w = 2560-pObjRect[right].x;
+		}
+		if(pObjRect[right].y+960-pObjRect[right].h > 960){
+			pObjRect[right].h = 960-pObjRect[right].y;
+		}
 		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].y+pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].x+pObjRect[left].w));
 		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].y+pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].x+pObjRect[right].w));
 
@@ -474,6 +502,18 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
+		if(pObjRect[left].x+pObjRect[left].w > 1280){
+			pObjRect[left].w = 1280-pObjRect[left].x;
+		}
+		if(pObjRect[left].y+pObjRect[left].h > 960){
+			pObjRect[left].h = 960-pObjRect[left].y;
+		}
+		if(pObjRect[right].x+pObjRect[right].w > 2560){
+			pObjRect[right].w = 2560-pObjRect[right].x;
+		}
+		if(pObjRect[right].y+960-pObjRect[right].h > 960){
+			pObjRect[right].h = 960-pObjRect[right].y;
+		}
 		pic[0] = gray(cv::Range(pObjRect[left].y, pObjRect[left].y+pObjRect[left].h), cv::Range(pObjRect[left].x, pObjRect[left].x+pObjRect[left].w));
 		pic[1] = gray(cv::Range(pObjRect[right].y, pObjRect[right].y+pObjRect[right].h), cv::Range(pObjRect[right].x, pObjRect[right].x+pObjRect[right].w));
 
