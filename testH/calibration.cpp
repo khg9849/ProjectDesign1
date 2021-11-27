@@ -113,12 +113,12 @@ bool hwangCalibration::doCalibration(vector<string> &imgList){
 
 	cv::FileStorage fsw("calibration.xml", cv::FileStorage::WRITE);
 
-	fsw << "leftCameraMatrix" << cameraMatrix_left;
-	fsw << "leftCameraDistCoeff" << distCoeffs_left;
-	fsw << "rightCameraMatrix" << cameraMatrix_right;
-	fsw << "rightCameraDistCoeff" << distCoeffs_right;
-	fsw << "rotationMatrix" << R;
-	fsw << "translationVertor" << T;
+	fsw << "matCamMat1" << cameraMatrix_left;
+	fsw << "matDistCoffs1" << distCoeffs_left;
+	fsw << "matCamMat2" << cameraMatrix_right;
+	fsw << "matDistCoffs2" << distCoeffs_right;
+	fsw << "matR" << R;
+	fsw << "matT" << T;
 	fsw << "essentialMatrix" << E;
 	fsw << "fundamentalMatrix" << F;
 	fsw << "rectifyR1" << R1;

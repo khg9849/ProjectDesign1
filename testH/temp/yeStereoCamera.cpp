@@ -270,6 +270,10 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 
 // Yolo를 이용하여 특정 이름의 영역을 추출.
 
+void YeStereoCamera::getWeight_file(const char *_w){
+	weight_file(_w);
+}
+
 void YeStereoCamera::getWeight_file(std::string _w){
 	weight_file = _w;
 }
@@ -329,14 +333,14 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vect
 	//did you know how to match between obj_id and objName?
 	//*.names
     for(size_t i = 0; i < detectionSize; ++i){
-		//if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
-		//objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
+		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
+		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
 		
 			pObjRect.push_back(detection_left[i]);
 			detection_right[i].x += mat.cols/2;
 			pObjRect.push_back(detection_right[i]);
 				
-		//}
+		}
 	}
 
     return true;
@@ -585,6 +589,7 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat* 
 	int idx=0;
 	int stride=src.cols/2;
 	bbox_t bbox1,bbox2;
+	bbox_t *pBbox1, bbox2;
 	for(int i=0;i<findImageSize;i+=2){
 		if(pObject[i].x<pObject[i+1].x){
 			bbox1=pObject[i];
@@ -610,7 +615,7 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat* 
 		// imshow("detected Rect",srcCpy);
 		// cv::waitKey(0);
 
-		cv::Mat left  = src(cv::Rect(nx,ny,nw,nh));
+		cv::Mat left  = src(cv::Rect(nx,ny,nw,nh));		//ROI
 		cv::Mat right = src(cv::Rect(nx+stride,ny,nw,nh));
 		hconcat(left, right,detected);
 		// imshow("detected",detected);
@@ -764,4 +769,4 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObjec
 	}
 	return true;
 }
-/*--------------------------------------------------4 팀 화 이 팅 ! ! ! ,,----------------------------------------------------*/
+/*--------------------------------------------------4 팀 화 이 팅  GOOD ! ! ! ,,----------------------------------------------------*/
