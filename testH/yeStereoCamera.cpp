@@ -329,14 +329,14 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vect
 	//did you know how to match between obj_id and objName?
 	//*.names
     for(size_t i = 0; i < detectionSize; ++i){
-		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
-		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
+		//if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
+		//objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
 		
 			pObjRect.push_back(detection_left[i]);
 			detection_right[i].x += mat.cols/2;
 			pObjRect.push_back(detection_right[i]);
 				
-		}
+		//}
 	}
 
     return true;
@@ -418,9 +418,16 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		return false;
 	}
 	
-	cv::Mat gray;
-	cv::cvtColor(src, gray, cv::COLOR_RGB2GRAY); //	isGray??
-
+	const cv::Mat *gray;
+	cv::Mat temp;
+	if(src.type()/8){
+		cv::cvtColor(src, temp, cv::COLOR_RGB2GRAY);
+		gray = &temp;
+	}
+	else{
+		gray = &src;
+	}
+	
 	for(int i = 0; i < pObjRect.size(); i += 2){
 		bbox_t *leftBbox, *rightBbox;
 		if(pObjRect[i].x < pObjRect[i+1].x){
@@ -436,8 +443,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
-		pic[0] = gray(cv::Range(leftBbox->y, getMin(leftBbox->y + leftBbox->h, 960)), cv::Range(leftBbox->x, getMin(leftBbox->x + leftBbox->w, 1280)));
-		pic[1] = gray(cv::Range(rightBbox->y, getMin(rightBbox->y + rightBbox->h, 960)), cv::Range(rightBbox->x, getMin(rightBbox->x + rightBbox->w, 2560)));
+		pic[0] = (*gray)(cv::Range(leftBbox->y, getMin(leftBbox->y + leftBbox->h, 960)), cv::Range(leftBbox->x, getMin(leftBbox->x + leftBbox->w, 1280)));
+		pic[1] = (*gray)(cv::Range(rightBbox->y, getMin(rightBbox->y + rightBbox->h, 960)), cv::Range(rightBbox->x, getMin(rightBbox->x + rightBbox->w, 2560)));
 
 		fast->detect(pic[0], kp[0], pic[1]);
 		brief->compute(pic[0], kp[0], dc[0]);
@@ -448,12 +455,24 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		std::vector<YePos3D> feature_temp[2];
 		for(int j = 0; j < matches.size(); j++){
 			YePos3D temp[2];
+
+			std::cout<<kp[0][matches[j].queryIdx].pt.x<<' '<<kp[0][matches[j].queryIdx].pt.y<<' '<<kp[1][matches[j].trainIdx].pt.x<<' ';
+			//std::cout<<matches[j].queryIdx<<' '<<matches[j].trainIdx<<' ';
+			std::vector<cv::DMatch> random;
+			random.push_back(matches[j]);
+			cv::Mat output;
+			cv::drawMatches(pic[0], kp[0], pic[1], kp[1], random, output, cv::Scalar::all(-1), cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+			//cv::imshow("1", output);
+			//cv::waitKey(0);
 		
 			temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
-			temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+rightBbox->x-pic[1].cols)+invCamMat[1].at<double>(0,2);
+			temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+rightBbox->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
 			
 			temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
 			temp[1].z = temp[0].z;
+			std::cout<<temp[0].z<<'\n';
+			cv::imshow("1", output);
+			cv::waitKey(0);
 
 			temp[0].x = temp[0].x*temp[0].z;
 			temp[0].y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[j].queryIdx].pt.y)+leftBbox->y)+invCamMat[0].at<double>(1,2))*temp[0].z;
@@ -464,7 +483,7 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 			feature_temp[0].push_back(temp[0]);
 			feature_temp[1].push_back(temp[1]);
 		}
-
+		
 		features.push_back(feature_temp[0]);
 		features.push_back(feature_temp[1]);
 	}
@@ -575,7 +594,7 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, bbox_t* pObject, cv::Mat* 
 	return true;
 }
 
-bool YeStereoCamera::getSgbmInRect(const cv::Mat &src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn) {
+bool YeStereoCamera::getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn) {
 	bool no_display = true;		//don't display results
 	bool no_downscale = true;	//force stereo matching on full-sized views to improve quality
 	double vis_mult = 8;		//coefficient used to scale disparity map visualizations

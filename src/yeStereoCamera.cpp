@@ -417,9 +417,17 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		std::cout<<"can't read camera calibration matrix\n";
 		return false;
 	}
-	
-	cv::Mat gray;
-	cv::cvtColor(src, gray, cv::COLOR_RGB2GRAY); //	isGray??
+
+	const cv::Mat *gray;
+	cv::Mat temp;
+	if(src.type()/8){
+		cv::Mat gray;
+		cv::cvtColor(src, temp, cv::COLOR_RGB2GRAY);
+		gray = &temp;
+	}
+	else{
+		gray = &src;
+	}
 
 	for(int i = 0; i < pObjRect.size(); i += 2){
 		bbox_t *leftBbox, *rightBbox;
@@ -436,8 +444,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
-		pic[0] = gray(cv::Range(leftBbox->y, getMin(leftBbox->y + leftBbox->h, 960)), cv::Range(leftBbox->x, getMin(leftBbox->x + leftBbox->w, 1280)));
-		pic[1] = gray(cv::Range(rightBbox->y, getMin(rightBbox->y + rightBbox->h, 960)), cv::Range(rightBbox->x, getMin(rightBbox->x + rightBbox->w, 2560)));
+		pic[0] = (*gray)(cv::Range(leftBbox->y, getMin(leftBbox->y + leftBbox->h, 960)), cv::Range(leftBbox->x, getMin(leftBbox->x + leftBbox->w, 1280)));
+		pic[1] = (*gray)(cv::Range(rightBbox->y, getMin(rightBbox->y + rightBbox->h, 960)), cv::Range(rightBbox->x, getMin(rightBbox->x + rightBbox->w, 2560)));
 
 		fast->detect(pic[0], kp[0], pic[1]);
 		brief->compute(pic[0], kp[0], dc[0]);
@@ -450,7 +458,7 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 			YePos3D temp[2];
 		
 			temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
-			temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+rightBbox->x-pic[1].cols)+invCamMat[1].at<double>(0,2);
+			temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+rightBbox->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
 			
 			temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
 			temp[1].z = temp[0].z;
