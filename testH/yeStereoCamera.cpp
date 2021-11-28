@@ -398,12 +398,11 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		brief->compute(pic[1], kp[1], dc[1]);
 		matcher->match(dc[0], dc[1], matches);
 
-		bool find = false;
-		int dfRight;
-		dfRight = leftBbox->w-rightBbox->w;
+		bool findPos = false;
+		int dfRight = leftBbox->w-rightBbox->w;
 
 		YePos3D temp[2];
-		for(int j = 0; j < matches.size() && !find; j++){
+		for(int j = 0; j < matches.size() && !findPos; j++){
 			int dif = (int)kp[0][matches[j].queryIdx].pt.x-(int)kp[1][matches[j].trainIdx].pt.x;
 			if((dif<5 && dif>-5)||(dif<dfRight+5 && dif>dfRight-5)){
 				temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
@@ -420,12 +419,12 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 
 				features.push_back(temp[0]);
 
-				bbox_t a;
-				a.x = leftBbox->x+(int)kp[0][matches[j].queryIdx].pt.x;
-				a.y = leftBbox->y+(int)kp[0][matches[j].queryIdx].pt.y;
+				bbox_t posTemp;
+				posTemp.x = leftBbox->x+(int)kp[0][matches[j].queryIdx].pt.x;
+				posTemp.y = leftBbox->y+(int)kp[0][matches[j].trainIdx].pt.y;
 
-				depthPos.push_back(a);
-				find = true;
+				depthPos.push_back(posTemp);
+				findPos = true;
 			}
 		}
 	}

@@ -389,8 +389,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		std::vector<cv::KeyPoint> kp[2];
 		std::vector<cv::DMatch> matches;
 
-		pic[0] = (*gray)(cv::Range(leftBbox->y, std::min(leftBbox->y + leftBbox->h, 960)), cv::Range(leftBbox->x, std::min(leftBbox->x + leftBbox->w, 1280)));
-		pic[1] = (*gray)(cv::Range(rightBbox->y, std::min(rightBbox->y + rightBbox->h, 960)), cv::Range(rightBbox->x, std::min(rightBbox->x + rightBbox->w, 2560)));
+		pic[0] = (*gray)(cv::Range(leftBbox->y, std::min((int)(leftBbox->y + leftBbox->h), 960)), cv::Range(leftBbox->x, std::min((int)(leftBbox->x + leftBbox->w), 1280)));
+		pic[1] = (*gray)(cv::Range(rightBbox->y, std::min((int)(rightBbox->y + rightBbox->h), 960)), cv::Range(rightBbox->x, std::min((int)(rightBbox->x + rightBbox->w), 2560)));
 
 		fast->detect(pic[0], kp[0], pic[1]);
 		brief->compute(pic[0], kp[0], dc[0]);
@@ -535,7 +535,7 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObj
 	return true;
 }
 
-bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<std::vector<YePos3D>>& features, std::vector<bbox_t> &depthPos){
+bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<YePos3D>& features, std::vector<bbox_t> &depthPos){
 	for(int i=0;i<rtn.size();i++){
 		cv::Mat res=src.clone();
 		cv::Mat ROI=res.rowRange(rtnPos[i].y,rtnPos[i].y+rtnPos[i].h).colRange(rtnPos[i].x,rtnPos[i].x+rtnPos[i].w);
