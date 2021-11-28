@@ -271,10 +271,10 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 // Yolo를 이용하여 특정 이름의 영역을 추출.
 
 void YeStereoCamera::getWeight_file(const char* _w){
-	weight_file(_w);
+	weight_file = _w;
 }
 void YeStereoCamera::getcfg_file(const char* _c){
-	cfg_file(_c);
+	cfg_file = _c;
 }
 void YeStereoCamera::getObjNames_file(const char* _c){
 	std::string str;
@@ -302,7 +302,7 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 		perror("findImage error : failed to find cfg file!");
         return false;
 	}
-	if(objName == ""){
+	if(objName == "" || strcmp(objName, "test") == 0){
 		perror("findImage error : failed to understand objName!");
         return false;
 	}
@@ -313,31 +313,34 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
     	}
 	}
 
-	std::vector<bbox_t> *detection_left, *detection_right;
-	size_t detectionSize;
-	double threshold = 0.7;
 
-    cv::Mat mat_left = mat(cv::Range::all(), cv::Range(0, mat.cols/2));
-    cv::Mat mat_right = mat(cv::Range::all(), cv::Range(mat.cols/2, mat.cols));
+    cv::Mat mat_left(mat(cv::Range::all(), cv::Range(0, mat.cols/2)));
+    cv::Mat mat_right(mat(cv::Range::all(), cv::Range(mat.cols/2, mat.cols)));
 
 	//yolo_v2_class.hpp
 	//std::vector<bbox_t> detect(cv::Mat mat, float thresh = 0.2, bool use_mean = false)
-	detection_left = &(detector->detect(mat_left));
-	detection_right = &(detector->detect(mat_right));
+	std::vector<bbox_t> detection_left, detection_right;
+	detection_left = detector->detect(mat_left);
+	detection_right = detector->detect(mat_right);
+
+	if(detection_left.size() != detection_right.size()){
+		perror("findImage error : dismatch number of finding object with left and right in photo");
+		return false;
+	}
 
 	//did you know how to match between obj_id and objName?
 	//*.names
-    for(size_t i = 0; i < detectionSize; ++i){
-		if(objNames[detection_left[i]->obj_id]==objName && detection_left[i]->prob >= threshold &&
-		objNames[detection_right[i]->obj_id]==objName && detection_right[i]->prob >= threshold){
+	double threshold = 0.7;
+    for(size_t i = 0; i < detection_left.size(); ++i){
+		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
+		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
 		
 			pObjRect.push_back(detection_left[i]);
-			detection_right[i]->x += mat.cols/2;
+			detection_right[i].x += mat.cols/2;
 			pObjRect.push_back(detection_right[i]);
 				
 		}
 	}
-
     return true;
 }
 
