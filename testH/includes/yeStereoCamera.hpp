@@ -65,19 +65,19 @@ public:
 	bool doCalibration(std::vector<std::string> &imgList, const char* xmlName);
 
 	// Yolo를 이용하여 특정 이름의 영역을 추출.
-	void getWeight_file(std::string _w);
-	void getcfg_file(std::string _c);
-	void getObjNames_file(std::string _c);
-	bool findImage(const cv::Mat mat, const char *objName, std::vector<bbox_t> &vObjRect);
-	bool findImage(const cv::Mat mat, const char *objName, bbox_t *pObjRect);
+	void getWeight_file(const char *_w);
+	void getcfg_file(const char *_c);
+	void getObjNames_file(const char *_c);
+	bool findImage(const cv::Mat &mat, const char *objName, std::vector<bbox_t> &pObjRect);
 
 	void initMatrix();
 	//Absolute length from camera.
-	bool getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<std::vector<YePos3D>> &features);
+	bool getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<YePos3D> &features, std::vector<bbox_t> &depthPos);
 
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
-	bool getSgbmInRect(const cv::Mat src, bbox_t *pObject, cv::Mat* rtn);
-	bool getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>* rtn);
+	bool getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObject, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos);
+
+	bool showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<YePos3D>& features, std::vector<bbox_t> &depthPos);
 };
 
 }

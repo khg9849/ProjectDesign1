@@ -68,17 +68,17 @@ opencv2/ximgproc.hpp
 fstream
 -
 
-/home/ubuntu/ProjectDesign1/testH/main.cpp
-iostream
--
-stdlib.h
--
-stdio.h
--
-unistd.h
--
+/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp
 yeStereoCamera.hpp
 /home/ubuntu/ProjectDesign1/testH/yeStereoCamera.hpp
+vector
+-
+iostream
+-
+opencv2/opencv.hpp
+-
+opencv2/calib3d/calib3d_c.h
+-
 
 /usr/local/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp
@@ -87,6 +87,10 @@ opencv2/features2d.hpp
 /usr/local/include/opencv4/opencv2/opencv2/features2d.hpp
 opencv2/core/affine.hpp
 /usr/local/include/opencv4/opencv2/opencv2/core/affine.hpp
+
+/usr/local/include/opencv4/opencv2/calib3d/calib3d_c.h
+opencv2/core/types_c.h
+/usr/local/include/opencv4/opencv2/calib3d/opencv2/core/types_c.h
 
 /usr/local/include/opencv4/opencv2/core.hpp
 opencv2/core/cvdef.h

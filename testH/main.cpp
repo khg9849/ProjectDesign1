@@ -18,7 +18,7 @@ int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
     const char *filepath = "../resources/calib_data";
-    const char *objName = "chair";
+    const char *objName = "clock";
 
 
     if (!temp->initCalibData("calibration.xml")) {
@@ -41,9 +41,8 @@ int main()
     temp->getWeight_file("../darknet/yolov4.weights");
 	temp->getObjNames_file("../darknet/data/coco.names");
 
-	//video>>mat;
-	//while(!mat.empty()){
-	mat = cv::imread("../resources/45cm/1.jpg");
+	video>>mat;
+	while(!mat.empty()){
         vector<bbox_t> pObject;
         if ((temp->findImage(mat, objName, pObject)) == false) {
             std::cout << "findImage failed\n";
@@ -55,7 +54,8 @@ int main()
         }
 
         vector<cv::Mat> rtn;
-        if ((temp->getSgbmInRect(mat, pObject, &rtn)) == false) {
+		vector<bbox_t> rtnPos;
+        if ((temp->getSgbmInRect(mat, pObject, rtn, rtnPos)) == false) {
             std::cout << "getSgbmInRect failed\n";
             exit(1);
         }
@@ -65,18 +65,20 @@ int main()
             cv::waitKey(0);
         }
 
-        vector<vector<YePos3D>> feature;
-        if ((temp->getAbsoluteLengthInRect(mat, pObject, feature)) == false) {
+        vector<YePos3D> feature;
+		vector<bbox_t> pos;
+        if ((temp->getAbsoluteLengthInRect(mat, pObject, feature, pos)) == false) {
             std::cout << "getAbsoluteLengthInRect failed\n";
             exit(1);
         }
 
-        for (int i = 0; i < feature[0].size(); i++) {
-            std::cout << feature[0][i].x << ' ' << feature[0][i].y << ' ' << feature[0][i].z << '\n';
-        }
+		temp->showResult(mat,rtn,rtnPos,feature,pos);
+        //for (int i = 0; i < feature.size(); i++) {
+        //    std::cout << feature[0].x << ' ' << feature[0].y << ' ' << feature[0].z << '\n';
+        //}
 
-	//	video>>mat;
-    //}
+		video>>mat;
+    }
 
     return 0;
 }

@@ -39,6 +39,7 @@ int main()
 	temp->getcfg_file("../darknet/cfg/yolov4.cfg");
     temp->getWeight_file("../darknet/yolov4.weights");
 	temp->getObjNames_file("../darknet/data/coco.names");
+	temp->initMatrix();
 
 	video>>mat;
 	while(!mat.empty()){
@@ -63,8 +64,8 @@ int main()
             cv::waitKey(0);
         }
 
-        vector<vector<YePos3D>> feature;
-        if ((temp->getAbsoluteLengthInRect(mat, pObject, feature)) == false) {
+        vector<YePos3D> feature;
+        if ((temp->getAbsoluteLengthInRect(mat, pObject, feature, )) == false) {
             std::cout << "getAbsoluteLengthInRect failed\n";
             exit(1);
         }
