@@ -562,7 +562,7 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat src, bbox_t* pObjRect
 
 // 추춘된 특정 영역만 SGBM 3D reconstruction.
 
-bool YeStereoCamera::getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObject, std::vector<cv::Mat>& rtn) {
+bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObject, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos) {
 	bool no_display = true;		//don't display results
 	bool no_downscale = true;	//force stereo matching on full-sized views to improve quality
 	double vis_mult = 8;		//coefficient used to scale disparity map visualizations
@@ -586,7 +586,7 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObjec
 	cv::Mat detected;
 	int nx,ny,nw,nh;
 	bbox_t *bbox1,*bbox2;
-
+	
 	for(int i=0;i<pObject.size();i+=2){
 		if(pObject[i].x<pObject[i+1].x){
 			bbox1=&pObject[i];
@@ -596,20 +596,22 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObjec
 			bbox1=&pObject[i+1];
 			bbox2=&pObject[i];
 		}
-		nx=std::min((*bbox1).x,(*bbox2).x-stride);
-		ny=std::min((*bbox1).y,(*bbox2).y);
-		nw=std::max((*bbox1).x+(*bbox1).w,(*bbox2).x-stride+(*bbox2).w)-nx;
-		nh=std::max((*bbox1).y+(*bbox1).h,(*bbox2).y+(*bbox2).h)-ny;
-		if(nx+nw>=stride) nw=stride-nx;
-		if(ny+nh>=src.rows) nh=src.rows-ny;
+		bbox_t pos;
+		pos.x=std::min((*bbox1).x,(*bbox2).x-stride);
+		pos.y=std::min((*bbox1).y,(*bbox2).y);
+		pos.w=std::max((*bbox1).x+(*bbox1).w,(*bbox2).x-stride+(*bbox2).w)-pos.x;
+		pos.h=std::max((*bbox1).y+(*bbox1).h,(*bbox2).y+(*bbox2).h)-pos.y;
+		if(pos.x+pos.w>=stride) pos.w=stride-pos.x;
+		if(pos.y+pos.h>=src.rows) pos.h=src.rows-pos.y;
+		rtnPos.push_back(pos);
 		// cv::Mat srcCpy=src.clone();
 		// cv::rectangle(srcCpy,cv::Rect(nx,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
 		// cv::rectangle(srcCpy,cv::Rect(nx+stride,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
 		// imshow("detected Rect",srcCpy);
 		// cv::waitKey(0);
 
-		cv::Mat left  = src(cv::Rect(nx,ny,nw,nh)).clone();
-		cv::Mat right = src(cv::Rect(nx+stride,ny,nw,nh)).clone();
+		cv::Mat left  = src(cv::Rect(pos.x,pos.y,pos.w,pos.h)).clone();
+		cv::Mat right = src(cv::Rect(pos.x+stride,pos.y,pos.w,pos.h)).clone();
 		hconcat(left, right,detected);
 		// imshow("detected",detected);
 		// cv::waitKey(0);
@@ -661,4 +663,23 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat src, std::vector<bbox_t> pObjec
 	return true;
 }
 
+bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<std::vector<YePos3D>>& features){
+	for(int i=0;i<rtn.size();i++){
+		cv::Mat res=src.clone();
+		cv::Mat ROI=res.rowRange(rtnPos[i].y,rtnPos[i].y+rtnPos[i].h).colRange(rtnPos[i].x,rtnPos[i].x+rtnPos[i].w);
+		cv::Mat img_rgb(rtn[i].size(), CV_8UC3);
+		cv::cvtColor(rtn[i], img_rgb, CV_GRAY2RGB);
+		img_rgb.copyTo(ROI);
+		
+		//((int)(rtnPos[i].x+rtnPos[i].w)/2,(int)(rtnPos[i].y+rtnPos[i].h)/2)
+		cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
+		cv::line(res,cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2),cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2),cv::Scalar(0, 0, 255),5,3);
+		//cv::putText(res, std::to_string(features[0][i].z), cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+		cv::putText(res, "testStr", cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+		
+		cv::imshow("res",res);
+		cv::waitKey(0);
+	}
+	return true;
+}
 /*--------------------------------------------------4 팀 화 이 팅 ! ! ! ,,----------------------------------------------------*/

@@ -34,15 +34,15 @@ int main(int argc, char **argv)
 	/* vector */
 	std::vector<bbox_t> pObject;
 	std::vector<cv::Mat> rtn;
+	std::vector<bbox_t> rtnPos;
 	for(int i=0;i<contsize;i++)
 		pObject.push_back(cont.candidates[i]);
-
+	
 	SYE::YeStereoCamera *sye=new SYE::YeStereoCamera();
-	sye->getSgbmInRect(src,pObject,rtn);
-	for(cv::Mat res:rtn){
-		cv::imshow("result",res);
-		cv::waitKey(0);
-	}
+	sye->getSgbmInRect(src,pObject,rtn,rtnPos);
+	std::vector<std::vector<SYE::YePos3D>> feature;
+	sye->showResult(src,rtn,rtnPos,feature);
+
 	return 0;
 }
 
