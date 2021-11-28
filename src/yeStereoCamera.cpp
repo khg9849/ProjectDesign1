@@ -270,13 +270,13 @@ bool YeStereoCamera::doCalibration(vector<std::string>& imgList, const char* xml
 
 // Yolo를 이용하여 특정 이름의 영역을 추출.
 
-void YeStereoCamera::getWeight_file(std::string _w){
-	weight_file = _w;
+void YeStereoCamera::getWeight_file(const char* _w){
+	weight_file(_w);
 }
-void YeStereoCamera::getcfg_file(std::string _c){
-	cfg_file = _c;
+void YeStereoCamera::getcfg_file(const char* _c){
+	cfg_file(_c);
 }
-void YeStereoCamera::getObjNames_file(std::string _c){
+void YeStereoCamera::getObjNames_file(const char* _c){
 	std::string str;
 	std::ifstream file(_c);
 	if (file.is_open()) {
@@ -292,7 +292,7 @@ void YeStereoCamera::getObjNames_file(std::string _c){
 	}
 }
 
-bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vector<bbox_t> &pObjRect) {
+bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vector<bbox_t> &pObjRect) {
 
 	if(weight_file == ""){
 		perror("findImage error : failed to find weight file!");
@@ -313,7 +313,7 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vect
     	}
 	}
 
-	std::vector<bbox_t> detection_left, detection_right;
+	std::vector<bbox_t> *detection_left, *detection_right;
 	size_t detectionSize;
 	double threshold = 0.7;
 
@@ -322,71 +322,21 @@ bool YeStereoCamera::findImage(const cv::Mat mat, const char* objName, std::vect
 
 	//yolo_v2_class.hpp
 	//std::vector<bbox_t> detect(cv::Mat mat, float thresh = 0.2, bool use_mean = false)
-	detection_left = detector->detect(mat_left);
-	detection_right = detector->detect(mat_right);
-    detectionSize = detection_left.size();
+	detection_left = &(detector->detect(mat_left));
+	detection_right = &(detector->detect(mat_right));
 
 	//did you know how to match between obj_id and objName?
 	//*.names
     for(size_t i = 0; i < detectionSize; ++i){
-		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
-		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
+		if(objNames[detection_left[i]->obj_id]==objName && detection_left[i]->prob >= threshold &&
+		objNames[detection_right[i]->obj_id]==objName && detection_right[i]->prob >= threshold){
 		
 			pObjRect.push_back(detection_left[i]);
-			detection_right[i].x += mat.cols/2;
+			detection_right[i]->x += mat.cols/2;
 			pObjRect.push_back(detection_right[i]);
 				
 		}
 	}
-
-    return true;
-}
-bool YeStereoCamera::findImage(const cv::Mat mat, const char *objName, bbox_t *pObjRect){
-	
-	if(weight_file == ""){
-		perror("findImage error : failed to find weight file!");
-        return false;
-	}
-	if(cfg_file == ""){
-		perror("findImage error : failed to find cfg file!");
-        return false;
-	}
-	if(objName == ""){
-		perror("findImage error : failed to understand objName!");
-        return false;
-	}
-	if(detector == NULL){
-		if((detector = new Detector(cfg_file, weight_file)) == NULL){
-    	    perror("findImage error : failed to make detector object!");
-			return false;
-    	}
-	}
-
-	std::vector<bbox_t> detection_left, detection_right;
-	size_t detectionSize;
-	double threshold = 0.7;
-
-    cv::Mat mat_left = mat(cv::Range::all(), cv::Range(0, mat.cols/2));
-    cv::Mat mat_right = mat(cv::Range::all(), cv::Range(mat.cols/2, mat.cols));
-
-	//yolo_v2_class.hpp
-	//std::vector<bbox_t> detect(cv::Mat mat, float thresh = 0.2, bool use_mean = false)
-	detection_left = detector->detect(mat_left);
-	detection_right = detector->detect(mat_right);
-    detectionSize = detection_left.size();
-
-	//did you know how to match between obj_id and objName?
-	//*.names
-    for(size_t i = 0; i < detectionSize; ++i){
-		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
-		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
-				pObjRect[i * 2] = detection_left[i];
-				detection_right[i].x += mat.cols/2;
-				pObjRect[i * 2 + 1] = detection_right[i];
-			}
-	}
-
-	findImageSize = detectionSize * 2;
 
     return true;
 }
