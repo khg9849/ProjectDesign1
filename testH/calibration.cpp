@@ -7,7 +7,7 @@ bool hwangCalibration::doCalibration(const char *pPath){
 
 	for(int i = 0; i < CHECKERBOARD[1]; i++){
 		for(int j = 0; j < CHECKERBOARD[0]; j++){
-			objp.push_back(cv::Point3f(j*23.8, i*23.8, 0));
+			objp.push_back(cv::Point3f(j*2.38, i*2.38, 0));
 		}
 	}
 
@@ -41,23 +41,23 @@ bool hwangCalibration::doCalibration(const char *pPath){
 		}
 	}
 
-	cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(pic[0].rows, pic[0].cols), cameraMatrix_left, distCoeffs_left, R_left, T_left);
-	cv::calibrateCamera(objpoints_right, imgpoints_right, cv::Size(pic[1].rows, pic[1].cols), cameraMatrix_right, distCoeffs_right, R_right, T_right);
+	//cv::calibrateCamera(objpoints_left, imgpoints_left, cv::Size(pic[0].rows, pic[0].cols), cameraMatrix_left, distCoeffs_left, R_left, T_left);
+	//cv::calibrateCamera(objpoints_right, imgpoints_right, cv::Size(pic[1].rows, pic[1].cols), cameraMatrix_right, distCoeffs_right, R_right, T_right);
 
-	imgsize(gray.rows, gray.cols/2);
+	imgsize = pic[0].size();
 	
-	cv::stereoCalibrate(objpoints_left, imgpoints_left, imgpoints_right, cameraMatrix_left, distCoeffs_left, cameraMatrix_right, distCoeffs_right, imgsize, R, T, E, F, cv::CALIB_FIX_INTRINSIC, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 1e-6));
+	cv::stereoCalibrate(objpoints_left, imgpoints_left, imgpoints_right, cameraMatrix_left, distCoeffs_left, cameraMatrix_right, distCoeffs_right, imgsize, R, T, E, F, cv::CALIB_FIX_PRINCIPAL_POINT|cv::CALIB_FIX_FOCAL_LENGTH|cv::CALIB_FIX_ASPECT_RATIO, cv::TermCriteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 30, 1e-6));
 	
 	cv::stereoRectify(cameraMatrix_left, distCoeffs_left, cameraMatrix_right, distCoeffs_right, imgsize, R, T, R1, R2, P1, P2, Q, cv::CALIB_ZERO_DISPARITY, 1, imgsize, &validRoi[0], &validRoi[1]);
 
 	cv::FileStorage fsw("calibration.xml", cv::FileStorage::WRITE);
 
-	fsw << "leftCameraMatrix" << cameraMatrix_left;
-	fsw << "leftCameraDistCoeff" << distCoeffs_left;
-	fsw << "rightCameraMatrix" << cameraMatrix_right;
-	fsw << "rightCameraDistCoeff" << distCoeffs_right;
-	fsw << "rotationMatrix" << R;
-	fsw << "translationVector" << T;
+	fsw << "matCamMat1" << cameraMatrix_left;
+	fsw << "matDistCoffs1" << distCoeffs_left;
+	fsw << "matCamMat2" << cameraMatrix_right;
+	fsw << "matDistCoffs2" << distCoeffs_right;
+	fsw << "matR" << R;
+	fsw << "matT" << T;
 	fsw << "essentialMatrix" << E;
 	fsw << "fundamentalMatrix" << F;
 	fsw << "rectifyR1" << R1;

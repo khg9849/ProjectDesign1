@@ -11,8 +11,21 @@ ADD_EXECUTABLE(
 	yeStereoCamera.cpp
 	)
 
+ADD_EXECUTABLE(
+	calib
+	main2.cpp
+	calibration.cpp
+	)
+
 target_include_directories(
 	project
+PUBLIC
+	${CMAKE_SOURCE_DIR}/includes
+	${OPENCV_INCLUDE_DIRS}
+	${CMAKE_SOURCE_DIR}/darknet/include
+	)
+target_include_directories(
+	calib
 PUBLIC
 	${CMAKE_SOURCE_DIR}/includes
 	${OPENCV_INCLUDE_DIRS}
@@ -21,6 +34,11 @@ PUBLIC
 
 target_link_libraries(
 	project
+	${OPENCV_LIBRARIES}
+	${CMAKE_SOURCE_DIR}/darknet/libdarknet.so
+	)
+target_link_libraries(
+	calib
 	${OPENCV_LIBRARIES}
 	${CMAKE_SOURCE_DIR}/darknet/libdarknet.so
 	)
