@@ -25,5 +25,6 @@ link_libraries(
 )
 
 # add_executable(saveCont saveCont.cpp CallYolo.cpp)
-add_executable(reconTest reconTest.cpp yeStereoCamera.cpp)
+#add_executable(reconTest reconTest.cpp yeStereoCamera.cpp)
+add_executable(performanceTest performanceTest.cpp yeStereoCamera.cpp)
 #add_executable(main main.cpp yeStereoCamera.cpp)

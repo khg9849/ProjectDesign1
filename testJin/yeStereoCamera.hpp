@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <string>
-
+#include <sstream>
 #include <yolo_v2_class.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/xfeatures2d.hpp>
@@ -44,6 +44,12 @@ private:
 	int findImageSize;
 	
 	std::vector<std::string> objNames;
+
+	cv::Ptr<cv::Feature2D> fast;
+	cv::Ptr<cv::Feature2D> brief;
+	cv::Ptr<cv::DescriptorMatcher> matcher;
+	cv::Mat invCamMat[2];
+	
 protected:
 public:
 	YeStereoCamera();
@@ -59,21 +65,20 @@ public:
 	bool doCalibration(std::vector<std::string> &imgList, const char* xmlName);
 
 	// Yolo를 이용하여 특정 이름의 영역을 추출.
-	void getWeight_file(std::string _w);
-	void getcfg_file(std::string _c);
-	void getObjNames_file(std::string _c);
-	bool findImage(const cv::Mat mat, const char *objName, std::vector<bbox_t> &vObjRect);
-	bool findImage(const cv::Mat mat, const char *objName, bbox_t *pObjRect);
+	void getWeight_file(const char *_w);
+	void getcfg_file(const char *_c);
+	void getObjNames_file(const char *_c);
+	bool findImage(const cv::Mat &mat, const char *objName, std::vector<bbox_t> &pObjRect);
 
+	void initMatrix();
 	//Absolute length from camera.
-	bool getAbsoluteLengthInRect(const cv::Mat src, std::vector<bbox_t> pObjRect, std::vector<std::vector<YePos3D>>& features);
-	bool getAbsoluteLengthInRect(const cv::Mat src, bbox_t *pObjRect, std::vector<std::vector<YePos3D>>& features);
+	bool getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<YePos3D> &features, std::vector<bbox_t> &depthPos);
 
-
+	bool getSgbm(const cv::Mat& src, cv::Mat& rtn);
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
 	bool getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObject, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos);
 
-	bool showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<std::vector<YePos3D>>& features);
+	bool showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<YePos3D>& features, std::vector<bbox_t> &depthPos);
 };
 
 }
