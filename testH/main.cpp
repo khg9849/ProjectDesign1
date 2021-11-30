@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "yeStereoCamera.hpp"
+#include <opencv2/videoio.hpp>
 #define OPENCV
 
 using namespace SYE;
@@ -18,7 +19,7 @@ int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
     const char *filepath = "../resources/calib_data";
-    const char *objName = "clock";
+    const char *objName = "chair";
 
 
     if (!temp->initCalibData("calibration.xml")) {
@@ -31,15 +32,17 @@ int main()
     cv::Mat mat;
     
 	cv::VideoCapture video("../resources/1/sample.mp4");
+   // cv::VideoCapture video("../resources/WIN_20211115_17_10_04_Pro.mp4");
+    
     if (!video.isOpened()) {
         cout << "Can't open the video" << endl;
         return 0;
     }
 
-	temp->initMatrix();
 	temp->getcfg_file("../darknet/cfg/yolov4.cfg");
     temp->getWeight_file("../darknet/yolov4.weights");
 	temp->getObjNames_file("../darknet/data/coco.names");
+	temp->initMatrix();
 
 	video>>mat;
 	while(!mat.empty()){
@@ -54,8 +57,8 @@ int main()
         }
 
         vector<cv::Mat> rtn;
-		vector<bbox_t> rtnPos;
-        if ((temp->getSgbmInRect(mat, pObject, rtn, rtnPos)) == false) {
+        std::vector<bbox_t> rtnPos;
+        if ((temp->getSgbmInRect(mat, pObject, rtn,rtnPos)) == false) {
             std::cout << "getSgbmInRect failed\n";
             exit(1);
         }
@@ -66,17 +69,18 @@ int main()
         }
 
         vector<YePos3D> feature;
-		vector<bbox_t> pos;
-        if ((temp->getAbsoluteLengthInRect(mat, pObject, feature, pos)) == false) {
+        vector<bbox_t> pos;
+         if ((temp->getAbsoluteLengthInRect(mat, pObject, feature, pos)) == false) {
             std::cout << "getAbsoluteLengthInRect failed\n";
             exit(1);
         }
 
-		temp->showResult(mat,rtn,rtnPos,feature,pos);
-        //for (int i = 0; i < feature.size(); i++) {
-        //    std::cout << feature[0].x << ' ' << feature[0].y << ' ' << feature[0].z << '\n';
-        //}
+        for (int i = 0; i < feature.size(); i++) {
+            std::cout << feature[i].x << ' ' << feature[i].y << ' ' << feature[i].z << '\n';
+        }
 
+        temp->showResult(mat,rtn,rtnPos,feature,pos);
+       
 		video>>mat;
     }
 

@@ -47,6 +47,8 @@ vector
 -
 string
 -
+sstream
+-
 yolo_v2_class.hpp
 -
 opencv2/opencv.hpp

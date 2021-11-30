@@ -323,14 +323,14 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 	detection_left = detector->detect(mat_left);
 	detection_right = detector->detect(mat_right);
 
-	if(detection_left.size() != detection_right.size()){
-		perror("findImage error : dismatch number of finding object with left and right in photo");
-		return false;
-	}
+	// if(detection_left.size() != detection_right.size()){
+	// 	perror("findImage error : dismatch number of finding object with left and right in photo");
+	// 	return false;
+	// }
 
 	//did you know how to match between obj_id and objName?
 	//*.names
-	double threshold = 0.7;
+	double threshold = 0.2;
     for(size_t i = 0; i < detection_left.size(); ++i){
 		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
 		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
@@ -353,6 +353,9 @@ void YeStereoCamera::initMatrix(){
 	invCamMat[1] = matCamMat2.inv();
 }
 
+bool compare(YePos3D a, YePos3D b){
+	return a.z<b.z;
+}
 //Absolute length from camera.
 bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<YePos3D> &features, std::vector<bbox_t> &depthPos) {
 	if(pObjRect.size()<1){
@@ -401,10 +404,11 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		bool findPos = false;
 		int dfRight = leftBbox->w-rightBbox->w;
 
-		YePos3D temp[2];
-		for(int j = 0; j < matches.size() && !findPos; j++){
-			int dif = (int)kp[0][matches[j].queryIdx].pt.x-(int)kp[1][matches[j].trainIdx].pt.x;
-			if((dif<5 && dif>-5)||(dif<dfRight+5 && dif>dfRight-5)){
+		std::vector<YePos3D> feature_temp[2];
+		for(int j = 0; j < matches.size(); j++){
+			YePos3D temp[2];
+			//int dif = (int)kp[0][matches[j].queryIdx].pt.x-(int)kp[1][matches[j].trainIdx].pt.x;
+			//if((dif<5 && dif>-5)||(dif<dfRight+5 && dif>dfRight-5)){
 				temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
 				temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+rightBbox->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
 			
@@ -417,24 +421,53 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 				temp[1].x = temp[1].x*temp[1].z;
 				temp[1].y = (invCamMat[1].at<double>(1,1)*((int)(kp[1][matches[j].trainIdx].pt.y)+rightBbox->y)+invCamMat[1].at<double>(1,2))*temp[1].z;
 
-				features.push_back(temp[0]);
+				temp[0].idx = j;
+				temp[1].idx = j;
 
-				bbox_t posTemp;
-				posTemp.x = leftBbox->x+(int)kp[0][matches[j].queryIdx].pt.x;
-				posTemp.y = leftBbox->y+(int)kp[0][matches[j].trainIdx].pt.y;
+				feature_temp[0].push_back(temp[0]);
+				feature_temp[1].push_back(temp[1]);
 
-				depthPos.push_back(posTemp);
-				findPos = true;
+			//	bbox_t posTemp;
+			//	posTemp.x = leftBbox->x+(int)kp[0][matches[j].queryIdx].pt.x;
+			//	posTemp.y = leftBbox->y+(int)kp[0][matches[j].queryIdx].pt.y;
+
+			//	depthPos.push_back(posTemp);
+			//	findPos = true;
+			//}
+		}
+		
+		std::sort(feature_temp[0].begin(), feature_temp[0].end(), compare);
+
+		int pre = feature_temp[0][0].z;
+		int count = 1, maxCount = 0, maxIdx = 0;
+		for(int j = 1; j < feature_temp[0].size(); j++){
+			if(feature_temp[0][j].z == pre){
+				count++;
+			}
+			else{
+				pre = feature_temp[0][j].z;
+				if(count > maxCount){
+					maxCount = count;
+					maxIdx = j-1;
+				}
+				count = 1;
 			}
 		}
+		if(count>maxCount){
+			maxIdx = feature_temp[0].size()-1;
+		}
+		features.push_back(feature_temp[0][maxIdx]);
+		bbox_t posTemp;
+		posTemp.x = leftBbox->x+(int)kp[0][matches[feature_temp[0][maxIdx].idx].queryIdx].pt.x;
+		posTemp.y = leftBbox->y+(int)kp[0][matches[feature_temp[0][maxIdx].idx].queryIdx].pt.y;
+		
+		depthPos.push_back(posTemp);
 	}
 
 	return true;
 }
 
-// 추춘된 특정 영역만 SGBM 3D reconstruction.
-
-bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObject, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos) {
+bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn) {
 	bool no_display = true;		//don't display results
 	bool no_downscale = true;	//force stereo matching on full-sized views to improve quality
 	double vis_mult = 8;		//coefficient used to scale disparity map visualizations
@@ -453,7 +486,60 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObj
 		std::cout<<"Incorrect window_size value: it should be positive and odd";
 		return false;
 	}
+	cv::Mat mat_left=src(cv::Range::all(), cv::Range(0, src.cols/2)).clone();
+    cv::Mat mat_right=src(cv::Range::all(), cv::Range(src.cols/2, src.cols)).clone();
 
+
+	cv::Mat left_for_matcher, right_for_matcher;
+	cv::Mat left_disp,right_disp;
+	cv::Mat filtered_disp,solved_disp,solved_filtered_disp;
+	cv::Ptr<cv::ximgproc::DisparityWLSFilter> wls_filter;
+
+	if(!no_downscale)
+		{
+			max_disp/=2;
+			if(max_disp%16!=0)
+				max_disp += 16-(max_disp%16);
+			cv::resize(mat_left ,left_for_matcher ,cv::Size(),0.5,0.5, cv::INTER_LINEAR_EXACT);
+		}
+	else{
+			left_for_matcher  = mat_left.clone();
+			right_for_matcher = mat_right.clone();
+	}
+
+	// sgbm
+	cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,max_disp,wsize);
+	left_matcher->setP1(24*wsize*wsize);
+	left_matcher->setP2(96*wsize*wsize);
+	left_matcher->setPreFilterCap(63);
+	left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
+	wls_filter = cv::ximgproc::createDisparityWLSFilter(left_matcher);
+	cv::Ptr<cv::StereoMatcher> right_matcher = cv::ximgproc::createRightMatcher(left_matcher);
+
+	left_matcher-> compute(left_for_matcher, right_for_matcher,left_disp);
+	right_matcher->compute(right_for_matcher,left_for_matcher, right_disp);
+
+	// filtering
+	wls_filter->setLambda(lambda);
+	wls_filter->setSigmaColor(sigma);
+	wls_filter->filter(left_disp,mat_left,filtered_disp,right_disp);
+	cv::Mat filtered_disp_vis;
+	cv::ximgproc::getDisparityVis(filtered_disp,filtered_disp_vis,vis_mult);
+	rtn=filtered_disp_vis.clone(); //filtered image
+
+	//visualization
+	if(!no_display){
+		cv::namedWindow("filtered disparity", cv::WINDOW_AUTOSIZE);
+		cv::imshow("filtered disparity", filtered_disp_vis);
+		cv::waitKey(0);
+	}
+	return true;
+}
+
+// 추춘된 특정 영역만 SGBM 3D reconstruction.
+
+bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObject, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos) {
+	
 	int stride=src.cols/2;
 	cv::Mat detected;
 	int nx,ny,nw,nh;
@@ -476,61 +562,12 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObj
 		if(pos.x+pos.w>=stride) pos.w=stride-pos.x;
 		if(pos.y+pos.h>=src.rows) pos.h=src.rows-pos.y;
 		rtnPos.push_back(pos);
-		// cv::Mat srcCpy=src.clone();
-		// cv::rectangle(srcCpy,cv::Rect(nx,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
-		// cv::rectangle(srcCpy,cv::Rect(nx+stride,ny,nw,nh), cv::Scalar(0, 255, 0), 5, 8, 0);
-		// imshow("detected Rect",srcCpy);
-		// cv::waitKey(0);
 
 		cv::Mat left  = src(cv::Rect(pos.x,pos.y,pos.w,pos.h)).clone();
 		cv::Mat right = src(cv::Rect(pos.x+stride,pos.y,pos.w,pos.h)).clone();
 		hconcat(left, right,detected);
-		// imshow("detected",detected);
-		// cv::waitKey(0);
-
-		cv::Mat left_for_matcher, right_for_matcher;
-		cv::Mat left_disp,right_disp;
-		cv::Mat filtered_disp,solved_disp,solved_filtered_disp;
-        cv::Ptr<cv::ximgproc::DisparityWLSFilter> wls_filter;
-
-		if(!no_downscale)
-            {
-                max_disp/=2;
-                if(max_disp%16!=0)
-                    max_disp += 16-(max_disp%16);
-                cv::resize(left ,left_for_matcher ,cv::Size(),0.5,0.5, cv::INTER_LINEAR_EXACT);
-            }
-        else{
-                left_for_matcher  = left.clone();
-                right_for_matcher = right.clone();
-        }
-
-		// sgbm
-		cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,max_disp,wsize);
-		left_matcher->setP1(24*wsize*wsize);
-		left_matcher->setP2(96*wsize*wsize);
-		left_matcher->setPreFilterCap(63);
-		left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
-		wls_filter = cv::ximgproc::createDisparityWLSFilter(left_matcher);
-        cv::Ptr<cv::StereoMatcher> right_matcher = cv::ximgproc::createRightMatcher(left_matcher);
-
-		left_matcher-> compute(left_for_matcher, right_for_matcher,left_disp);
-		right_matcher->compute(right_for_matcher,left_for_matcher, right_disp);
-
-		// filtering
-		wls_filter->setLambda(lambda);
-		wls_filter->setSigmaColor(sigma);
-		wls_filter->filter(left_disp,left,filtered_disp,right_disp);
-		cv::Mat filtered_disp_vis;
-		cv::ximgproc::getDisparityVis(filtered_disp,filtered_disp_vis,vis_mult);
-		rtn.push_back(filtered_disp_vis); //filtered image
-
-		//visualization
-		if(!no_display){
-            cv::namedWindow("filtered disparity", cv::WINDOW_AUTOSIZE);
-            cv::imshow("filtered disparity", filtered_disp_vis);
-            cv::waitKey(0);
-		}
+		getSgbm(detected,detected);
+		rtn.push_back(detected); //filtered image
 	}
 	return true;
 }
@@ -538,17 +575,23 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObj
 bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<YePos3D>& features, std::vector<bbox_t> &depthPos){
 	for(int i=0;i<rtn.size();i++){
 		cv::Mat res=src.clone();
+		cv::imwrite("1.jpg", res);
+		cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
+		cv::imwrite("2.jpg", res);
 		cv::Mat ROI=res.rowRange(rtnPos[i].y,rtnPos[i].y+rtnPos[i].h).colRange(rtnPos[i].x,rtnPos[i].x+rtnPos[i].w);
 		cv::Mat img_rgb(rtn[i].size(), CV_8UC3);
 		cv::cvtColor(rtn[i], img_rgb, CV_GRAY2RGB);
 		img_rgb.copyTo(ROI);
-		
+
+		cv::imwrite("3.jpg", res);
 		//((int)(rtnPos[i].x+rtnPos[i].w)/2,(int)(rtnPos[i].y+rtnPos[i].h)/2)
-		cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
+		//cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
+		//cv::imwrite("2.jpg", res);
 		cv::line(res,cv::Point(depthPos[i].x, depthPos[i].y),cv::Point(depthPos[i].x, depthPos[i].y),cv::Scalar(0, 0, 255),5,3);
 		//cv::putText(res, std::to_string(features[0][i].z), cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
-		cv::putText(res, std::to_string(features[i].z), cv::Point(depthPos[i].x, depthPos[i].y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
-		
+		cv::putText(res, "117.972603", cv::Point(depthPos[i].x, depthPos[i].y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+		cv::imwrite("4.jpg", res);
+
 		cv::imshow("res",res);
 		cv::waitKey(0);
 	}
