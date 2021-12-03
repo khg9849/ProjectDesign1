@@ -72,7 +72,7 @@ public:
 
 	void initMatrix();
 	//Absolute length from camera.
-	bool getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<YePos3D> &features, std::vector<bbox_t> &depthPos);
+	bool getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &pObjRect, YePos3D &features, bbox_t &depthPos);
 
 	bool getSgbm(const cv::Mat& src, cv::Mat& rtn);
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.

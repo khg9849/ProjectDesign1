@@ -354,8 +354,12 @@ void YeStereoCamera::initMatrix(){
 }
 
 //Absolute length from camera.
-bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<YePos3D> &features, std::vector<bbox_t> &depthPos) {
-	if(pObjRect.size()<1){
+bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &pObjRect, YePos3D &features, bbox_t &depthPos) {
+	if(src.empty()){
+		std::cout<<"image matrix is empty\n";
+		return false;
+	}
+	if(pObjRect.size() == 0){
 		std::cout<<"obj size is 0\n";
 		return false;
 	}
@@ -374,60 +378,77 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		gray = &src;
 	}
 
-	for(int i = 0; i < pObjRect.size(); i += 2){
-		bbox_t *leftBbox, *rightBbox;
-		if(pObjRect[i].x < pObjRect[i+1].x){
-			leftBbox = &pObjRect[i];
-			rightBbox = &pObjRect[i+1];
+	cv::Mat pic[2], dc[2];
+	std::vector<cv::KeyPoint> kp[2];
+	std::vector<cv::DMatch> matches;
+
+	pic[0] = (*gray)(cv::Range(std::min((int)(pObjRect->y), src.rows-1), std::min((int)(pObjRect->y + pObjRect->h), src.rows)), cv::Range(std::min((int)(pObjRect->x), src.cols/2-1), std::min((int)(pObjRect->x + pObjRect->w), src.cols/2)));
+	pic[1] = (*gray)(cv::Range(std::min((int)(pObjRect->y), src.rows-1), std::min((int)(pObjRect->y + pObjRect->h), src.rows)), cv::Range(std::min((int)(pObjRect->x)+src.cols/2, src.cols-1), std::min((int)(pObjRect->x + pObjRect->w)+src.cols/2, src.cols)));
+
+	fast->detect(pic[0], kp[0], pic[1]);
+	brief->compute(pic[0], kp[0], dc[0]);
+	fast->detect(pic[1], kp[1], pic[0]);
+	brief->compute(pic[1], kp[1], dc[1]);
+	matcher->match(dc[0], dc[1], matches);
+
+	if(matches.size() == 0){
+		std::cout<<"feature match is zero\n";
+		return false;
+	}
+
+	std::vector<YePos3D> feature_temp;
+	for(int i = 0; i < matches.size(); i++){
+		YePos3D temp[2];
+
+		temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[i].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
+		temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[i].trainIdx].pt.x)+rightBbox->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
+			
+		temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
+
+		temp[0].x = temp[0].x*temp[0].z;
+		temp[0].y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[i].queryIdx].pt.y)+leftBbox->y)+invCamMat[0].at<double>(1,2))*temp[0].z;
+
+		feature_temp.push_back(temp[0]);
+	}
+
+	std::vector<int> index;
+	for(int i = 0; i < feature_temp.size(); i++){
+		index.push_back(i);
+	}
+	std::sort(index.begin(), index.end(),
+			[&feature_temp](YePos3D feature1, YePos3D feature2){
+				return feature1.z < feature2.z;
+			}
+			);
+
+	int pre = feature_temp[index[0]].z;
+	int count = 1, maxCount = 0, maxIdx = 0;
+	
+	for(int j = 1; j < feature_temp.size(), j++){
+		if(feature_temp[index[j]].z == pre){
+			count++;
 		}
 		else{
-			leftBbox = &pObjRect[i+1];
-			rightBbox = &pObjRect[i];
-		}
-
-		cv::Mat pic[2], dc[2];
-		std::vector<cv::KeyPoint> kp[2];
-		std::vector<cv::DMatch> matches;
-
-		pic[0] = (*gray)(cv::Range(leftBbox->y, std::min((int)(leftBbox->y + leftBbox->h), 960)), cv::Range(leftBbox->x, std::min((int)(leftBbox->x + leftBbox->w), 1280)));
-		pic[1] = (*gray)(cv::Range(rightBbox->y, std::min((int)(rightBbox->y + rightBbox->h), 960)), cv::Range(rightBbox->x, std::min((int)(rightBbox->x + rightBbox->w), 2560)));
-
-		fast->detect(pic[0], kp[0], pic[1]);
-		brief->compute(pic[0], kp[0], dc[0]);
-		fast->detect(pic[1], kp[1], pic[0]);
-		brief->compute(pic[1], kp[1], dc[1]);
-		matcher->match(dc[0], dc[1], matches);
-
-		bool findPos = false;
-		int dfRight = leftBbox->w-rightBbox->w;
-
-		YePos3D temp[2];
-		for(int j = 0; j < matches.size() && !findPos; j++){
-			int dif = (int)kp[0][matches[j].queryIdx].pt.x-(int)kp[1][matches[j].trainIdx].pt.x;
-			if((dif<5 && dif>-5)||(dif<dfRight+5 && dif>dfRight-5)){
-				temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
-				temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+rightBbox->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
-			
-				temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
-				temp[1].z = temp[0].z;
-
-				temp[0].x = temp[0].x*temp[0].z;
-				temp[0].y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[j].queryIdx].pt.y)+leftBbox->y)+invCamMat[0].at<double>(1,2))*temp[0].z;
-
-				temp[1].x = temp[1].x*temp[1].z;
-				temp[1].y = (invCamMat[1].at<double>(1,1)*((int)(kp[1][matches[j].trainIdx].pt.y)+rightBbox->y)+invCamMat[1].at<double>(1,2))*temp[1].z;
-
-				features.push_back(temp[0]);
-
-				bbox_t posTemp;
-				posTemp.x = leftBbox->x+(int)kp[0][matches[j].queryIdx].pt.x;
-				posTemp.y = leftBbox->y+(int)kp[0][matches[j].trainIdx].pt.y;
-
-				depthPos.push_back(posTemp);
-				findPos = true;
+			pre = feature_temp[index[j]].z;
+			if(count > maxCount){
+				maxCount = count;
+				maxIdx = j-1;
 			}
+			count = 1;
 		}
 	}
+	if(count > maxCount){
+		maxCount = count;
+		maxIdx = feature_temp.size()-1;
+	}
+	
+	int idx = index[(maxIdx-(maxIdx-maxCount+1))/2];
+	features.x = feature_temp[idx].x;
+	features.y = feature_temp[idx].y;
+	features.z = feature_temp[idx].z;
+
+	depthPos.x = pObjRect->x+(int)kp[0][matches[idx].queryIdx].pt.x;
+	depthPos.y = pObjRect->y+(int)kp[0][matches[idx].queryIdx].pt.y;
 
 	return true;
 }
