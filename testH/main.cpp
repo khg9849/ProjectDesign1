@@ -19,7 +19,7 @@ int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
     const char *filepath = "../resources/calib_data";
-    const char *objName = "chair";
+    const char *objName = "clock";
 
 
     if (!temp->initCalibData("calibration.xml")) {
@@ -68,17 +68,17 @@ int main()
             cv::waitKey(0);
         }
 
-        vector<YePos3D> feature;
-        vector<bbox_t> pos;
-         if ((temp->getAbsoluteLengthInRect(mat, pObject, feature, pos)) == false) {
+        YePos3D feature;
+        bbox_t pos;
+         if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
             std::cout << "getAbsoluteLengthInRect failed\n";
             exit(1);
         }
-
+/*
         for (int i = 0; i < feature.size(); i++) {
             std::cout << feature[i].x << ' ' << feature[i].y << ' ' << feature[i].z << '\n';
         }
-
+*/
         temp->showResult(mat,rtn,rtnPos,feature,pos);
        
 		video>>mat;

@@ -353,13 +353,10 @@ void YeStereoCamera::initMatrix(){
 	invCamMat[1] = matCamMat2.inv();
 }
 
-bool compare(YePos3D a, YePos3D b){
-	return a.z<b.z;
-}
 //Absolute length from camera.
-bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<YePos3D> &features, std::vector<bbox_t> &depthPos) {
-	if(pObjRect.size()<1){
-		std::cout<<"obj size is 0\n";
+bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &pObjRect, YePos3D &features, bbox_t &depthPos) {
+	if(src.empty()){
+		std::cout<<"image matrix is empty\n";
 		return false;
 	}
 	if(matCamMat1.rows != 3){
@@ -377,92 +374,77 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbo
 		gray = &src;
 	}
 
-	for(int i = 0; i < pObjRect.size(); i += 2){
-		bbox_t *leftBbox, *rightBbox;
-		if(pObjRect[i].x < pObjRect[i+1].x){
-			leftBbox = &pObjRect[i];
-			rightBbox = &pObjRect[i+1];
+	cv::Mat pic[2], dc[2];
+	std::vector<cv::KeyPoint> kp[2];
+	std::vector<cv::DMatch> matches;
+
+	pic[0] = (*gray)(cv::Range(std::min((int)(pObjRect.y), src.rows-1), std::min((int)(pObjRect.y + pObjRect.h), src.rows)), cv::Range(std::min((int)(pObjRect.x), src.cols/2-1), std::min((int)(pObjRect.x + pObjRect.w), src.cols/2)));
+	pic[1] = (*gray)(cv::Range(std::min((int)(pObjRect.y), src.rows-1), std::min((int)(pObjRect.y + pObjRect.h), src.rows)), cv::Range(std::min((int)(pObjRect.x)+src.cols/2, src.cols-1), std::min((int)(pObjRect.x + pObjRect.w)+src.cols/2, src.cols)));
+
+	fast->detect(pic[0], kp[0], pic[1]);
+	brief->compute(pic[0], kp[0], dc[0]);
+	fast->detect(pic[1], kp[1], pic[0]);
+	brief->compute(pic[1], kp[1], dc[1]);
+	matcher->match(dc[0], dc[1], matches);
+
+	if(matches.size() == 0){
+		std::cout<<"feature match is zero\n";
+		return false;
+	}
+
+	std::vector<YePos3D> feature_temp;
+	for(int i = 0; i < matches.size(); i++){
+		YePos3D temp;
+
+		temp.x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[i].queryIdx].pt.x)+pObjRect.x)+invCamMat[0].at<double>(0,2);
+		double rightX = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[i].trainIdx].pt.x)+pObjRect.x)+invCamMat[1].at<double>(0,2);
+
+		temp.z = -matT.at<double>(0,0)/(temp.x-rightX); 
+
+		temp.x = temp.x*temp.z;
+		temp.y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[i].queryIdx].pt.y)+pObjRect.y)+invCamMat[0].at<double>(1,2))*temp.z;
+
+		feature_temp.push_back(temp);
+	}
+
+	std::vector<int> index;
+	for(int i = 0; i < feature_temp.size(); i++){
+		index.push_back(i);
+	}
+	std::sort(index.begin(), index.end(),
+			[&feature_temp](int f1, int f2){
+				return feature_temp[f1].z < feature_temp[f2].z;
+			}
+			);
+
+	int pre = feature_temp[index[0]].z;
+	int count = 1, maxCount = 0, maxIdx = 0;
+	
+	for(int i = 1; i < feature_temp.size(); i++){
+		if(feature_temp[index[i]].z == pre){
+			count++;
 		}
 		else{
-			leftBbox = &pObjRect[i+1];
-			rightBbox = &pObjRect[i];
-		}
-
-		cv::Mat pic[2], dc[2];
-		std::vector<cv::KeyPoint> kp[2];
-		std::vector<cv::DMatch> matches;
-
-		pic[0] = (*gray)(cv::Range(leftBbox->y, std::min((int)(leftBbox->y + leftBbox->h), 960)), cv::Range(leftBbox->x, std::min((int)(leftBbox->x + leftBbox->w), 1280)));
-		pic[1] = (*gray)(cv::Range(rightBbox->y, std::min((int)(rightBbox->y + rightBbox->h), 960)), cv::Range(rightBbox->x, std::min((int)(rightBbox->x + rightBbox->w), 2560)));
-
-		fast->detect(pic[0], kp[0], pic[1]);
-		brief->compute(pic[0], kp[0], dc[0]);
-		fast->detect(pic[1], kp[1], pic[0]);
-		brief->compute(pic[1], kp[1], dc[1]);
-		matcher->match(dc[0], dc[1], matches);
-
-		bool findPos = false;
-		int dfRight = leftBbox->w-rightBbox->w;
-
-		std::vector<YePos3D> feature_temp[2];
-		for(int j = 0; j < matches.size(); j++){
-			YePos3D temp[2];
-			//int dif = (int)kp[0][matches[j].queryIdx].pt.x-(int)kp[1][matches[j].trainIdx].pt.x;
-			//if((dif<5 && dif>-5)||(dif<dfRight+5 && dif>dfRight-5)){
-				temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[j].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
-				temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[j].trainIdx].pt.x)+rightBbox->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
-			
-				temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
-				temp[1].z = temp[0].z;
-
-				temp[0].x = temp[0].x*temp[0].z;
-				temp[0].y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[j].queryIdx].pt.y)+leftBbox->y)+invCamMat[0].at<double>(1,2))*temp[0].z;
-
-				temp[1].x = temp[1].x*temp[1].z;
-				temp[1].y = (invCamMat[1].at<double>(1,1)*((int)(kp[1][matches[j].trainIdx].pt.y)+rightBbox->y)+invCamMat[1].at<double>(1,2))*temp[1].z;
-
-				temp[0].idx = j;
-				temp[1].idx = j;
-
-				feature_temp[0].push_back(temp[0]);
-				feature_temp[1].push_back(temp[1]);
-
-			//	bbox_t posTemp;
-			//	posTemp.x = leftBbox->x+(int)kp[0][matches[j].queryIdx].pt.x;
-			//	posTemp.y = leftBbox->y+(int)kp[0][matches[j].queryIdx].pt.y;
-
-			//	depthPos.push_back(posTemp);
-			//	findPos = true;
-			//}
-		}
-		
-		std::sort(feature_temp[0].begin(), feature_temp[0].end(), compare);
-
-		int pre = feature_temp[0][0].z;
-		int count = 1, maxCount = 0, maxIdx = 0;
-		for(int j = 1; j < feature_temp[0].size(); j++){
-			if(feature_temp[0][j].z == pre){
-				count++;
+			pre = feature_temp[index[i]].z;
+			if(count > maxCount){
+				maxCount = count;
+				maxIdx = i-1;
 			}
-			else{
-				pre = feature_temp[0][j].z;
-				if(count > maxCount){
-					maxCount = count;
-					maxIdx = j-1;
-				}
-				count = 1;
-			}
+			count = 1;
 		}
-		if(count>maxCount){
-			maxIdx = feature_temp[0].size()-1;
-		}
-		features.push_back(feature_temp[0][maxIdx]);
-		bbox_t posTemp;
-		posTemp.x = leftBbox->x+(int)kp[0][matches[feature_temp[0][maxIdx].idx].queryIdx].pt.x;
-		posTemp.y = leftBbox->y+(int)kp[0][matches[feature_temp[0][maxIdx].idx].queryIdx].pt.y;
-		
-		depthPos.push_back(posTemp);
 	}
+	if(count > maxCount){
+		maxCount = count;
+		maxIdx = feature_temp.size()-1;
+	}
+	
+	int idx = index[(maxIdx-(maxIdx-maxCount+1))/2];
+	features.x = feature_temp[idx].x;
+	features.y = feature_temp[idx].y;
+	features.z = feature_temp[idx].z;
+
+	depthPos.x = pObjRect.x+(int)kp[0][matches[idx].queryIdx].pt.x;
+	depthPos.y = pObjRect.y+(int)kp[0][matches[idx].queryIdx].pt.y;
 
 	return true;
 }
@@ -572,26 +554,20 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObj
 	return true;
 }
 
-bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<YePos3D>& features, std::vector<bbox_t> &depthPos){
-	for(int i=0;i<rtn.size();i++){
+bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos, YePos3D &features, bbox_t &depthPos){
+	for(int i=0;i<1;i++){
 		cv::Mat res=src.clone();
-		cv::imwrite("1.jpg", res);
-		cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
-		cv::imwrite("2.jpg", res);
 		cv::Mat ROI=res.rowRange(rtnPos[i].y,rtnPos[i].y+rtnPos[i].h).colRange(rtnPos[i].x,rtnPos[i].x+rtnPos[i].w);
 		cv::Mat img_rgb(rtn[i].size(), CV_8UC3);
 		cv::cvtColor(rtn[i], img_rgb, CV_GRAY2RGB);
 		img_rgb.copyTo(ROI);
 
-		cv::imwrite("3.jpg", res);
 		//((int)(rtnPos[i].x+rtnPos[i].w)/2,(int)(rtnPos[i].y+rtnPos[i].h)/2)
-		//cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
-		//cv::imwrite("2.jpg", res);
-		cv::line(res,cv::Point(depthPos[i].x, depthPos[i].y),cv::Point(depthPos[i].x, depthPos[i].y),cv::Scalar(0, 0, 255),5,3);
+		cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
+		cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
 		//cv::putText(res, std::to_string(features[0][i].z), cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
-		cv::putText(res, "117.972603", cv::Point(depthPos[i].x, depthPos[i].y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
-		cv::imwrite("4.jpg", res);
-
+		cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+		
 		cv::imshow("res",res);
 		cv::waitKey(0);
 	}

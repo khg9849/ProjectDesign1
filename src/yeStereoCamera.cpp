@@ -359,10 +359,6 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 		std::cout<<"image matrix is empty\n";
 		return false;
 	}
-	if(pObjRect.size() == 0){
-		std::cout<<"obj size is 0\n";
-		return false;
-	}
 	if(matCamMat1.rows != 3){
 		std::cout<<"can't read camera calibration matrix\n";
 		return false;
@@ -382,8 +378,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 	std::vector<cv::KeyPoint> kp[2];
 	std::vector<cv::DMatch> matches;
 
-	pic[0] = (*gray)(cv::Range(std::min((int)(pObjRect->y), src.rows-1), std::min((int)(pObjRect->y + pObjRect->h), src.rows)), cv::Range(std::min((int)(pObjRect->x), src.cols/2-1), std::min((int)(pObjRect->x + pObjRect->w), src.cols/2)));
-	pic[1] = (*gray)(cv::Range(std::min((int)(pObjRect->y), src.rows-1), std::min((int)(pObjRect->y + pObjRect->h), src.rows)), cv::Range(std::min((int)(pObjRect->x)+src.cols/2, src.cols-1), std::min((int)(pObjRect->x + pObjRect->w)+src.cols/2, src.cols)));
+	pic[0] = (*gray)(cv::Range(std::min((int)(pObjRect.y), src.rows-1), std::min((int)(pObjRect.y + pObjRect.h), src.rows)), cv::Range(std::min((int)(pObjRect.x), src.cols/2-1), std::min((int)(pObjRect.x + pObjRect.w), src.cols/2)));
+	pic[1] = (*gray)(cv::Range(std::min((int)(pObjRect.y), src.rows-1), std::min((int)(pObjRect.y + pObjRect.h), src.rows)), cv::Range(std::min((int)(pObjRect.x)+src.cols/2, src.cols-1), std::min((int)(pObjRect.x + pObjRect.w)+src.cols/2, src.cols)));
 
 	fast->detect(pic[0], kp[0], pic[1]);
 	brief->compute(pic[0], kp[0], dc[0]);
@@ -400,13 +396,13 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 	for(int i = 0; i < matches.size(); i++){
 		YePos3D temp;
 
-		temp.x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[i].queryIdx].pt.x)+pObjRect->x)+invCamMat[0].at<double>(0,2);
-		int rightX = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[i].trainIdx].pt.x)+pObjRect->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
-			
-		temp.z = -matT.at<double>(0,0)/(temp.x-rightX);
+		temp.x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[i].queryIdx].pt.x)+pObjRect.x)+invCamMat[0].at<double>(0,2);
+		double rightX = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[i].trainIdx].pt.x)+pObjRect.x)+invCamMat[1].at<double>(0,2);
+
+		temp.z = -matT.at<double>(0,0)/(temp.x-rightX); 
 
 		temp.x = temp.x*temp.z;
-		temp.y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[i].queryIdx].pt.y)+pObjRect->y)+invCamMat[0].at<double>(1,2))*temp.z;
+		temp.y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[i].queryIdx].pt.y)+pObjRect.y)+invCamMat[0].at<double>(1,2))*temp.z;
 
 		feature_temp.push_back(temp);
 	}
@@ -416,23 +412,23 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 		index.push_back(i);
 	}
 	std::sort(index.begin(), index.end(),
-			[&feature_temp](YePos3D feature1, YePos3D feature2){
-				return feature1.z < feature2.z;
+			[&feature_temp](int f1, int f2){
+				return feature_temp[f1].z < feature_temp[f2].z;
 			}
 			);
 
 	int pre = feature_temp[index[0]].z;
 	int count = 1, maxCount = 0, maxIdx = 0;
 	
-	for(int j = 1; j < feature_temp.size(), j++){
-		if(feature_temp[index[j]].z == pre){
+	for(int i = 1; i < feature_temp.size(); i++){
+		if(feature_temp[index[i]].z == pre){
 			count++;
 		}
 		else{
-			pre = feature_temp[index[j]].z;
+			pre = feature_temp[index[i]].z;
 			if(count > maxCount){
 				maxCount = count;
-				maxIdx = j-1;
+				maxIdx = i-1;
 			}
 			count = 1;
 		}
@@ -447,8 +443,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 	features.y = feature_temp[idx].y;
 	features.z = feature_temp[idx].z;
 
-	depthPos.x = pObjRect->x+(int)kp[0][matches[idx].queryIdx].pt.x;
-	depthPos.y = pObjRect->y+(int)kp[0][matches[idx].queryIdx].pt.y;
+	depthPos.x = pObjRect.x+(int)kp[0][matches[idx].queryIdx].pt.x;
+	depthPos.y = pObjRect.y+(int)kp[0][matches[idx].queryIdx].pt.y;
 
 	return true;
 }
@@ -558,8 +554,8 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObj
 	return true;
 }
 
-bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<YePos3D>& features, std::vector<bbox_t> &depthPos){
-	for(int i=0;i<rtn.size();i++){
+bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos, YePos3D &features, bbox_t &depthPos){
+	for(int i=0;i<1;i++){
 		cv::Mat res=src.clone();
 		cv::Mat ROI=res.rowRange(rtnPos[i].y,rtnPos[i].y+rtnPos[i].h).colRange(rtnPos[i].x,rtnPos[i].x+rtnPos[i].w);
 		cv::Mat img_rgb(rtn[i].size(), CV_8UC3);
@@ -568,9 +564,9 @@ bool YeStereoCamera::showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,st
 
 		//((int)(rtnPos[i].x+rtnPos[i].w)/2,(int)(rtnPos[i].y+rtnPos[i].h)/2)
 		cv::rectangle(res, cv::Rect(rtnPos[i].x,rtnPos[i].y,rtnPos[i].w,rtnPos[i].h), cv::Scalar(0, 0, 255), 3, 8, 0);
-		cv::line(res,cv::Point(depthPos[i].x, depthPos[i].y),cv::Point(depthPos[i].x, depthPos[i].y),cv::Scalar(0, 0, 255),5,3);
+		cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
 		//cv::putText(res, std::to_string(features[0][i].z), cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
-		cv::putText(res, std::to_string(features[i].z), cv::Point(depthPos[i].x, depthPos[i].y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+		cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
 		
 		cv::imshow("res",res);
 		cv::waitKey(0);

@@ -31,7 +31,7 @@ int main()
 
     cv::Mat mat;
     
-	cv::VideoCapture video("../resources/1/sample2.mp4");
+	cv::VideoCapture video("../resources/1/sample.mp4");
    // cv::VideoCapture video("../resources/WIN_20211115_17_10_04_Pro.mp4");
     
     if (!video.isOpened()) {
@@ -68,17 +68,17 @@ int main()
             cv::waitKey(0);
         }
 
-        vector<YePos3D> feature;
-        vector<bbox_t> pos;
-         if ((temp->getAbsoluteLengthInRect(mat, pObject, feature, pos)) == false) {
+        YePos3D feature;
+        bbox_t pos;
+         if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
             std::cout << "getAbsoluteLengthInRect failed\n";
             exit(1);
         }
-
+/*
         for (int i = 0; i < feature.size(); i++) {
             std::cout << feature[i].x << ' ' << feature[i].y << ' ' << feature[i].z << '\n';
         }
-
+*/
         temp->showResult(mat,rtn,rtnPos,feature,pos);
        
 		video>>mat;
