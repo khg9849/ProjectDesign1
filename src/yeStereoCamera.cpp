@@ -398,17 +398,17 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 
 	std::vector<YePos3D> feature_temp;
 	for(int i = 0; i < matches.size(); i++){
-		YePos3D temp[2];
+		YePos3D temp;
 
-		temp[0].x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[i].queryIdx].pt.x)+leftBbox->x)+invCamMat[0].at<double>(0,2);
-		temp[1].x = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[i].trainIdx].pt.x)+rightBbox->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
+		temp.x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[i].queryIdx].pt.x)+pObjRect->x)+invCamMat[0].at<double>(0,2);
+		int rightX = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[i].trainIdx].pt.x)+pObjRect->x-(*gray).cols/2)+invCamMat[1].at<double>(0,2);
 			
-		temp[0].z = -matT.at<double>(0,0)/(temp[0].x-temp[1].x);
+		temp.z = -matT.at<double>(0,0)/(temp.x-rightX);
 
-		temp[0].x = temp[0].x*temp[0].z;
-		temp[0].y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[i].queryIdx].pt.y)+leftBbox->y)+invCamMat[0].at<double>(1,2))*temp[0].z;
+		temp.x = temp.x*temp.z;
+		temp.y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[i].queryIdx].pt.y)+pObjRect->y)+invCamMat[0].at<double>(1,2))*temp.z;
 
-		feature_temp.push_back(temp[0]);
+		feature_temp.push_back(temp);
 	}
 
 	std::vector<int> index;
