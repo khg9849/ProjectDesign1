@@ -43,8 +43,8 @@ int main()
         return 0;
     }
 
-	temp->getcfg_file("../darknet/cfg/yolov4.cfg");
-    temp->getWeight_file("../darknet/yolov4.weights");
+	temp->getcfg_file("../darknet/cfg/yolov4-tiny.cfg");
+    temp->getWeight_file("../darknet/yolov4-tiny.weights");
 	temp->getObjNames_file("../darknet/data/coco.names");
 	temp->initMatrix();
 

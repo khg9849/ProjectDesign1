@@ -70,6 +70,20 @@ opencv2/ximgproc.hpp
 fstream
 -
 
+/home/ubuntu/ProjectDesign1/testH/main.cpp
+iostream
+-
+stdlib.h
+-
+stdio.h
+-
+unistd.h
+-
+yeStereoCamera.hpp
+/home/ubuntu/ProjectDesign1/testH/yeStereoCamera.hpp
+opencv2/videoio.hpp
+-
+
 /home/ubuntu/ProjectDesign1/testH/yeStereoCamera.cpp
 yeStereoCamera.hpp
 /home/ubuntu/ProjectDesign1/testH/yeStereoCamera.hpp

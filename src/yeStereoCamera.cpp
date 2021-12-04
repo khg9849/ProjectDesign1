@@ -556,10 +556,10 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, bbox_t& pObject,cv::Mat& 
 bool YeStereoCamera::showResult(const cv::Mat& src, cv::Mat &rtn, bbox_t &rtnPos, YePos3D &features, bbox_t &depthPos){
 
 	cv::Mat res=src.clone();
-	cv::Mat ROI=res.rowRange(rtnPos.y, rtnPos.y+rtnPos.h).colRange(rtnPos.x, rtnPos.x+rtnPos.w);
-	cv::Mat img_rgb(rtn.size(), CV_8UC3);
-	cv::cvtColor(rtn, img_rgb, CV_GRAY2RGB);
-	img_rgb.copyTo(ROI);
+	//cv::Mat ROI=res.rowRange(rtnPos.y, rtnPos.y+rtnPos.h).colRange(rtnPos.x, rtnPos.x+rtnPos.w);
+	//cv::Mat img_rgb(rtn.size(), CV_8UC3);
+	//cv::cvtColor(rtn, img_rgb, CV_GRAY2RGB);
+	//img_rgb.copyTo(ROI);
 
 	cv::rectangle(res, cv::Rect(rtnPos.x,rtnPos.y,rtnPos.w,rtnPos.h), cv::Scalar(0, 0, 255), 3, 8, 0);
 	cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
