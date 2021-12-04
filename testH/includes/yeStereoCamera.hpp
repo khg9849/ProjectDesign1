@@ -26,6 +26,16 @@ struct YePos3D {
 	double z;
 };
 
+struct sgbmParam {
+	// numDisparities -> max_disp
+	// blocksize -> wsize
+	int minDisparity,max_disp,P1,P2,disp12MaxDiff,preFilterCap,uniquenessRatio,speckleWindowSize,speckleRange;
+	int vis_mult;
+	double lambda;
+	double sigma;
+	int wsize=3;
+};
+
 class YeStereoCamera {
 private:
 	cv::Mat matCamMat1; //camera matrix.
@@ -49,6 +59,9 @@ private:
 	cv::Ptr<cv::Feature2D> brief;
 	cv::Ptr<cv::DescriptorMatcher> matcher;
 	cv::Mat invCamMat[2];
+
+	bool no_display = true;		//don't display results
+	bool no_downscale = true;	//force stereo matching on full-sized views to improve quality
 	
 protected:
 public:
@@ -74,11 +87,11 @@ public:
 	//Absolute length from camera.
 	bool getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &pObjRect, YePos3D &features, bbox_t &depthPos);
 
-	bool getSgbm(const cv::Mat& src, cv::Mat& rtn);
+	bool getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param);
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
-	bool getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObject, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos);
-
-	bool showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos, YePos3D &features, bbox_t &depthPos);
+	bool getSgbmInRect(const cv::Mat& src, bbox_t& pObject, cv::Mat& rtn,sgbmParam param);
+	
+	bool showResult(const cv::Mat& src, cv::Mat& rtn, bbox_t &pObjRect, YePos3D &features, bbox_t &depthPos);
 };
 
 }

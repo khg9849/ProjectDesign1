@@ -15,6 +15,11 @@ using namespace std;
     ./yeStereoCamera 
 
 */
+
+void initTrackWindow();
+void onChange(int pos, void* userdata);
+sgbmParam param;
+
 int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
@@ -32,7 +37,6 @@ int main()
     cv::Mat mat;
     
 	cv::VideoCapture video("../resources/1/sample.mp4");
-   // cv::VideoCapture video("../resources/WIN_20211115_17_10_04_Pro.mp4");
     
     if (!video.isOpened()) {
         cout << "Can't open the video" << endl;
@@ -56,34 +60,75 @@ int main()
             std::cout << "x y w h id : " << pObject[i].x << " " << pObject[i].y << " " << pObject[i].w << " " << pObject[i].h << " " << pObject[i].obj_id << "\n";
         }
 
-        vector<cv::Mat> rtn;
-        std::vector<bbox_t> rtnPos;
-        if ((temp->getSgbmInRect(mat, pObject, rtn,rtnPos)) == false) {
-            std::cout << "getSgbmInRect failed\n";
-            exit(1);
-        }
+		if(pObject.size()){
+        	cv::Mat rtn;
+  	    	if ((temp->getSgbmInRect(mat, pObject[0], rtn, param)) == false) {
+    	    	std::cout << "getSgbmInRect failed\n";
+            	exit(1);
+        	}
 
-        for (cv::Mat res : rtn) {
-            cv::imshow("result", res);
-            cv::waitKey(0);
-        }
+        	YePos3D feature;
+        	bbox_t pos;
+         	if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
+            	std::cout << "getAbsoluteLengthInRect failed\n";
+            	exit(1);
+        	}
 
-        YePos3D feature;
-        bbox_t pos;
-         if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
-            std::cout << "getAbsoluteLengthInRect failed\n";
-            exit(1);
-        }
-/*
-        for (int i = 0; i < feature.size(); i++) {
-            std::cout << feature[i].x << ' ' << feature[i].y << ' ' << feature[i].z << '\n';
-        }
-*/
-        temp->showResult(mat,rtn,rtnPos,feature,pos);
+        	temp->showResult(mat,rtn,pObject[0],feature,pos);
        
-		video>>mat;
+			video>>mat;
+		}
     }
 
     return 0;
 }
 
+void initTrackWindow(){
+    cv::namedWindow("window");
+    cv::createTrackbar("vis_mult","window",0,100,onChange);
+    cv::createTrackbar("max_disp","window",0,100,onChange);
+    cv::createTrackbar("lambda","window",0,10000,onChange);
+    cv::createTrackbar("sigma","window",0,20,onChange);
+    cv::createTrackbar("wsize","window",0,20,onChange);
+    cv::createTrackbar("minDisparity","window",0,100,onChange);
+    cv::createTrackbar("disp12MaxDiff","window",0,1000000,onChange);
+    cv::createTrackbar("preFilterCap","window",0,100,onChange);
+    cv::createTrackbar("uniquenessRatio","window",0,100,onChange);
+    cv::createTrackbar("speckleWindowSize","window",0,100,onChange);
+
+    cv::setTrackbarPos("vis_mult","window",8);
+    cv::setTrackbarPos("max_disp","window",16);
+    cv::setTrackbarPos("lambda","window",8000);
+    cv::setTrackbarPos("sigma","window",1.5);
+    cv::setTrackbarPos("wsize","window",3);
+    cv::setTrackbarPos("minDisparity","window",0);
+    cv::setTrackbarPos("disp12MaxDiff","window",1000000);
+    cv::setTrackbarPos("preFilterCap","window",63);
+    cv::setTrackbarPos("uniquenessRatio","window",0);
+    cv::setTrackbarPos("speckleWindowSize","window",0);
+
+    param.vis_mult=cv::getTrackbarPos("vis_mult","window");
+    param.max_disp=cv::getTrackbarPos("max_disp","window");
+    param.lambda=cv::getTrackbarPos("lambda","window");
+    param.sigma=cv::getTrackbarPos("sigma","window");
+    param.wsize=cv::getTrackbarPos("wsize","window");
+    param.minDisparity=cv::getTrackbarPos("minDisparity","window");
+    param.disp12MaxDiff=cv::getTrackbarPos("disp12MaxDiff","window");
+    param.preFilterCap=cv::getTrackbarPos("preFilterCap","window");
+    param.uniquenessRatio=cv::getTrackbarPos("uniquenessRatio","window");
+    param.speckleWindowSize=cv::getTrackbarPos("speckleWindowSize","window");
+
+}
+
+void onChange(int pos, void* userdata){
+    param.vis_mult=cv::getTrackbarPos("vis_mult","window");
+    param.max_disp=cv::getTrackbarPos("max_disp","window");
+    param.lambda=cv::getTrackbarPos("lambda","window");
+    param.sigma=cv::getTrackbarPos("sigma","window");
+    param.wsize=cv::getTrackbarPos("wsize","window");
+    param.minDisparity=cv::getTrackbarPos("minDisparity","window");
+    param.disp12MaxDiff=cv::getTrackbarPos("disp12MaxDiff","window");
+    param.preFilterCap=cv::getTrackbarPos("preFilterCap","window");
+    param.uniquenessRatio=cv::getTrackbarPos("uniquenessRatio","window");
+    param.speckleWindowSize=cv::getTrackbarPos("speckleWindowSize","window");
+}
