@@ -47,6 +47,7 @@ int main()
     temp->getWeight_file("../darknet/yolov4-tiny.weights");
 	temp->getObjNames_file("../darknet/data/coco.names");
 	temp->initMatrix();
+	initTrackWindow();
 
 	video>>mat;
 	while(!mat.empty()){

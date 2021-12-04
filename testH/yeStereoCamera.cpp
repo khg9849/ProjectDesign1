@@ -472,17 +472,17 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 
 bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 
-
 	if(param.max_disp<=0 || param.max_disp%16!=0)
 	{
-		std::cout<<"Incorrect max_disparity value: it should be positive and divisible by 16";
+		std::cout<<"Incorrect max_disparity value: it should be positive and divisible by 16\n";
 		return false;
 	}
 	if(param.wsize<=0 || param.wsize%2!=1)
 	{
-		std::cout<<"Incorrect window_size value: it should be positive and odd";
+		std::cout<<"Incorrect window_size value: it should be positive and odd\n";
 		return false;
 	}
+
 	cv::Mat mat_left=src(cv::Range::all(), cv::Range(0, src.cols/2)).clone();
     cv::Mat mat_right=src(cv::Range::all(), cv::Range(src.cols/2, src.cols)).clone();
 
@@ -534,11 +534,9 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 	//visualization
 	if(!no_display){
 		cv::namedWindow("filtered disparity", cv::WINDOW_AUTOSIZE);
-		cv::imshow("filtered disparity", filtered_disp_vis);
+		cv::imshow("filtered disparity", rtn);
 		cv::waitKey(0);
 	}
-
-
 
 	return true;
 }
@@ -556,10 +554,10 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, bbox_t& pObject,cv::Mat& 
 bool YeStereoCamera::showResult(const cv::Mat& src, cv::Mat &rtn, bbox_t &rtnPos, YePos3D &features, bbox_t &depthPos){
 
 	cv::Mat res=src.clone();
-	//cv::Mat ROI=res.rowRange(rtnPos.y, rtnPos.y+rtnPos.h).colRange(rtnPos.x, rtnPos.x+rtnPos.w);
-	//cv::Mat img_rgb(rtn.size(), CV_8UC3);
-	//cv::cvtColor(rtn, img_rgb, CV_GRAY2RGB);
-	//img_rgb.copyTo(ROI);
+	cv::Mat ROI=res.rowRange(rtnPos.y, rtnPos.y+rtnPos.h).colRange(rtnPos.x, rtnPos.x+rtnPos.w);
+	cv::Mat img_rgb(rtn.size(), CV_8UC3);
+	cv::cvtColor(rtn, img_rgb, CV_GRAY2RGB);
+	img_rgb.copyTo(ROI);
 
 	cv::rectangle(res, cv::Rect(rtnPos.x,rtnPos.y,rtnPos.w,rtnPos.h), cv::Scalar(0, 0, 255), 3, 8, 0);
 	cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
