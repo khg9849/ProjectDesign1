@@ -22,19 +22,26 @@ CLOCK 74
 SCISSORS 76
 */
 
-// ./saveCont ../darknet/cfg/yolov4-tiny.cfg ../darknet/yolov4-tiny.weights ../resources/135cm/135cm_1.jpg
+/*
+ ./saveCont ../darknet/cfg/yolov4-tiny.cfg ../darknet/yolov4-tiny.weights ../resources/135cm/135cm_1.jpg
+ ./saveCont ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/1117dataset/31cm_scissors.jpg
+ ./saveCont ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/45cm/45cm_1.jpg
+ ./saveCont ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/45cm/45cm_1.jpg ../resources/45cm/cont.txt
+ ./saveCont ../darknet/cfg/yolov4.cfg ../darknet/yolov4.weights ../resources/90cm/90cm_1.jpg ../resources/90cm/cont.txt
+*/
 
+void getDepthZ(){}
 int main(int argc, char **argv)
 {
-	if(argc!=4){
-		std::cout<<"usage: ./saveCont cfg_path weights_path src_path"<<'\n';
+	if(argc!=5){
+		std::cout<<"usage: ./saveCont cfg_path weights_path src_path cont_path"<<'\n';
 		exit(1);
 	}
 
 	std::string cfgpath = argv[1];
 	std::string weightspath = argv[2];
 	std::string photopath = argv[3];
-	char* contpath = "../cont.txt";
+	char* contpath = argv[4];
 
 	CallYolo *yolo = new CallYolo();
 	yolo->init(cfgpath, weightspath);

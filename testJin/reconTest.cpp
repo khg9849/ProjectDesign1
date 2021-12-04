@@ -7,41 +7,58 @@
 
 bbox_t_container readCont(char *filepath, int *contsize);
 
+/*
+ ./reconTest ../resources/1117dataset/31cm_scissors.jpg ../resources/1117dataset/scirrsors.txt
+ ./reconTest ../resources/45cm/45cm_1.jpg ../resources/45cm/cont.txt
+  ./reconTest ../resources/90cm/90cm_1.jpg ../resources/90cm/cont.txt
+*/
+using namespace std;
+using namespace SYE;
+using namespace cv;
 
 int main(int argc, char **argv)
 {
+	
+
 	bbox_t_container cont;
 	int contsize;
-	cont=readCont("../cont.txt",&contsize);
+	cont=readCont(argv[2],&contsize);
 
-	const cv::Mat src=cv::imread("../resources/1115Dataset/WIN_20211115_17_09_34_Pro.jpg");
-	
-	/* array */
-	/*
-	bbox_t pObject[1000];
-	cv::Mat rtn[1000];
-	for(int i=0;i<contsize;i++)
-		pObject[i]=cont.candidates[i];
-
-	SYE::YeStereoCamera *sye=new SYE::YeStereoCamera();
-	sye->getSgbmInRect(src,pObject,contsize,rtn);
-	for(int i=0;i<contsize/2;i++){
-		cv::imshow("result",rtn[i]);
-		cv::waitKey(0);
-	}
-	*/
-	
+	const cv::Mat src=cv::imread(argv[1]);
+	imshow("src",src);
+	waitKey(0);
 	/* vector */
 	std::vector<bbox_t> pObject;
 	std::vector<cv::Mat> rtn;
 	std::vector<bbox_t> rtnPos;
-	for(int i=0;i<contsize;i++)
+	for(int i=0;i<contsize;i++){
 		pObject.push_back(cont.candidates[i]);
+	}
+	
+	for (int i = 0; i < pObject.size(); i++) {
+            std::cout << "x y w h id prob : " << pObject[i].x << " " << pObject[i].y << " " << pObject[i].w << " " << pObject[i].h << " " << pObject[i].obj_id << " " << pObject[i].prob<<"\n";
+        }
 	
 	SYE::YeStereoCamera *sye=new SYE::YeStereoCamera();
+
+	if (!sye->initCalibData("calibration.xml")) {
+		std::cout << "initCalibData failed\n";
+		exit(1);
+    }
+	sye->initMatrix();
+
 	sye->getSgbmInRect(src,pObject,rtn,rtnPos);
-	std::vector<std::vector<SYE::YePos3D>> feature;
-	sye->showResult(src,rtn,rtnPos,feature);
+	imshow("rtn[0]",rtn[0]);
+
+	std::vector<SYE::YePos3D> feature;
+    std::vector<bbox_t> pos;
+	if ((sye->getAbsoluteLengthInRect(src, pObject,rtnPos, feature, pos)) == false) {
+		std::cout << "getAbsoluteLengthInRect failed\n";
+		exit(1);
+	}
+
+
+    sye->showResult(src,rtn,rtnPos,feature,pos);
 
 	return 0;
 }

@@ -62,7 +62,12 @@ private:
 
 	bool no_display = true;		//don't display results
 	bool no_downscale = true;	//force stereo matching on full-sized views to improve quality
-	
+	// double vis_mult = 8;		//coefficient used to scale disparity map visualizations
+	// int max_disp = 16;			//parameter of stereo matching
+	// double lambda = 8000;		//parameter of wls post-filtering
+	// double sigma  = 1.5;		//parameter of wls post-filtering
+	// int wsize=3;
+
 protected:
 public:
 	YeStereoCamera();
@@ -85,13 +90,13 @@ public:
 
 	void initMatrix();
 	//Absolute length from camera.
-	bool getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &pObjRect, YePos3D &features, bbox_t &depthPos);
+	bool getAbsoluteLengthInRect(const cv::Mat &src, std::vector<bbox_t> &pObjRect, std::vector<YePos3D> &features, std::vector<bbox_t> &depthPos);
 
 	bool getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param);
 	// 추춘된 특정 영역만 SGBM 3D reconstruction.
-	bool getSgbmInRect(const cv::Mat& src, bbox_t& pObject, cv::Mat& rtn,sgbmParam param);
-	
-	bool showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos, YePos3D &features, bbox_t &depthPos);
+	bool getSgbmInRect(const cv::Mat& src, std::vector<bbox_t>& pObject, cv::Mat& rtn,sgbmParam param);
+
+	bool showResult(const cv::Mat& src, std::vector<cv::Mat>& rtn,std::vector<bbox_t>& rtnPos,std::vector<YePos3D>& features, std::vector<bbox_t> &depthPos);
 };
 
 }

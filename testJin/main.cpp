@@ -10,11 +10,7 @@
 using namespace SYE;
 using namespace std;
 
-/*how to useage
-
-    ./yeStereoCamera 
-
-*/
+// ./main saveCont ../resources/
 int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
