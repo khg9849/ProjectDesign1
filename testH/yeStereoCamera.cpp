@@ -331,40 +331,30 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 	//did you know how to match between obj_id and objName?
 	//*.names
 	double threshold = 0.2;
-
 	int leftIdx, rightIdx;
+
     for(size_t i = 0; i < detection_left.size(); ++i){
 		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold){
 			leftIdx = i;
+			break;
 		}
 	}
 	for(size_t i = 0; i < detection_right.size(); ++i){
 		if(objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
 			rightIdx = i;
+			break;
 		}
 	}
-		
-			bbox_t pos;
-			pos.x = std::min(detection_left[leftIdx].x, detection_right[rightIdx].x);
-			pos.y = std::min(detection_left[leftIdx].y, detection_right[rightIdx].y);
-			pos.w = std::max(detection_left[leftIdx].x + detection_left[leftIdx].w, detection_right[rightIdx].x + detection_right[rightIdx].w) - pos.x;
-			pos.h = std::max(detection_left[leftIdx].y + detection_left[leftIdx].h, detection_right[rightIdx].y + detection_right[rightIdx].h) - pos.y;
-			pos.obj_id = detection_left[leftIdx].obj_id;
-			pos.prob = detection_left[leftIdx].prob;
-			pObjRect.push_back(pos);
-	
-	
-	
-	/*int i = 5;
-			bbox_t pos;
-			pos.x = std::min(detection_left[i].x, detection_right[1].x);
-			pos.y = std::min(detection_left[i].y, detection_right[1].y);
-			pos.w = std::max(detection_left[i].x + detection_left[i].w, detection_right[1].x + detection_right[1].w) - pos.x;
-			pos.h = std::max(detection_left[i].y + detection_left[i].h, detection_right[1].y + detection_right[1].h) - pos.y;
-			pos.obj_id = detection_left[i].obj_id;
-			pos.prob = detection_left[i].prob;
-			pObjRect.push_back(pos);*/
 
+	bbox_t pos;
+	pos.x = std::min(detection_left[leftIdx].x, detection_right[rightIdx].x);
+	pos.y = std::min(detection_left[leftIdx].y, detection_right[rightIdx].y);
+	pos.w = std::max(detection_left[leftIdx].x + detection_left[leftIdx].w, detection_right[rightIdx].x + detection_right[rightIdx].w) - pos.x;
+	pos.h = std::max(detection_left[leftIdx].y + detection_left[leftIdx].h, detection_right[rightIdx].y + detection_right[rightIdx].h) - pos.y;
+	pos.obj_id = detection_left[leftIdx].obj_id;
+	pos.prob = detection_left[leftIdx].prob;
+	pObjRect.push_back(pos);
+	
     return true;
 }
 
@@ -415,11 +405,11 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 		std::cout<<"feature match is zero\n";
 		return false;
 	}
-double baseline = matT.at<double>(0)/10;
-double FOV = 83; //화각
-	double PI = 3.14159265358979;
 
-double f_pixel = (src.cols*0.5*0.5)/ tan(FOV * 0.5 * PI/180);
+	double baseline = matT.at<double>(0)/10;
+	double FOV = 83;
+	double PI = 3.14159265358979;
+	double f_pixel = ((*gray).cols*0.5*0.5)/tan(FOV*0.5*PI/180);
 
 	std::vector<YePos3D> feature_temp;
 	for(int i = 0; i < matches.size(); i++){
@@ -428,11 +418,12 @@ double f_pixel = (src.cols*0.5*0.5)/ tan(FOV * 0.5 * PI/180);
 		temp.x = invCamMat[0].at<double>(0,0)*((int)(kp[0][matches[i].queryIdx].pt.x)+pObjRect.x)+invCamMat[0].at<double>(0,2);
 		double rightX = invCamMat[1].at<double>(0,0)*((int)(kp[1][matches[i].trainIdx].pt.x)+pObjRect.x)+invCamMat[1].at<double>(0,2);
 
-//		temp.z = -matT.at<double>(0,0)/(temp.x-rightX); 
-temp.z = (baseline*f_pixel)/((int)(kp[0][matches[i].queryIdx].pt.x)-(int)(kp[1][matches[i].trainIdx].pt.x));
-		//std::cout<<temp.z<<'\n';
+		temp.z = -matT.at<double>(0,0)/(temp.x-rightX); 
+
 		temp.x = temp.x*temp.z;
 		temp.y = (invCamMat[0].at<double>(1,1)*((int)(kp[0][matches[i].queryIdx].pt.y)+pObjRect.y)+invCamMat[0].at<double>(1,2))*temp.z;
+
+		temp.z = -(baseline*f_pixel)/((int)(kp[0][matches[i].queryIdx].pt.x)-(int)(kp[1][matches[i].trainIdx].pt.x));
 
 		feature_temp.push_back(temp);
 	}
@@ -467,13 +458,7 @@ temp.z = (baseline*f_pixel)/((int)(kp[0][matches[i].queryIdx].pt.x)-(int)(kp[1][
 		maxCount = count;
 		maxIdx = feature_temp.size()-1;
 	}
-
-	for(int i = 0; i < feature_temp.size(); i++){
-		std::cout<<feature_temp[index[i]].z<<'\n';
-	}
-	std::cout<<"matCount : "<<maxCount<<'\n';
 	
-	std::cout<<maxIdx<<' '<<maxIdx-maxCount+1<<'\n';
 	int idx = index[(maxIdx+(maxIdx-maxCount+1))/2];
 	features.x = feature_temp[idx].x;
 	features.y = feature_temp[idx].y;
@@ -568,21 +553,21 @@ bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, bbox_t& pObject,cv::Mat& 
 	return true;
 }
 
-bool YeStereoCamera::showResult(const cv::Mat& src, cv::Mat& rtn, bbox_t &pObjRect, YePos3D &features, bbox_t &depthPos){
-		cv::Mat res=src.clone();
-		cv::Mat ROI=res.rowRange(pObjRect.y, pObjRect.y+pObjRect.h).colRange(pObjRect.x, pObjRect.x+pObjRect.w);
-		cv::Mat img_rgb(rtn.size(), CV_8UC3);
-		cv::cvtColor(rtn, img_rgb, CV_GRAY2RGB);
-		img_rgb.copyTo(ROI);
+bool YeStereoCamera::showResult(const cv::Mat& src, cv::Mat &rtn, bbox_t &rtnPos, YePos3D &features, bbox_t &depthPos){
 
-		//((int)(rtnPos[i].x+rtnPos[i].w)/2,(int)(rtnPos[i].y+rtnPos[i].h)/2)
-		cv::rectangle(res, cv::Rect(pObjRect.x, pObjRect.y, pObjRect.w, pObjRect.h), cv::Scalar(0, 0, 255), 3, 8, 0);
-		cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
-		//cv::putText(res, std::to_string(features[0][i].z), cv::Point(rtnPos[i].x+rtnPos[i].w/2,rtnPos[i].y+rtnPos[i].h/2), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
-		cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+	cv::Mat res=src.clone();
+	//cv::Mat ROI=res.rowRange(rtnPos.y, rtnPos.y+rtnPos.h).colRange(rtnPos.x, rtnPos.x+rtnPos.w);
+	//cv::Mat img_rgb(rtn.size(), CV_8UC3);
+	//cv::cvtColor(rtn, img_rgb, CV_GRAY2RGB);
+	//img_rgb.copyTo(ROI);
+
+	cv::rectangle(res, cv::Rect(rtnPos.x,rtnPos.y,rtnPos.w,rtnPos.h), cv::Scalar(0, 0, 255), 3, 8, 0);
+	cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
+	cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
 		
-		cv::imshow("res",res);
-		cv::waitKey(0);
+	cv::imshow("res",res);
+	cv::waitKey(0);
+	
 	return true;
 }
 /*--------------------------------------------------4 팀 화 이 팅 ! ! ! ,,----------------------------------------------------*/

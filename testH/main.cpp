@@ -9,7 +9,6 @@
 
 using namespace SYE;
 using namespace std;
-using namespace cv;
 
 /*how to useage
 
@@ -25,7 +24,7 @@ int main()
 {
     YeStereoCamera *temp = new YeStereoCamera();
     const char *filepath = "../resources/calib_data";
-    const char *objName = "cake";
+    const char *objName = "clock";
 
 
     if (!temp->initCalibData("calibration.xml")) {
@@ -38,7 +37,6 @@ int main()
     cv::Mat mat;
     
 	cv::VideoCapture video("../resources/1/sample.mp4");
-   // cv::VideoCapture video("../resources/WIN_20211115_17_10_04_Pro.mp4");
     
     if (!video.isOpened()) {
         cout << "Can't open the video" << endl;
@@ -50,53 +48,40 @@ int main()
 	temp->getObjNames_file("../darknet/data/coco.names");
 	temp->initMatrix();
 
-	initTrackWindow();
-	
-
-	//video>>mat;
-	//while(!mat.empty()){
-	mat = cv::imread("../resources/1204data3/WIN_20211204_16_12_48_Pro.jpg");
+	video>>mat;
+	while(!mat.empty()){
         vector<bbox_t> pObject;
         if ((temp->findImage(mat, objName, pObject)) == false) {
             std::cout << "findImage failed\n";
             exit(1);
         }
 
-		std::cout<<"out\n";
-
         for (int i = 0; i < pObject.size(); i++) {
             std::cout << "x y w h id : " << pObject[i].x << " " << pObject[i].y << " " << pObject[i].w << " " << pObject[i].h << " " << pObject[i].obj_id << "\n";
         }
 
-        cv::Mat rtn;
-        bbox_t rtnPos;
-        if ((temp->getSgbmInRect(mat, pObject[0], rtn,param)) == false) {
-            std::cout << "getSgbmInRect failed\n";
-            exit(1);
-        }
+		if(pObject.size()){
+        	cv::Mat rtn;
+  	    	if ((temp->getSgbmInRect(mat, pObject[0], rtn, param)) == false) {
+    	    	std::cout << "getSgbmInRect failed\n";
+            	exit(1);
+        	}
 
-        YePos3D feature;
-        bbox_t pos;
-         if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
-            std::cout << "getAbsoluteLengthInRect failed\n";
-            exit(1);
-        }
+        	YePos3D feature;
+        	bbox_t pos;
+         	if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
+            	std::cout << "getAbsoluteLengthInRect failed\n";
+            	exit(1);
+        	}
 
-		 std::cout<<"!!!!\n";
-/*
-        for (int i = 0; i < feature.size(); i++) {
-            std::cout << feature[i].x << ' ' << feature[i].y << ' ' << feature[i].z << '\n';
-        }
-*/
-        temp->showResult(mat,rtn,pObject[0],feature,pos);
+        	temp->showResult(mat,rtn,pObject[0],feature,pos);
        
-	//	video>>mat;
-    //}
+			video>>mat;
+		}
+    }
 
     return 0;
 }
-
-
 
 void initTrackWindow(){
     cv::namedWindow("window");
@@ -134,7 +119,6 @@ void initTrackWindow(){
     param.speckleWindowSize=cv::getTrackbarPos("speckleWindowSize","window");
 
 }
-
 
 void onChange(int pos, void* userdata){
     param.vis_mult=cv::getTrackbarPos("vis_mult","window");
