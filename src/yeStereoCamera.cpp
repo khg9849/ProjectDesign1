@@ -335,9 +335,14 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold &&
 		objNames[detection_right[i].obj_id]==objName && detection_right[i].prob >= threshold){
 		
-			pObjRect.push_back(detection_left[i]);
-			detection_right[i].x += mat.cols/2;
-			pObjRect.push_back(detection_right[i]);
+			bbox_t pos;
+			pos.x = std::min(detection_left[i].x, detection_right[i].x);
+			pos.y = std::min(detection_left[i].y, detection_right[i].y);
+			pos.w = std::max(detection_left[i].x + detection_left[i].w, detection_right[i].x + detection_right[i].w) - pos.x;
+			pos.h = std::max(detection_left[i].y + detection_left[i].h, detection_right[i].y + detection_right[i].h) - pos.y;
+			pos.obj_id = detection_left[i].obj_id;
+			pos.prob = detection_left[i].prob;
+			pObjRect.push_back(pos);
 				
 		}
 	}
