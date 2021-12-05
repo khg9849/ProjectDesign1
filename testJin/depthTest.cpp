@@ -12,8 +12,9 @@ using namespace std;
 using namespace cv;
 using namespace SYE;
 
-
-
+/*
+./depthTest ../resources/cake1/a.jpg
+*/
 int main(int argc, char** argv)
 {
     FileStorage fs("calibration.xml", cv::FileStorage::READ);
@@ -80,7 +81,7 @@ int main(int argc, char** argv)
         int dif=x1-x2;
         double zDepth =fabs((baseline*f_pixel)/dif);
 
-        if(abs(y1-y2)<50&&x1>=200){
+        if(abs(y1-y2)<50&&x1>=200&&y1>=600&&y2<=800){
             printf("point1:(%d,%d),point2:(%d,%d), dif is %d, zDepth is %lf\n",x1,y1,x2,y2,dif, zDepth);
             
             cv::Mat res=mat.clone();

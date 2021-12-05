@@ -331,7 +331,7 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 	//did you know how to match between obj_id and objName?
 	//*.names
 	double threshold = 0.2;
-	int leftIdx, rightIdx;
+	int leftIdx=-1, rightIdx=-1;
 
     for(size_t i = 0; i < detection_left.size(); ++i){
 		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold){
@@ -344,6 +344,10 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 			rightIdx = i;
 			break;
 		}
+	}
+	if(leftIdx==-1||rightIdx==-1){
+		printf("findImage is failed. leftIdx or rightIdx is -1\n");
+		return false;
 	}
 
 	bbox_t pos;
@@ -472,16 +476,18 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 
 bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 
-	if(param.max_disp<=0 || param.max_disp%16!=0)
-	{
-		std::cout<<"Incorrect max_disparity value: it should be positive and divisible by 16\n";
-		return false;
-	}
-	if(param.wsize<=0 || param.wsize%2!=1)
-	{
-		std::cout<<"Incorrect window_size value: it should be positive and odd\n";
-		return false;
-	}
+	// if(param.max_disp<=0 || param.max_disp%16!=0)
+	// {
+	// 	std::cout<<"Incorrect max_disparity value: it should be positive and divisible by 16\n";
+	// 	return false;
+	// }
+
+	// if(param.wsize<=0 || param.wsize%2!=1)
+	// {
+	// 	std::cout<<"wsize is "<<param.wsize<<'\n';
+	// 	std::cout<<"Incorrect window_size value: it should be positive and odd\n";
+	// 	return false;
+	// }
 
 	cv::Mat mat_left=src(cv::Range::all(), cv::Range(0, src.cols/2)).clone();
     cv::Mat mat_right=src(cv::Range::all(), cv::Range(src.cols/2, src.cols)).clone();
@@ -505,17 +511,22 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 	}
 
 	// sgbm
+
+	printf("param.wsize: %d, max_disp(Numdisp): %d, prefilter: %d, lambda: %lf, sigma: %lf, vis_mult: %d\n",
+	param.wsize,param.max_disp,param.preFilterCap,param.lambda,param.sigma,param.vis_mult);
 	cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,param.max_disp,param.wsize);
-	left_matcher->setP1(24*param.wsize*param.wsize);
-	left_matcher->setP2(96*param.wsize*param.wsize);
-	left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
 	
-	left_matcher->setMinDisparity(param.minDisparity);
-	left_matcher->setDisp12MaxDiff(param.disp12MaxDiff);
+	 left_matcher->setNumDisparities(param.max_disp);
+	 left_matcher->setP1(24*param.wsize*param.wsize);
+	 left_matcher->setP2(96*param.wsize*param.wsize);
+	 left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
+	// left_matcher->setBlockSize(5);
+	// left_matcher->setMinDisparity(-4);
+	// left_matcher->setDisp12MaxDiff(4);
 	left_matcher->setPreFilterCap(param.preFilterCap);
-	left_matcher->setUniquenessRatio(param.uniquenessRatio);
-	left_matcher->setSpeckleWindowSize(param.speckleWindowSize);
-	printf("uniquenessradio: %d\n",left_matcher->getUniquenessRatio());
+	// left_matcher->setUniquenessRatio(5);
+	// left_matcher->setSpeckleWindowSize(2);
+	// left_matcher->setSpeckleRange(1);
 
 	wls_filter = cv::ximgproc::createDisparityWLSFilter(left_matcher);
 	cv::Ptr<cv::StereoMatcher> right_matcher = cv::ximgproc::createRightMatcher(left_matcher);
@@ -532,7 +543,7 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 	rtn=filtered_disp_vis.clone(); //filtered image
 
 	//visualization
-	if(!no_display){
+	if(true){
 		cv::namedWindow("filtered disparity", cv::WINDOW_AUTOSIZE);
 		cv::imshow("filtered disparity", filtered_disp_vis);
 		cv::waitKey(0);
