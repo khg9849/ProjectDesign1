@@ -512,9 +512,10 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 
 	// sgbm
 
-	printf("param.wsize: %d, max_disp(Numdisp): %d, prefilter: %d, lambda: %lf, sigma: %lf, vis_mult: %d\n",
-	param.wsize,param.max_disp,param.preFilterCap,param.lambda,param.sigma,param.vis_mult);
-	cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,param.max_disp,param.wsize);
+	// printf("param.wsize: %d, max_disp(Numdisp): %d, prefilter: %d, lambda: %lf, sigma: %lf, vis_mult: %d\n",
+	// param.wsize,param.max_disp,param.preFilterCap,param.lambda,param.sigma,param.vis_mult);
+	
+	 cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,param.max_disp,param.wsize);
 	
 	 left_matcher->setNumDisparities(param.max_disp);
 	 left_matcher->setP1(24*param.wsize*param.wsize);
@@ -543,7 +544,7 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 	rtn=filtered_disp_vis.clone(); //filtered image
 
 	//visualization
-	if(true){
+	if(!no_display){
 		cv::namedWindow("filtered disparity", cv::WINDOW_AUTOSIZE);
 		cv::imshow("filtered disparity", filtered_disp_vis);
 		cv::waitKey(0);
@@ -572,10 +573,10 @@ bool YeStereoCamera::showResult(const cv::Mat& src, cv::Mat &rtn, bbox_t &rtnPos
 
 	cv::rectangle(res, cv::Rect(rtnPos.x,rtnPos.y,rtnPos.w,rtnPos.h), cv::Scalar(0, 0, 255), 3, 8, 0);
 	cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
-	cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+	cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 5, cv::Scalar(255, 255, 0), 3, 8);
 		
-	cv::imshow("res",res);
-	cv::waitKey(0);
+	rtn=res.clone();
+
 	
 	return true;
 }

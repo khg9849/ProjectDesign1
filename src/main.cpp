@@ -16,6 +16,8 @@ using namespace std;
 
 */
 
+#define FULL
+
 void initTrackWindow();
 void onChange(int pos, void* userdata);
 sgbmParam param;
@@ -27,6 +29,7 @@ int main()
     const char *objName = "cup";
 
 
+
     if (!temp->initCalibData("calibration.xml")) {
         if ((temp->doCalibration(filepath, "calibration.xml")) == false) {
             std::cout << "doCalibration failed\n";
@@ -36,25 +39,39 @@ int main()
 
     cv::Mat mat;
     
-	cv::VideoCapture video("../resources/final.mp4");
+	cv::VideoCapture video("../resources/211206_data/home1.mp4");
     // cv::VideoCapture video("../resources/cake1/bb.mp4");
+
 
     if (!video.isOpened()) {
         cout << "Can't open the video" << endl;
         return 0;
     }
 
-	temp->getcfg_file("../darknet/cfg/yolov4-tiny.cfg");
-    temp->getWeight_file("../darknet/yolov4-tiny.weights");
+	temp->getcfg_file("../darknet/cfg/yolov4.cfg");
+    temp->getWeight_file("../darknet/yolov4.weights");
 	temp->getObjNames_file("../darknet/data/coco.names");
 	temp->initMatrix();
-	initTrackWindow();
+	// initTrackWindow();
 
+    param.wsize=1;
+    param.max_disp=3*16;
+    param.preFilterCap=27;
+     param.lambda=20000;
+    param.sigma=38/10.0;
+    param.vis_mult=20/10.0;
+
+    double start, end, sum = 0;
+    cv::namedWindow("window",CV_WINDOW_NORMAL);
+    bool first=true;
 	video>>mat;
+    int i=0;
+    cv::Mat rtn;
 
 	while(!mat.empty()){
+        start = cv::getTickCount();
 
-
+#ifndef FULL
         vector<bbox_t> pObject;
         if ((temp->findImage(mat, objName, pObject)) == false) {
             std::cout << "findImage failed\n";
@@ -65,38 +82,59 @@ int main()
             std::cout <<"pObject.size() is 0\n";
             exit(1);
         }
-        for (int i = 0; i < pObject.size(); i++) {
-            std::cout << "x y w h id : " << pObject[i].x << " " << pObject[i].y << " " << pObject[i].w << " " << pObject[i].h << " " << pObject[i].obj_id << "\n";
-        }
+        // for (int i = 0; i < pObject.size(); i++) {
+        //     std::cout << "x y w h id : " << pObject[i].x << " " << pObject[i].y << " " << pObject[i].w << " " << pObject[i].h << " " << pObject[i].obj_id << "\n";
+        // }
 
 		if(pObject.size()){
-        	cv::Mat rtn;
-  	    	// if ((temp->getSgbmInRect(mat, pObject[0], rtn, param)) == false) {
-    	    // 	std::cout << "getSgbmInRect failed\n";
-            // 	exit(1);
-        	// }
-            if ((temp->getSgbm(mat, rtn, param)) == false) {
-    	    	std::cout << "getSgbm failed\n";
+        	
+  	    	if ((temp->getSgbmInRect(mat, pObject[0], rtn, param)) == false) {
+    	    	std::cout << "getSgbmInRect failed\n";
             	exit(1);
         	}
-
-        	// YePos3D feature;
-        	// bbox_t pos;
-         	// if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
-            // 	std::cout << "getAbsoluteLengthInRect failed\n";
-            // 	exit(1);
-        	// }
-
-        	// temp->showResult(mat,rtn,pObject[0],feature,pos);
        
-			video>>mat;
-		}
-    }
 
+        	YePos3D feature;
+        	bbox_t pos;
+         	if ((temp->getAbsoluteLengthInRect(mat, pObject[0], feature, pos)) == false) {
+            	std::cout << "getAbsoluteLengthInRect failed\n";
+            	exit(1);
+        	}
+            temp->showResult(mat,rtn,pObject[0],feature,pos);
+        }
+        cv::putText(rtn, std::to_string(i++), cv::Point(100,100), 1, 5, cv::Scalar(0, 0, 255), 3, 8);
+		
+#else
+        if ((temp->getSgbm(mat, rtn, param)) == false) {
+            std::cout << "getSgbm failed\n";
+            exit(1);
+        }
+        cv::putText(rtn, std::to_string(i++), cv::Point(100,100), 1, 5, cv::Scalar(255, 255, 255), 3, 8);
+		
+#endif
+        	       
+        end = cv::getTickCount();
+        double temp;
+        temp = end-start;
+        cv::imshow("window",rtn);
+        if(!first){
+             printf("%d\t%lf\n",i-1,temp/cv::getTickFrequency());
+            cv::waitKey(1);
+            sum += (temp);
+       
+        }
+        else{
+            cv::waitKey(0);
+            first=false;
+        }  
+        video>>mat;
+    }
+    printf("sum\t%lf\n",sum/cv::getTickFrequency());
     return 0;
 }
 
 void initTrackWindow(){
+    cv::destroyAllWindows();
     cv::namedWindow("window");
 
     

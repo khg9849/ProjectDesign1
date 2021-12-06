@@ -10,6 +10,11 @@
 using namespace SYE;
 using namespace std;
 
+void ShowImg(std::string name, cv::Mat matSrc, float factor){
+    cv::namedWindow(name, 0);
+	cv::imshow(name, matSrc);
+	cv::resizeWindow(name, matSrc.cols*factor, matSrc.rows*factor); 
+}
 
 int main()
 {
@@ -27,16 +32,16 @@ int main()
     cv::Mat mat;
     
 	//cv::VideoCapture video("../resources/1/sample2.mp4");
-    cv::VideoCapture video("../resources/WIN_20211115_17_10_04_Pro.mp4");
+    cv::VideoCapture video("../resources/croppedVid.mp4");
     if (!video.isOpened()) {
         cout << "Can't open the video" << endl;
         return 0;
     }
 
-   temp->getcfg_file("../darknet/cfg/yolov4.cfg");
-   temp->getWeight_file("../darknet/yolov4.weights");
-	// temp->getcfg_file("../darknet/cfg/yolov4-tiny.cfg");
-    // temp->getWeight_file("../darknet/yolov4-tiny.weights");
+//    temp->getcfg_file("../darknet/cfg/yolov4.cfg");
+//    temp->getWeight_file("../darknet/yolov4.weights");
+	temp->getcfg_file("../darknet/cfg/yolov4-tiny.cfg");
+    temp->getWeight_file("../darknet/yolov4-tiny.weights");
     temp->initMatrix();
 	temp->getObjNames_file("../darknet/data/coco.names");
 
@@ -70,11 +75,11 @@ int main()
         diff1=(end.tv_sec+end.tv_usec/1000000.0)-(bgn.tv_sec+bgn.tv_usec/1000000.0);
         duration1+=diff1;
 
-        for (cv::Mat res:rtn){
-           // printf("rtnPos(%d,%d,%d,%d)\n",rtnPos[0].x,rtnPos[0].y,rtnPos[0].w,rtnPos[0].h);
-            cv::imshow("partial",res);
-            cv::waitKey(0);
-        }
+        // for (cv::Mat res:rtn){
+        //    // printf("rtnPos(%d,%d,%d,%d)\n",rtnPos[0].x,rtnPos[0].y,rtnPos[0].w,rtnPos[0].h);
+        //     cv::imshow("partial",res);
+        //     cv::waitKey(0);
+        // }
 
 
         vector<YePos3D> feature;
@@ -99,7 +104,8 @@ int main()
         diff2=(end.tv_sec+end.tv_usec/1000000.0)-(bgn.tv_sec+bgn.tv_usec/1000000.0);
         duration2+=diff2;
         //cout<<"diff2: "<<diff<<'\n';
-        imshow("full",full);
+        ShowImg("full",full,0.8);
+       // imshow("full",full);
         cv::waitKey(0);
         cout<<cnt<<'\t'<<diff1<<'\t'<<diff2<<'\n';
         if(++cnt==100) break;
