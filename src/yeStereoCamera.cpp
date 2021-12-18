@@ -476,22 +476,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 
 bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 
-	// if(param.max_disp<=0 || param.max_disp%16!=0)
-	// {
-	// 	std::cout<<"Incorrect max_disparity value: it should be positive and divisible by 16\n";
-	// 	return false;
-	// }
-
-	// if(param.wsize<=0 || param.wsize%2!=1)
-	// {
-	// 	std::cout<<"wsize is "<<param.wsize<<'\n';
-	// 	std::cout<<"Incorrect window_size value: it should be positive and odd\n";
-	// 	return false;
-	// }
-
 	cv::Mat mat_left=src(cv::Range::all(), cv::Range(0, src.cols/2)).clone();
     cv::Mat mat_right=src(cv::Range::all(), cv::Range(src.cols/2, src.cols)).clone();
-
 
 	cv::Mat left_for_matcher, right_for_matcher;
 	cv::Mat left_disp,right_disp;
@@ -510,24 +496,19 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 			right_for_matcher = mat_right.clone();
 	}
 
-	// sgbm
-
-	// printf("param.wsize: %d, max_disp(Numdisp): %d, prefilter: %d, lambda: %lf, sigma: %lf, vis_mult: %d\n",
-	// param.wsize,param.max_disp,param.preFilterCap,param.lambda,param.sigma,param.vis_mult);
-	
 	 cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,param.max_disp,param.wsize);
 	
 	 left_matcher->setNumDisparities(param.max_disp);
 	 left_matcher->setP1(24*param.wsize*param.wsize);
 	 left_matcher->setP2(96*param.wsize*param.wsize);
 	 left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
-	// left_matcher->setBlockSize(5);
-	// left_matcher->setMinDisparity(-4);
-	// left_matcher->setDisp12MaxDiff(4);
+	left_matcher->setBlockSize(param.wsize);
+	left_matcher->setMinDisparity(param.minDisparity);
+	left_matcher->setDisp12MaxDiff(param.disp12MaxDiff);
 	left_matcher->setPreFilterCap(param.preFilterCap);
-	// left_matcher->setUniquenessRatio(5);
-	// left_matcher->setSpeckleWindowSize(2);
-	// left_matcher->setSpeckleRange(1);
+	left_matcher->setUniquenessRatio(param.uniquenessRatio);
+	left_matcher->setSpeckleWindowSize(param.speckleWindowSize);
+	left_matcher->setSpeckleRange(param.speckleRange);
 
 	wls_filter = cv::ximgproc::createDisparityWLSFilter(left_matcher);
 	cv::Ptr<cv::StereoMatcher> right_matcher = cv::ximgproc::createRightMatcher(left_matcher);
@@ -553,8 +534,7 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 	return true;
 }
 
-// 추춘된 특정 영역만 SGBM 3D reconstruction.
-
+// 특정 영역만 SGBM 3D reconstruction.
 bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, bbox_t& pObject,cv::Mat& rtn,sgbmParam param) {
 	cv::Mat left  = src(cv::Rect(pObject.x,pObject.y,pObject.w,pObject.h));
 	cv::Mat right = src(cv::Rect(pObject.x+src.cols/2,pObject.y,pObject.w,pObject.h));
@@ -577,7 +557,5 @@ bool YeStereoCamera::showResult(const cv::Mat& src, cv::Mat &rtn, bbox_t &rtnPos
 		
 	rtn=res.clone();
 
-	
 	return true;
 }
-/*--------------------------------------------------4 팀 화 이 팅 ! ! ! ,,----------------------------------------------------*/
