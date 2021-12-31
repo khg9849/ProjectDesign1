@@ -30,10 +30,10 @@ struct sgbmParam {
 	// numDisparities -> max_disp
 	// blocksize -> wsize
 	int minDisparity,max_disp,P1,P2,disp12MaxDiff,preFilterCap,uniquenessRatio,speckleWindowSize,speckleRange;
-	int vis_mult;
+	double vis_mult;
 	double lambda;
 	double sigma;
-	int wsize=3;
+	int wsize;
 };
 
 class YeStereoCamera {

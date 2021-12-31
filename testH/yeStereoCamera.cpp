@@ -331,7 +331,7 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 	//did you know how to match between obj_id and objName?
 	//*.names
 	double threshold = 0.2;
-	int leftIdx, rightIdx;
+	int leftIdx=-1, rightIdx=-1;
 
     for(size_t i = 0; i < detection_left.size(); ++i){
 		if(objNames[detection_left[i].obj_id]==objName && detection_left[i].prob >= threshold){
@@ -344,6 +344,10 @@ bool YeStereoCamera::findImage(const cv::Mat &mat, const char* objName, std::vec
 			rightIdx = i;
 			break;
 		}
+	}
+	if(leftIdx==-1||rightIdx==-1){
+		printf("findImage is failed. leftIdx or rightIdx is -1\n");
+		return false;
 	}
 
 	bbox_t pos;
@@ -472,20 +476,8 @@ bool YeStereoCamera::getAbsoluteLengthInRect(const cv::Mat &src, const bbox_t &p
 
 bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 
-	if(param.max_disp<=0 || param.max_disp%16!=0)
-	{
-		std::cout<<"Incorrect max_disparity value: it should be positive and divisible by 16\n";
-		return false;
-	}
-	if(param.wsize<=0 || param.wsize%2!=1)
-	{
-		std::cout<<"Incorrect window_size value: it should be positive and odd\n";
-		return false;
-	}
-
 	cv::Mat mat_left=src(cv::Range::all(), cv::Range(0, src.cols/2)).clone();
     cv::Mat mat_right=src(cv::Range::all(), cv::Range(src.cols/2, src.cols)).clone();
-
 
 	cv::Mat left_for_matcher, right_for_matcher;
 	cv::Mat left_disp,right_disp;
@@ -504,18 +496,19 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 			right_for_matcher = mat_right.clone();
 	}
 
-	// sgbm
-	cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,param.max_disp,param.wsize);
-	left_matcher->setP1(24*param.wsize*param.wsize);
-	left_matcher->setP2(96*param.wsize*param.wsize);
-	left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
+	 cv::Ptr<cv::StereoSGBM> left_matcher  = cv::StereoSGBM::create(0,param.max_disp,param.wsize);
 	
+	 left_matcher->setNumDisparities(param.max_disp);
+	 left_matcher->setP1(24*param.wsize*param.wsize);
+	 left_matcher->setP2(96*param.wsize*param.wsize);
+	 left_matcher->setMode(cv::StereoSGBM::MODE_SGBM_3WAY);
+	left_matcher->setBlockSize(param.wsize);
 	left_matcher->setMinDisparity(param.minDisparity);
 	left_matcher->setDisp12MaxDiff(param.disp12MaxDiff);
 	left_matcher->setPreFilterCap(param.preFilterCap);
 	left_matcher->setUniquenessRatio(param.uniquenessRatio);
 	left_matcher->setSpeckleWindowSize(param.speckleWindowSize);
-	printf("uniquenessradio: %d\n",left_matcher->getUniquenessRatio());
+	left_matcher->setSpeckleRange(param.speckleRange);
 
 	wls_filter = cv::ximgproc::createDisparityWLSFilter(left_matcher);
 	cv::Ptr<cv::StereoMatcher> right_matcher = cv::ximgproc::createRightMatcher(left_matcher);
@@ -534,15 +527,14 @@ bool YeStereoCamera::getSgbm(const cv::Mat& src, cv::Mat& rtn,sgbmParam param) {
 	//visualization
 	if(!no_display){
 		cv::namedWindow("filtered disparity", cv::WINDOW_AUTOSIZE);
-		cv::imshow("filtered disparity", rtn);
+		cv::imshow("filtered disparity", filtered_disp_vis);
 		cv::waitKey(0);
 	}
 
 	return true;
 }
 
-// 추춘된 특정 영역만 SGBM 3D reconstruction.
-
+// 특정 영역만 SGBM 3D reconstruction.
 bool YeStereoCamera::getSgbmInRect(const cv::Mat& src, bbox_t& pObject,cv::Mat& rtn,sgbmParam param) {
 	cv::Mat left  = src(cv::Rect(pObject.x,pObject.y,pObject.w,pObject.h));
 	cv::Mat right = src(cv::Rect(pObject.x+src.cols/2,pObject.y,pObject.w,pObject.h));
@@ -561,11 +553,9 @@ bool YeStereoCamera::showResult(const cv::Mat& src, cv::Mat &rtn, bbox_t &rtnPos
 
 	cv::rectangle(res, cv::Rect(rtnPos.x,rtnPos.y,rtnPos.w,rtnPos.h), cv::Scalar(0, 0, 255), 3, 8, 0);
 	cv::line(res,cv::Point(depthPos.x, depthPos.y),cv::Point(depthPos.x, depthPos.y),cv::Scalar(0, 0, 255),5,3);
-	cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 2, cv::Scalar(255, 255, 0), 1, 8);
+	cv::putText(res, std::to_string(features.z), cv::Point(depthPos.x, depthPos.y), 1, 5, cv::Scalar(255, 255, 0), 3, 8);
 		
-	cv::imshow("res",res);
-	cv::waitKey(0);
-	
+	rtn=res.clone();
+
 	return true;
 }
-/*--------------------------------------------------4 팀 화 이 팅 ! ! ! ,,----------------------------------------------------*/
